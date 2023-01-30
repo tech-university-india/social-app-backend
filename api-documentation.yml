@@ -68,7 +68,7 @@ paths:
                   example: John Doe
                 email:
                   type: string
-                  example: email@domail.tld
+                  example: email@domain.tld
                 password:
                   type: string
                   example: "password"
@@ -127,6 +127,13 @@ paths:
     get:
       tags: 
         - Posts
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: number
+          required: true
+          description: Id of the user whose posts are to be fetched.
       summary: Fetchs the posts of the specific user.
       description: Returns a JSON that contains the array of posts of that user.
       responses:
@@ -235,6 +242,13 @@ paths:
     get:
       tags: 
         - Posts
+      parameters:
+        - in: path
+          name: postId
+          schema:
+            type: number
+          required: true
+          description: Id of the post which is to be fetched.
       summary: Fetchs a single post with its comments.
       description: Returns A JSON that contains details of the post with its comments.
       responses:
@@ -370,6 +384,13 @@ paths:
     delete:
       tags: 
         - Posts
+      parameters:
+        - in: path
+          name: postId
+          schema:
+            type: number
+          required: true
+          description: Id of the post which is to be deleted.
       summary: Deletes a specific Post.
       description: Returns a success code 204 on successful post deletion.
       responses:
