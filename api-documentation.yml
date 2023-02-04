@@ -458,330 +458,11 @@ paths:
                   message:
                     type: string
                     example: Placeholder for error message due to missing or invalid Authorization information
-  /posts/{userId}:
+  /entity/{type}/{userId}:
     get:
       tags:
-        - Posts
-      parameters:
-        - in: path
-          name: userId
-          schema:
-            type: number
-          required: true
-          description: Id of the user whose posts are to be fetched.
-      summary: Fetch the posts created by the specific user.
-      description: Returns a JSON that contains the array of posts created by that user.
-      responses:
-        "200":
-          description: A JSON that contains the array of posts created by that user.
-          content:
-            application/json:
-              schema:
-                type: array
-                description: Contains posts created by that user.
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: number
-                      example: 1
-                    userName:
-                      type: string
-                      example: John Doe
-                    designation:
-                      type: string
-                      example: designation
-                    profilePictureURL:
-                      type: string
-                      example: https://www.image.com/image.jpg
-                    caption:
-                      type: string
-                      example: caption
-                    imageURL:
-                      type: string
-                      example: https://www.image.com/image.jpg
-                    likesCount:
-                      type: number
-                      example: 500
-                    commentsCount:
-                      type: number
-                      example: 10
-                    likeId:
-                      type: number
-                      example: 2
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /posts/feed:
-    get:
-      tags:
-        - Posts
-      summary: Fetch the posts to be shown in the feed.
-      description: Returns a JSON that contains the array of posts to be shown in the feed.
-      responses:
-        "200":
-          description: A JSON that contains the array of posts to be shown in the feed.
-          content:
-            application/json:
-              schema:
-                type: array
-                description: Contains posts to be shown in the feed.
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: number
-                      example: 1
-                    userName:
-                      type: string
-                      example: John Doe
-                    designation:
-                      type: string
-                      example: designation
-                    profilePictureURL:
-                      type: string
-                      example: https://www.image.com/image.jpg
-                    caption:
-                      type: string
-                      example: caption
-                    imageURL:
-                      type: string
-                      example: https://www.image.com/image.jpg
-                    likesCount:
-                      type: number
-                      example: 500
-                    commentsCount:
-                      type: number
-                      example: 10
-                    likeId:
-                      type: number
-                      example: 2
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /posts/{postId}:
-    get:
-      tags:
-        - Posts
-      parameters:
-        - in: path
-          name: postId
-          schema:
-            type: number
-          required: true
-          description: Id of the post which is to be fetched.
-      summary: Fetch a single post with its comments.
-      description: Returns A JSON that contains details of the post with its comments.
-      responses:
-        "200":
-          description: A JSON that contains details of the post with its comments.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: number
-                    example: 1
-                  userName:
-                    type: string
-                    example: John Doe
-                  designation:
-                    type: string
-                    example: designation
-                  profilePictureURL:
-                    type: string
-                    example: https://www.image.com/image.jpg
-                  caption:
-                    type: string
-                    example: caption
-                  imageURL:
-                    type: string
-                    example: https://www.image.com/image.jpg
-                  likesCount:
-                    type: number
-                    example: 500
-                  commentsCount:
-                    type: number
-                    example: 10
-                  likeId:
-                    type: number
-                    example: 2
-                  comments:
-                    type: array
-                    description: Contains comments of the post.
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: number
-                          example: 1
-                        userName:
-                          type: string
-                          example: John Doe
-                        designation:
-                          type: string
-                          example: designation
-                        profilePictureURL:
-                          type: string
-                          example: https://www.image.com/image.jpg
-                        comment:
-                          type: string
-                          example: comment
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /posts:
-    post:
-      tags:
-        - Posts
-      summary: Create a new Post.
-      description: Returns a success code 201 on successful post creation.
-      requestBody:
-        description: Sample request body for post creation.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                caption:
-                  type: string
-                  example: caption
-                imageURL:
-                  type: string
-                  example: https://www.image.com/image.jpg
-                tags:
-                  type: array
-                  description: Contains tagged users.
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: number
-                        example: 1
-                      userName:
-                        type: string
-                        example: John Doe
-      responses:
-        "201":
-          description: A success code 201 on successful post creation.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: number
-                    example: 2
-                  caption:
-                    type: string
-                    example: caption
-                  imageURL:
-                    type: string
-                    example: https://www.image.com/image.jpg
-                  tags:
-                    type: array
-                    description: Contains tagged users.
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: number
-                          example: 1
-                        userName:
-                          type: string
-                          example: John Doe
-        "400":
-          description: Validation error message response if there are any validation related errors.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to validation error.
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /post/{postId}:
-    delete:
-      tags:
-        - Posts
-      parameters:
-        - in: path
-          name: postId
-          schema:
-            type: number
-          required: true
-          description: Id of the post which is to be deleted.
-      summary: Delete a specific Post.
-      description: Returns a success code 204 on successful post deletion.
-      responses:
-        "204":
-          description: A success code 204 on successful post deletion.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for success message.
-        "400":
-          description: Validation error message response if there are any validation related errors.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to validation error.
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /announcements/{userId}:
-    get:
-      tags:
-        - Announcements
-      summary: Fetche the announcements made by a single user.
+        - Entities
+      summary: Fetch the posts or announcements made by a single user.
       description: Returns a JSON that contains announcements by the specific userId given as a parameters.
       parameters:
         - in: path
@@ -790,9 +471,15 @@ paths:
             type: integer
           required: true
           description: userId of the user whose announcements are to be fetched.
+        - in: path
+          name: type
+          schema:
+            type: string
+          required: true
+          description: The type of entity(posts or announcements) that need to be fetched.
       responses:
         "200":
-          description: An array of JSON that contains information regarding the announcements made the by the user.
+          description: An array of JSON that contains information regarding the posts or announcements made the by the user.
           content:
             application/json:
               schema:
@@ -802,6 +489,9 @@ paths:
                     id:
                       type: number
                       example: 1
+                    type:
+                      type: string
+                      example: announcement
                     userName:
                       type: string
                       example: John Doe
@@ -811,15 +501,23 @@ paths:
                     profilePictureURL:
                       type: string
                       example: https://www.image.com/image.jpg
-                    content:
+                    caption:
                       type: string
                       example: On this day , we will have a tech talk regarding api development.
-                    date:
-                      type: string
-                      example: 12 June, 2023
-                    venue:
-                      type: string
-                      example: Bangalore
+                    meta:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          example: 12 June, 2023
+                        venue:
+                          type: string
+                          example: Bangalore
+                    location:
+                      type: array
+                      items:
+                        type: string
+                        example: New York
                     imageURL:
                       type: string
                       example: https://www.image.com/image.jpg
@@ -829,7 +527,7 @@ paths:
                     commentsCount:
                       type: number
                       example: 10
-                    likeId:
+                    actionId:
                       type: number
                       example: 2
         "400":
@@ -851,109 +549,20 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /announcements/{announcementId}:
+                    example: Placeholder for error message due to missing or invalid Authorization information.
+  /entity/{type}/feed:
     get:
       tags:
-        - Announcements
-      summary: Fetch the complete post with its comments.
-      description: Returns a JSON containing information regarding a single post with its comments denoted by announcementId.
+        - Entities
+      summary: Fetch the posts or filtered announcements for the feed.
+      description: Returns an array of JSON for the feed.
       parameters:
         - in: path
-          name: announcementId
+          name: type
           schema:
-            type: number
+            type: string
           required: true
-          description: The announcementId of the announcement to be fetched.
-      responses:
-        "200":
-          description: A JSON that contains information for a single post.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: number
-                    example: 1
-                  userName:
-                    type: string
-                    example: John Doe
-                  designation:
-                    type: string
-                    example: designation
-                  profilePictureURL:
-                    type: string
-                    example: https://www.image.com/image.jpg
-                  content:
-                    type: string
-                    example: On this day , we will have a tech talk regarding api development.
-                  date:
-                    type: string
-                    example: 12 June, 2023
-                  venue:
-                    type: string
-                    example: Bangalore
-                  imageURL:
-                    type: string
-                    example: https://www.image.com/image.jpg
-                  likesCount:
-                    type: number
-                    example: 500
-                  commentsCount:
-                    type: number
-                    example: 10
-                  likeId:
-                    type: number
-                    example: 2
-                  comments:
-                    type: array
-                    description: Contains comments of the post.
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: number
-                          example: 1
-                        userName:
-                          type: string
-                          example: John Doe
-                        designation:
-                          type: string
-                          example: designation
-                        profilePictureURL:
-                          type: string
-                          example: https://www.image.com/image.jpg
-                        comment:
-                          type: string
-                          example: comment
-        "400":
-          description: Validation error message response if there are any validation related errors.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to validation error.
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /announcements/feed:
-    get:
-      tags:
-        - Announcements
-      summary: Fetch the filtered announcements for the feed.
-      description: Returns an array of JSON for the feed when a user filters it by date and location.
-      parameters:
+          description: The type of entity(posts or announcements) that need to be fetched.
         - in: query
           name: locations
           schema:
@@ -972,7 +581,7 @@ paths:
           description: End date for a range on which we want to filter our feed in UTC format mm-dd-yyyy.
       responses:
         "200":
-          description: An array of JSON that contains announcements for the filtered feed.
+          description: An array of JSON that contains information regarding the posts or announcements made the by the user.
           content:
             application/json:
               schema:
@@ -982,6 +591,9 @@ paths:
                     id:
                       type: number
                       example: 1
+                    type:
+                      type: string
+                      example: announcement
                     userName:
                       type: string
                       example: John Doe
@@ -991,15 +603,23 @@ paths:
                     profilePictureURL:
                       type: string
                       example: https://www.image.com/image.jpg
-                    content:
+                    caption:
                       type: string
                       example: On this day , we will have a tech talk regarding api development.
-                    date:
-                      type: string
-                      example: 12 June, 2023
-                    venue:
-                      type: string
-                      example: Bangalore
+                    meta:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          example: 12 June, 2023
+                        venue:
+                          type: string
+                          example: Bangalore
+                    location:
+                      type: array
+                      items:
+                        type: string
+                        example: New York
                     imageURL:
                       type: string
                       example: https://www.image.com/image.jpg
@@ -1009,7 +629,7 @@ paths:
                     commentsCount:
                       type: number
                       example: 10
-                    likeId:
+                    actionId:
                       type: number
                       example: 2
         "400":
@@ -1031,13 +651,125 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /announcements:
-    post:
+                    example: Placeholder for error message due to missing or invalid Authorization information.
+  /entity/{entityId}:
+    get:
       tags:
-        - Announcements
-      summary: Create a new announcement.
-      description: Takes a JSON body that contains content of the announcement post and returns a newly updated entry of the post.
+        - Entities
+      summary: Fetch the complete post or announcement with its comments.
+      description: Returns a JSON containing information regarding a single post or announcement with its comments.
+      parameters:
+        - in: path
+          name: entityId
+          schema:
+            type: number
+          required: true
+          description: The entityId of the entity to be fetched.
+      responses:
+        "200":
+          description: A JSON that contains information for a single post.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 1
+                  type:
+                    type: string
+                    example: announcement
+                  userName:
+                    type: string
+                    example: John Doe
+                  designation:
+                    type: string
+                    example: designation
+                  profilePictureURL:
+                    type: string
+                    example: https://www.image.com/image.jpg
+                  imageURL:
+                    type: string
+                    example: https://www.image.com/image.jpg
+                  content:
+                    type: string
+                    example: On this day , we will have a tech talk regarding api development.
+                  meta:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        example: 12 June, 2023
+                      venue:
+                        type: string
+                        example: Bangalore
+                  location:
+                    type: array
+                    items:
+                      type: string
+                      example: New York
+                  likesCount:
+                    type: number
+                    example: 500
+                  commentsCount:
+                    type: number
+                    example: 10
+                  actionId:
+                    type: number
+                    example: 2
+                  comments:
+                    type: array
+                    description: Contains comments of the post.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                          example: 1
+                        userName:
+                          type: string
+                          example: John Doe
+                        designation:
+                          type: string
+                          example: designation
+                        profilePictureURL:
+                          type: string
+                          example: https://www.image.com/image.jpg
+                        comment:
+                          type: string
+                          example: comment
+        "400":
+          description: Validation error message response if there are any validation related errors.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Placeholder for error message due to validation error.
+        "401":
+          description: Missing or invalid Authorization information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Placeholder for error message due to missing or invalid Authorization information
+    put:
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: entityId
+          schema:
+            type: number
+          required: true
+          description: The entityId of the entity to be fetched.
+      summary: Update a post or announcement.
+      description: Takes a JSON body that contains content of the post or announcement and returns the updated entity.
       requestBody:
         description: Sample request body for generating a new announcement.
         required: true
@@ -1046,112 +778,29 @@ paths:
             schema:
               type: object
               properties:
-                content:
+                caption:
                   type: string
                   example: New announcement post content to be posted.
-                date:
-                  type: string
-                  example: 12 June, 2023
-                venue:
-                  type: string
-                  example: Bangalore
                 imageURL:
                   type: string
                   example: https://www.image.com/image.jpg
-                location:
-                  type: array
-                  items:
-                    type: string
-                    example: Banglore
-      responses:
-        "201":
-          description: A JSON that contains the entry of newly created announcement content.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: number
-                    example: 1
-                  content:
-                    type: string
-                    example: On this day , we will have a tech talk regarding api development.
-                  date:
-                    type: string
-                    example: 12 June, 2023
-                  venue:
-                    type: string
-                    example: Bangalore
-                  imageURL:
-                    type: string
-                    example: https://www.image.com/image.jpg
-                  location:
-                    type: array
-                    items:
+                meta:
+                  type: object
+                  properties:
+                    date:
                       type: string
-                      example: Banglore
-        "400":
-          description: Validation error message response if there are any validation related errors
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to validation error
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /announcement/{announcementId}:
-    put:
-      tags:
-        - Announcements
-      summary: Update the announcement.
-      description: Returns a JSON having updated information in the DB for the announcement post denoted by announcementId.
-      parameters:
-        - in: path
-          name: announcementId
-          schema:
-            type: number
-          required: true
-          description: The announcementId of the announcement to be modified.
-      requestBody:
-        description: Sample request body for updating announcement.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                content:
-                  type: string
-                  example: On this day , we will have a tech talk regarding api development.
-                date:
-                  type: string
-                  example: 12 June, 2023
-                venue:
-                  type: string
-                  example: Bangalore
-                imageURL:
-                  type: string
-                  example: https://www.image.com/image.jpg
+                      example: 12 June, 2023
+                    venue:
+                      type: string
+                      example: Bangalore
                 location:
                   type: array
                   items:
                     type: string
-                    example: Banglore
+                    example: New York
       responses:
         "200":
-          description: A JSON that contains newly updated information for a single post.
+          description: A JSON that contains the entry of the newly created entity.
           content:
             application/json:
               schema:
@@ -1160,123 +809,29 @@ paths:
                   id:
                     type: number
                     example: 1
-                  content:
+                  type:
                     type: string
-                    example: On this day , we will have a tech talk regarding api development.
-                  date:
+                    example: announcement
+                  caption:
                     type: string
-                    example: 12 June, 2023
-                  venue:
-                    type: string
-                    example: Bangalore
+                    example: New announcement post content to be posted.
                   imageURL:
                     type: string
                     example: https://www.image.com/image.jpg
+                  meta:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        example: 12 June, 2023
+                      venue:
+                        type: string
+                        example: Bangalore
                   location:
                     type: array
                     items:
                       type: string
-                      example: Banglore
-        "400":
-          description: Validation error message response if there are any validation related errors.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to validation error.
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-    delete:
-      tags:
-        - Announcements
-      summary: Delete a announcement.
-      description: Delete a specific announcement from DB using announcementId given.
-      parameters:
-        - in: path
-          name: announcementId
-          schema:
-            type: number
-          required: true
-          description: The announcementId of the announcement to be deleted.
-      responses:
-        "204":
-          description: Deletion message response indicating that announcement has been deleted successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for message due to deletion of announcement post.
-        "400":
-          description: Validation error message response if there are any validation related errors.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to validation error.
-        "401":
-          description: Missing or invalid Authorization information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Placeholder for error message due to missing or invalid Authorization information
-  /like:
-    post:
-      tags:
-        - Likes
-      summary: Post a like.
-      description: User when he likes a POST or ANNOUNCEMENT .
-      requestBody:
-        description: Sample request body for posting a like.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                type:
-                  type: string
-                  example: post
-                entityId:
-                  type: number
-                  example: postId
-      responses:
-        "201":
-          description: A JSON that contains the like has been added.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: number
-                    example: 2
-                  type:
-                    type: string
-                    example: post
-                  entityId:
-                    type: number
-                    example: postId
+                      example: New York
         "400":
           description: Validation error message response if there are any validation related errors
           content:
@@ -1288,7 +843,7 @@ paths:
                     type: string
                     example: Placeholder for error message due to validation error
         "401":
-          description: Invalid Credentials
+          description: Missing or invalid Authorization information
           content:
             application/json:
               schema:
@@ -1296,24 +851,22 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Placeholder for error message due to invalid credentials
-  /like/{likeId}:
+                    example: Placeholder for error message due to missing or invalid Authorization information
     delete:
       tags:
-        - Likes
-      summary: Unlike the like.
-      description: Unlike the like done by user then send response accoriding to status.
+        - Entities
       parameters:
         - in: path
           name: entityId
           schema:
             type: number
-            example: 12
           required: true
-          description: It is postId or annuncementID to store
+          description: Id of the entity which is to be deleted.
+      summary: Delete a Post or Announcement.
+      description: Returns a success code 204 on successful deletion.
       responses:
         "204":
-          description: A JSON that contains the like has been deleted.
+          description: A success code 204 on successful deletion.
           content:
             application/json:
               schema:
@@ -1323,6 +876,97 @@ paths:
                     type: string
                     example: Placeholder for success message.
         "400":
+          description: Validation error message response if there are any validation related errors.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Placeholder for error message due to validation error.
+        "401":
+          description: Missing or invalid Authorization information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Placeholder for error message due to missing or invalid Authorization information
+  /entity:
+    post:
+      tags:
+        - Entities
+      summary: Create a new post or announcement.
+      description: Takes a JSON body that contains content of the post or announcement and returns a newly created entity.
+      requestBody:
+        description: Sample request body for generating a new announcement.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: announcement
+                caption:
+                  type: string
+                  example: New announcement post content to be posted.
+                imageURL:
+                  type: string
+                  example: https://www.image.com/image.jpg
+                meta:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      example: 12 June, 2023
+                    venue:
+                      type: string
+                      example: Bangalore
+                location:
+                  type: array
+                  items:
+                    type: string
+                    example: New York
+      responses:
+        "201":
+          description: A JSON that contains the entry of the newly created entity.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 1
+                  type:
+                    type: string
+                    example: announcement
+                  caption:
+                    type: string
+                    example: New announcement post content to be posted.
+                  imageURL:
+                    type: string
+                    example: https://www.image.com/image.jpg
+                  meta:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        example: 12 June, 2023
+                      venue:
+                        type: string
+                        example: Bangalore
+                  location:
+                    type: array
+                    items:
+                      type: string
+                      example: New York
+        "400":
           description: Validation error message response if there are any validation related errors
           content:
             application/json:
@@ -1333,7 +977,7 @@ paths:
                     type: string
                     example: Placeholder for error message due to validation error
         "401":
-          description: Invalid Credentials
+          description: Missing or invalid Authorization information
           content:
             application/json:
               schema:
@@ -1341,15 +985,15 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Placeholder for error message due to invalid credentials
-  /comment:
+                    example: Placeholder for error message due to missing or invalid Authorization information
+  /action:
     post:
       tags:
-        - Comments
-      summary: Post a comment.
-      description: When user tries to comment to a post this will be called.
+        - Actions
+      summary: Post an Action (Like or Comment).
+      description: When user tries to like or comment to a post this will be called.
       requestBody:
-        description: Sample request body for adding comments.
+        description: Sample request body for adding like or comment.
         required: true
         content:
           application/json:
@@ -1358,13 +1002,16 @@ paths:
               properties:
                 type:
                   type: string
-                  example: post
+                  example: like
                 entityId:
                   type: number
-                  example: postId
-                commentMessage:
-                  type: string
-                  example: "This is good post"
+                  example: entityId
+                meta:
+                  type: object
+                  properties:
+                    commentMessage:
+                      type: string
+                      example: Nice Pic.
       responses:
         "201":
           description: A JSON that tell comment is added.
@@ -1378,13 +1025,16 @@ paths:
                     example: 123
                   type:
                     type: string
-                    example: post
+                    example: like
                   entityId:
                     type: number
-                    example: postId
-                  commentMessage:
-                    type: string
-                    example: "This is good post"
+                    example: entityId
+                  meta:
+                    type: object
+                    properties:
+                      commentMessage:
+                        type: string
+                        example: Nice Pic.
         "400":
           description: Validation error message response if there are any validation related errors
           content:
@@ -1405,19 +1055,19 @@ paths:
                   message:
                     type: string
                     example: Placeholder for error message due to invalid credentials
-  /comment/{commentId}:
+  /action/{actionId}:
     delete:
       tags:
-        - Comments
-      summary: Delete Comment.
-      description: Delete Comment made by user then send response accoriding to status.
+        - Actions
+      summary: Delete a action (Like or Comment).
+      description: Delete Like or Comment made by user then send response accoriding to status.
       parameters:
         - in: path
-          name: commentId
+          name: actionId
           schema:
             type: number
           required: true
-          description: The commentId of the comment to be deleted.
+          description: The actionId of the action to be deleted.
       responses:
         "204":
           description: A JSON that contains the like has been deleted.
@@ -1459,7 +1109,7 @@ paths:
                   message:
                     type: string
                     example: 404 not found
-  /interests/?q={name}:
+  /interests:
     get:
       tags:
         - Interests
@@ -1488,9 +1138,9 @@ paths:
                     interestName:
                       type: string
                       example: typescript
-                    interestIcon:
-                      type: string
-                      example: https://www.image.com/image.jpg
+                    # interestIcon:
+                    #   type: string
+                    #   example: https://www.image.com/image.jpg
         "401":
           description: Missing or invalid Authorization information
           content:
@@ -1501,7 +1151,6 @@ paths:
                   message:
                     type: string
                     example: Placeholder for error message due to missing or invalid Authorization information.
-  /interests:
     post:
       tags:
         - Interests
@@ -1518,9 +1167,9 @@ paths:
                 intrestName:
                   type: string
                   example: Trekking
-                interestIcon:
-                  type: string
-                  example: https://www.image.com/image.jpg
+                # interestIcon:
+                #   type: string
+                #   example: https://www.image.com/image.jpg
       responses:
         "201":
           description: A JSON that tell interest is created.
@@ -1535,9 +1184,9 @@ paths:
                   interestName:
                     type: string
                     example: Trekking
-                  interestIcon:
-                    type: string
-                    example: https://www.image.com/image.jpg
+                  # interestIcon:
+                  #   type: string
+                  #   example: https://www.image.com/image.jpg
         "401":
           description: Invalid Credentials
           content:
