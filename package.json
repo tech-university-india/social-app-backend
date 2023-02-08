@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start:dev": "npx eslint --fix src/**/*.js && npx nodemon src/index.js"
+    "start:dev": "npx eslint --fix src/**/*.js && npx nodemon src/index.js",
+    "db:restart": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
