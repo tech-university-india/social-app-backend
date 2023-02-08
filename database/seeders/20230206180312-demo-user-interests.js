@@ -5,52 +5,52 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('UserInterests', [{
       userId: 1,
-      interestId: 4,
+      interestId: 1,
       createdAt: new Date(),
     },
     {
       userId: 2,
-      interestId: 3,
+      interestId: 1,
       createdAt: new Date(),
     },
     {
       userId: 3,
-      interestId: 3,
+      interestId: 1,
       createdAt: new Date(),
     },
     {
       userId: 4,
-      interestId: 4,
+      interestId: 1,
       createdAt: new Date(),
     },
     {
       userId: 5,
-      interestId: 5,
+      interestId: 1,
       createdAt: new Date(),
     },
     {
       userId: 3,
-      interestId: 6,
+      interestId: 2,
       createdAt: new Date(),
     },
     {
       userId: 1,
-      interestId: 7,
+      interestId: 3,
       createdAt: new Date(),
     },
     {
       userId: 4,
-      interestId: 8,
+      interestId: 4,
       createdAt: new Date(),
     },
     {
       userId: 2,
-      interestId: 8,
+      interestId: 5,
       createdAt: new Date(),
     },
     {
       userId: 5,
-      interestId: 7,
+      interestId: 4,
       createdAt: new Date(),
     }]);
   },
