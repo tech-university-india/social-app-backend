@@ -8,7 +8,6 @@ describe('Profile Controller', () => {
             const user = {
                 "FMNO": 1,
                 "email": "exampleuser1@example.com",
-                "passwordHash": "pass@123",
                 "bio": "Backend and fishing expert",
                 "userName": "John Doe",
                 "designation": "Partner",
