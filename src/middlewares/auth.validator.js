@@ -1,4 +1,7 @@
 const Joi = require('joi');
+const JWT = require('jsonwebtoken');
+
+const HTTPError = require('../errors/httperror');
 
 const registerDTO = Joi.object({
 	FMNO: Joi.number().required(),
@@ -28,7 +31,18 @@ const loginValidator = (req, res, next) => {
 };
 
 const JWTVaidator = (req, res, next) => {
-	const authHeader = req.headers['authorization'];
+	try{
+		const authHeader = req.headers['authorization'];
+		const token = authHeader && authHeader.split(' ')[1];
+		if (!token) throw new HTTPError(401, 'Access denied');
+		const verifiedData = JWT.verify(token, process.env.JWT_SECRET);
+		req.user = verifiedData;
+		next();
+	} catch(err) {
+		if(err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
+		res.status(400).json({ message: err.message });
+	}
+
 };
 
 
