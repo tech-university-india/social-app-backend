@@ -2,6 +2,9 @@
 const {
 	Model
 } = require('sequelize');
+
+const { actionTypes } = require('../Utils/Constants');
+
 module.exports = (sequelize, DataTypes) => {
 	class Action extends Model {
 		/**
@@ -18,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 	Action.init({
 		type: {
 			allowNull: false,
-			type: DataTypes.ENUM('LIKE', 'COMMENT'),
+			type: DataTypes.ENUM(actionTypes.LIKE, actionTypes.COMMENT),
 		},
 		entityId: {
 			allowNull: false,

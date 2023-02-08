@@ -2,6 +2,9 @@
 const {
 	Model
 } = require('sequelize');
+
+const { entityTypes } = require('../Utils/Constants');
+
 module.exports = (sequelize, DataTypes) => {
 	class Entity extends Model {
 		/**
@@ -19,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 	Entity.init({
 		type: {
 			allowNull: false,
-			type: DataTypes.ENUM('POST', 'ANNOUNCEMENT'),
+			type: DataTypes.ENUM(entityTypes.POST, entityTypes.ANNOUNCEMENT),
 		},
 		caption: DataTypes.TEXT,
 		imageURL: DataTypes.ARRAY(DataTypes.STRING),
