@@ -1,7 +1,6 @@
 const actionTypes = Object.freeze({
 	LIKE: 'LIKE',
 	COMMENT:'COMMENT'
-
 });
 
 const entityTypes = Object.freeze({

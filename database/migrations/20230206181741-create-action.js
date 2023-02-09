@@ -1,4 +1,7 @@
 'use strict';
+
+const { actionTypes } = require('../../src/Utils/Constants');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -11,7 +14,7 @@ module.exports = {
       },
       type: {
         allowNull: false,
-        type: Sequelize.ENUM('LIKE', 'COMMENT')
+        type: Sequelize.ENUM(actionTypes.LIKE, actionTypes.COMMENT)
       },
       entityId: {
         type: Sequelize.INTEGER,

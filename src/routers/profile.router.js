@@ -1,7 +1,8 @@
 const profileRouter = require('express').Router();
 
-const { getUserById } = require('../controllers/profile.controller');
+const profileController = require('../controllers/profile.controller');
+const profileValidator = require('../middlewares/profile.validator');
 
-profileRouter.get('/profile/:userId', getUserById);
+profileRouter.get('/:userId', profileValidator.getProfileByIdValidator, profileController.getUserById);
 
 module.exports = profileRouter;

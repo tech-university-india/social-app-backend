@@ -5,6 +5,12 @@
     "dialect": "postgres",
     "port": 5432
   },
+  "test": {
+    "database": "mck_socialmedia_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "port": 5432
+  },
   "production": {
     "database": "mck_socialmedia_prod",
     "host": "127.0.0.1",
