@@ -22,18 +22,14 @@ const getFollowersById = async (id) => {
 		followersId.push(follower.dataValues.followerId);
 	});
 	const followingData = await Follow.findAll({where:{followerId:id,followingId:followersId}}); 
-	//console.log('followingData',followingData);
 	const followingIds = [];
 	const followersData = await User.findAll({where:{FMNO:followersId}});
-	//console.log('followersData',followersData);
 	followingData.forEach(follower => {
 		followingIds.push(follower.dataValues.followingId);
 	});
 	const followersDetails = [];
 	followersData.forEach(follower => {
-		//console.log(follower);
 		const {FMNO,email,designation,profilePictureURL} = follower.dataValues;
-		
 		if(FMNO in followingIds){
 			followersDetails.push({FMNO,email,designation,isFollowed:true,profilePictureURL});
 		}

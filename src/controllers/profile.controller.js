@@ -19,7 +19,7 @@ const getFollowersById = async (req,res) => {
 	}
 	catch(error){
 		if(error instanceof HTTPError) return res.status(error.statusCode).json({ message: error.message });
-		res.status(400).json({ message: error.message });
+		res.status(500).json({ message: error.message });
 	}
 };
 

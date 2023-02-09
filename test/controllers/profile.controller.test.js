@@ -44,4 +44,55 @@ describe('Profile Controller', () => {
 			expect(mockRes.status).toBeCalledWith(500);
 		});
 	});
+	describe('GET /profile/{userId}/followers', () => {
+		it('should return 200 OK', async () => {
+			const followers = [
+				{
+					'FMNO': 2,
+					'email': 'exampleuser3@example.com',
+					'designation': 'Manager',
+					'isFollowed': false,
+					'profilePictureURL': 'https://example.com/image2.jpg'
+				},
+				{
+					'FMNO': 3,
+					'email': 'exampleuser4@example.com',
+					'designation': 'Team Lead',
+					'isFollowed': false,
+					'profilePictureURL': 'https://example.com/image3.jpg'
+				}
+			];
+			const mockReq = { 'params': { 'userId': 1 } };
+			const  mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(profileService, 'getFollowersById').mockResolvedValue(followers);
+			await profileController.getFollowersById(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(200);
+			expect(mockRes.json).toBeCalledWith(followers);
+		});
+		it('should throw 404 Followers not found', async () => {
+			const mockReq = { 'params': { 'userId': 1 } };
+			const  mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(profileService, 'getFollowersById')
+				.mockRejectedValue(new HTTPError(404, 'Followers not found'));
+			await profileController.getFollowersById(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(404);
+			expect(mockRes.status().json).toBeCalledWith({ message: 'Followers not found' });
+		});
+		it('should throw 500 error', async () => {
+			const mockReq = { 'params': { 'userId': 1 } };
+			const  mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(profileService, 'getFollowersById').mockRejectedValue(new Error());
+			await profileController.getFollowersById(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(500);
+		});
+	});
 });
