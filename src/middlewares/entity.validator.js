@@ -9,6 +9,10 @@ const entitySchmea = joi.object({
 	entityId: joi.number().integer().required(),
 });
 
+const entityForUserIDSchema = joi.object({
+	userId: joi.string().required(),
+	type: joi.string().required()
+});
 
 const singleEntityValidator = (request, response, next) => {
 	const { error } = entitySchmea.validate({ entityId: request.params.entityId });
@@ -17,4 +21,13 @@ const singleEntityValidator = (request, response, next) => {
 	}
 	next();
 };
-module.exports = { singleEntityValidator };
+
+const entitiesBySingleUserValidator = (request, response, next) => {
+	const { error } = entityForUserIDSchema.validate({ userId: request.params.userId, type: request.params.type });
+	if (error) {
+		return response.status(400).json({ message: error.message });
+	}
+	next();
+};
+
+module.exports = { singleEntityValidator , entitiesBySingleUserValidator };

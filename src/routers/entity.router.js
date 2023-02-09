@@ -3,5 +3,6 @@ const entityRouter = require('express').Router();
 const entityValidator = require('../middlewares/entity.validator');
 
 entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entities.singleEntityRetiver);
+entityRouter.get('/:type/:userId', entityValidator.entitiesBySingleUserValidator, entities.entitiesBySingleUserRetiver);
 
 module.exports = entityRouter;

@@ -10,7 +10,9 @@ const constructEntity = (entity, userData, likeCountOfSingleEntity, entityCommen
 		profilePictureURL: userData.profilePictureURL,
 		likseCount: likeCountOfSingleEntity.count,
 		commentCount: entityComments.count,
-		comments: entityComments.rows
+		comments: entityComments.rows,
+		type: entity.type,
+		imageURL: entity.imageURL
 	};
 	if (entity.type === 'ANNOUNCEMENT') {
 		finalEntityData['venue'] = entity.meta.venue;
@@ -19,4 +21,27 @@ const constructEntity = (entity, userData, likeCountOfSingleEntity, entityCommen
 
 	return finalEntityData;
 };
-module.exports = { constructEntity };
+
+const constructEntitiesForSingleUser = (entities, numberLikesOfEntities, numberCommentsOfEntities) => {
+	let finalEntitiesData = [];
+	for (let idx = 0; idx < entities.length; idx++) {
+		let finalEntityData = {};
+		finalEntityData = {
+			id: entities[idx].id,
+			caption: entities[idx].caption,
+			userId: entities[idx].createdBy,
+			location: entities[idx].location,
+			likseCount: numberLikesOfEntities[idx].count,
+			commentCount: numberCommentsOfEntities[idx].count,
+			imageURL: entities[idx].imageURL
+		};
+		if (entities[idx].type === 'ANNOUNCEMENT') {
+			finalEntityData['venue'] = entities[idx].meta.venue;
+			finalEntityData['time'] = entities[idx].meta.date;
+		}
+		finalEntitiesData.push(finalEntityData);
+	}
+	return finalEntitiesData;
+};
+
+module.exports = { constructEntity , constructEntitiesForSingleUser };
