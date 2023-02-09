@@ -30,12 +30,7 @@ const getFollowersById = async (id) => {
 	const followersDetails = [];
 	followersData.forEach(follower => {
 		const {FMNO,email,designation,profilePictureURL} = follower.dataValues;
-		if(FMNO in followingIds){
-			followersDetails.push({FMNO,email,designation,isFollowed:true,profilePictureURL});
-		}
-		else{
-			followersDetails.push({FMNO,email,designation,isFollowed:false,profilePictureURL});
-		}
+		followersDetails.push({FMNO,email,designation,isFollowed:followingIds.includes(FMNO),profilePictureURL});
 	});
 	return followersDetails;
 };

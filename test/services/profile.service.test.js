@@ -74,7 +74,7 @@ describe('Profile Service', () => {
 					'FMNO': 2,
 					'email': 'exampleuser3@example.com',
 					'designation': 'Manager',
-					'isFollowed': false,
+					'isFollowed': true,
 					'profilePictureURL': 'https://example.com/image2.jpg'
 				},
 			];
