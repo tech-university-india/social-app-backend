@@ -1,11 +1,13 @@
 const authService = require('../services/auth.service');
+const HTTPError = require('../errors/httperror');
 
 const register = async (req, res) => {
 	try {
-		const createdUser = await authService.register(req.body);
-		res.status(201).json(createdUser);
+		const accessToken = await authService.register(req.body);
+		res.status(201).json({ access_token: accessToken });
 	} catch(err) {
-		res.status(400).json({ message: err.message });
+		if(err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
+		res.status(500).json({ message: err.message });
 	}
 };
 
@@ -13,9 +15,10 @@ const login = async (req, res) => {
 	try {
 		const { email, password } = req.body;
 		const accessToken = await authService.login(email, password);
-		res.status(201).json({ access_token: accessToken });
+		res.status(200).json({ access_token: accessToken });
 	} catch(err) {
-		res.status(400).json({ message: err.message });
+		if(err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
+		res.status(500).json({ message: err.message });
 	}
 };
 

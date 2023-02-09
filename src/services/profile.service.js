@@ -1,8 +1,11 @@
 const { User,Follow } = require('../models');
 const HTTPError = require('../errors/httperror');
 
-const getUser = async (id) => {
-	return await User.findOne({ where: { FMNO: id } });
+const getUserById = async (id) => {
+	// const user = await User.findOne({ where: { FMNO: id } });
+	const user = await User.findByPk(id);
+	if(!user) throw new HTTPError(404, 'User not found');
+	return user;
 };
 
 const getFollowers = async (id) => {
@@ -34,4 +37,4 @@ const getFollowers = async (id) => {
 	return followersDetails;
 };
 
-module.exports = { getUser,getFollowers };
+module.exports = { getUserById ,getFollowers };

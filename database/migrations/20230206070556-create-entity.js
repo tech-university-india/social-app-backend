@@ -1,4 +1,7 @@
 'use strict';
+
+const { entityTypes } = require('../../src/Utils/Constants');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -11,7 +14,7 @@ module.exports = {
       },
       type: {
         allowNull: false,
-        type: Sequelize.ENUM('POST', 'ANNOUNCEMENT')
+        type: Sequelize.ENUM(entityTypes.POST, entityTypes.ANNOUNCEMENT)
       },
       caption: {
         type: Sequelize.TEXT
