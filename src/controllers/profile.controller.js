@@ -14,7 +14,7 @@ const getUserById = async (req, res) => {
 
 const getFollowersById = async (req,res) => {
 	try{
-		const followers = await profileService.getFollowers(req.params.userId);
+		const followers = await profileService.getFollowersById(req.params.userId);
 		res.status(200).json(followers);
 	}
 	catch(error){

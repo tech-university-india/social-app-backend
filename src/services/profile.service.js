@@ -8,25 +8,32 @@ const getUserById = async (id) => {
 	return user;
 };
 
-const getFollowers = async (id) => {
+const getFollowersById = async (id) => {
 
 	const isUser = await User.findOne({ where: { FMNO: id } });
 	if(!isUser) throw new HTTPError(404,'User not found');
 
 	const followers = await Follow.findAll({where: {followingId:id}});
+	if(followers.length===0){
+		return [];
+	}
 	const followersId = [];
 	followers.forEach(follower => {
 		followersId.push(follower.dataValues.followerId);
 	});
 	const followingData = await Follow.findAll({where:{followerId:id,followingId:followersId}}); 
+	//console.log('followingData',followingData);
 	const followingIds = [];
 	const followersData = await User.findAll({where:{FMNO:followersId}});
+	//console.log('followersData',followersData);
 	followingData.forEach(follower => {
 		followingIds.push(follower.dataValues.followingId);
 	});
 	const followersDetails = [];
 	followersData.forEach(follower => {
+		//console.log(follower);
 		const {FMNO,email,designation,profilePictureURL} = follower.dataValues;
+		
 		if(FMNO in followingIds){
 			followersDetails.push({FMNO,email,designation,isFollowed:true,profilePictureURL});
 		}
@@ -37,4 +44,4 @@ const getFollowers = async (id) => {
 	return followersDetails;
 };
 
-module.exports = { getUserById ,getFollowers };
+module.exports = { getUserById ,getFollowersById };
