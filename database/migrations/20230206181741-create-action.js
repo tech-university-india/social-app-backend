@@ -1,6 +1,6 @@
 'use strict';
 
-const { actionTypes } = require('../../src/Utils/Constants');
+const { actionTypes } = require('../../src/utils/constants');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
