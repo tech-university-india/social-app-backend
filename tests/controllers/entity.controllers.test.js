@@ -139,4 +139,70 @@ describe('Entity Controller', () => {
 		});
 
 	});
+
+	describe('singleEntityDeleter', () => {
+
+		it('should return 200 status code with entity data deleted ', async () => {
+
+			const mockReq = {
+				params: {
+					entityId: 1
+				}
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(entities, 'deleteSingleEntity').mockResolvedValue(null);
+			await entityControllers.singleEntityDeleter(mockReq, mockRes);
+			expect(mockRes.status).toHaveBeenCalledWith(200);
+			expect(mockRes.json).toHaveBeenCalledWith({
+				message: 'Entity data deleted successfully'
+			});
+		});
+
+		it('should return 404 status code when entity is not present ', async () => {
+
+			const mockReq = {
+				params: {
+					entityId: 1
+				}
+			};
+
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(entities, 'deleteSingleEntity').mockRejectedValue(new customHTTPError(404, 'Entity not found'));
+			await entityControllers.singleEntityDeleter(mockReq, mockRes);
+			expect(mockRes.status).toHaveBeenCalledWith(404);
+			expect(mockRes.json).toHaveBeenCalledWith({
+				message: 'Entity not found'
+			});
+
+		});
+
+		it('should return 500 status code when any other error is thrown ', async () => {
+
+			const mockReq = {
+				params: {
+					entityId: 1
+				}
+			};
+
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+
+			jest.spyOn(entities, 'deleteSingleEntity').mockRejectedValue(new Error('Internal Server Error'));
+			await entityControllers.singleEntityDeleter(mockReq, mockRes);
+			expect(mockRes.status).toHaveBeenCalledWith(500);
+			expect(mockRes.json).toHaveBeenCalledWith({
+				message: 'Internal Server Error'
+			});
+
+		});
+
+	});
 });

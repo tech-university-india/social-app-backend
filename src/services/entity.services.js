@@ -1,6 +1,6 @@
 const { Entity, Action, User } = require('../models');
 const customHTTPError = require('../errors/httpError');
-const { actionTypes, entityTypes } = require('../utils/constants');
+const { actionTypes } = require('../utils/constants');
 
 const sequelize = require('sequelize');
 
@@ -89,4 +89,17 @@ const getEntitiesBySingleUser = async (userId, type) => {
 
 	return entities;
 };
-module.exports = { getSingleEntityData, getEntitiesBySingleUser };
+
+const deleteSingleEntity = async (entityId) => {
+	const entity = await Entity.destroy({
+		where: {
+			id: entityId
+		}
+	});
+	console.log(entity);
+	if (!entity) throw new customHTTPError(404, 'Entity not found');
+	return true;
+};
+
+
+module.exports = { getSingleEntityData, getEntitiesBySingleUser, deleteSingleEntity };

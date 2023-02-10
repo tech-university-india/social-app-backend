@@ -38,4 +38,19 @@ const entitiesBySingleUserRetiver = async (request, response) => {
 	}
 };
 
-module.exports = { singleEntityRetiver , entitiesBySingleUserRetiver };
+const singleEntityDeleter = async (request, response) => {
+	try {
+		const entityId = request.params.entityId;
+		await entityService.deleteSingleEntity(entityId);
+		response.status(200).json({ message: 'Entity data deleted successfully' });
+	} catch (error) {
+		if (error instanceof customHTTPError) {
+			return response.status(error.statusCode).json({ message: error.message });
+		} else {
+			return response.status(500).json({ message: error.message });
+		}
+	}
+};
+
+
+module.exports = { singleEntityRetiver , entitiesBySingleUserRetiver , singleEntityDeleter };
