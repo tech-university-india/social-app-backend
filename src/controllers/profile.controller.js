@@ -23,4 +23,15 @@ const getFollowersById = async (req,res) => {
 	}
 };
 
-module.exports = { getUserById,getFollowersById };
+const getFollowingById = async (req,res) => {
+	try{
+		const followers = await profileService.getFollowingById(req.params.userId);
+		res.status(200).json(followers);
+	}
+	catch(error){
+		if(error instanceof HTTPError) return res.status(error.statusCode).json({ message: error.message });
+		res.status(500).json({ message: error.message });
+	}
+};
+
+module.exports = { getUserById,getFollowersById,getFollowingById };
