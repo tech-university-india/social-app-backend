@@ -27,7 +27,8 @@ const entitiesBySingleUserValidator = (request, response, next) => {
 	if (error) {
 		return response.status(400).json({ message: error.message });
 	}
+	request.params.type = request.params.type.toUpperCase();
 	next();
 };
 
-module.exports = { singleEntityValidator , entitiesBySingleUserValidator };
+module.exports = { singleEntityValidator, entitiesBySingleUserValidator };
