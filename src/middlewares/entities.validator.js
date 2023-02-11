@@ -12,13 +12,15 @@ const entity = Joi.object({
     venue: Joi.string()
   },
   location: Joi.array().items(Joi.string()),
-  createdBy: Joi.number().required()
+  createdBy: Joi.string().required()
 });
 
 const entityValidator = (req, res, next) => {
   const { error } = entity.validate(req.body);
+
   if (error) {
-    return res.status(400).json({ message: error.message });
+    res.status(400).json({ message: error.message });
+    return;
   }
   next();
 };
