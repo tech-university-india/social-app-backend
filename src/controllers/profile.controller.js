@@ -3,7 +3,7 @@ const HTTPError = require('../errors/httperror');
 
 const getUserById = async (req, res) => {
 	try{
-		const user = await profileService.getUserById(req.params.userId);
+		const user = await profileService.getUserById(Number(req.params.userId));
 		// console.log(req.user);
 		res.status(200).json(user);
 	} catch(err) {
@@ -14,7 +14,7 @@ const getUserById = async (req, res) => {
 
 const getFollowersById = async (req,res) => {
 	try{
-		const followers = await profileService.getFollowersById(req.params.userId);
+		const followers = await profileService.getFollowersById(Number(req.params.userId));
 		res.status(200).json(followers);
 	}
 	catch(error){
@@ -25,7 +25,7 @@ const getFollowersById = async (req,res) => {
 
 const getFollowingById = async (req,res) => {
 	try{
-		const followers = await profileService.getFollowingById(req.params.userId);
+		const followers = await profileService.getFollowingById(Number(req.params.userId));
 		res.status(200).json(followers);
 	}
 	catch(error){

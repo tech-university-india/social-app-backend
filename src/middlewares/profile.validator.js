@@ -8,4 +8,5 @@ const getProfileByIdValidator = (req, res, next) => {
 	next();
 };
 
+
 module.exports = { getProfileByIdValidator };

@@ -1,5 +1,5 @@
 const profileService = require('../../src/services/profile.service');
-const { User,Follow } = require('../../src/models');
+const { User} = require('../../src/models');
 const HTTPError = require('../../src/errors/httperror');
 
 describe('Profile Service', () => {
@@ -24,29 +24,15 @@ describe('Profile Service', () => {
 		});
 		it('should return 404 if user not found', async () => {
 			jest.spyOn(User, 'findByPk').mockRejectedValue(new Error());
-			expect(async () => await profileService.getUserById(1)).rejects.toThrow(new Error());
+			expect(async () => await profileService.getUserById(100)).rejects.toThrow(new Error());
 		});
 	});
 	describe('Get Followers By Id', () => {
 		it('should return 200 with followers list', async () => {
-			const mockFollowerData = [{
-				dataValues:{
-					id: 1,
-					followerId: 2,
-					followingId: 1,
-					createdAt: '2023-02-08T16:51:21.534Z'
-				}
-			}];
-			const mockFollowingData = [{
-				dataValues:{
-					id: 5,
-					followerId: 1,
-					followingId: 2,
-					createdAt: '2023-02-08T16:51:21.534Z'
-				}
-			}]; 
+		
 
-			const mockUserData = [{dataValues:{
+			const mockFindAll = {
+
 				'FMNO': 2,
 				'email': 'exampleuser3@example.com',
 				'passwordHash': 'pass@123',
@@ -55,39 +41,45 @@ describe('Profile Service', () => {
 				'designation': 'Manager',
 				'profilePictureURL': 'https://example.com/image2.jpg',
 				'createdAt': '2023-02-08T16:51:21.508Z',
-				'updatedAt': '2023-02-08T16:51:21.508Z'
-			}}];
-
-			const mockUserIdData = [{dataValues:{
-				'FMNO': 1,
-				'email': 'exampleuser1@example.com',
-				'bio': 'Backend and fishing expert',
-				'userName': 'John Doe',
-				'designation': 'Partner',
-				'profilePictureURL': 'https://example.com/image1.jpg',
-				'createdAt': '2023-02-08T17:56:02.800Z',
-				'updatedAt': '2023-02-08T17:56:02.800Z'
-			}}];
+				'updatedAt': '2023-02-08T16:51:21.508Z',
+				'Followers': [{
+					dataValues:{
+						'FMNO': 1,
+						'designation': 'Partner',
+						'userName': 'John Doe',
+						'profilePictureURL': 'https://example.com/image1.jpg',
+						'Following': [{dataValues:
+							{
+								'FMNO': 2,
+								'designation': 'Manager',
+								'userName': 'Jane Doe',
+								'profilePictureURL': 'https://example.com/image2.jpg'
+							},
+						}
+						]
+					}
+				
+				},
+				]
+			};
 
 			const mockResult = [
 				{
-					'FMNO': 2,
-					'email': 'exampleuser3@example.com',
-					'designation': 'Manager',
+					'FMNO': 1,
+					'designation': 'Partner',
+					'userName': 'John Doe',
 					'isFollowed': true,
-					'profilePictureURL': 'https://example.com/image2.jpg'
-				},
+					'profilePictureURL': 'https://example.com/image1.jpg',
+				}
 			];
             
-			jest.spyOn(User, 'findAll').mockResolvedValue(mockUserData);
-			jest.spyOn(User, 'findOne').mockResolvedValue(mockUserIdData);
-			jest.spyOn(Follow, 'findAll').mockResolvedValue(mockFollowerData);
-			jest.spyOn(Follow, 'findAll').mockResolvedValue(mockFollowingData);
-			expect(await profileService.getFollowersById(1)).toEqual(mockResult);
+			jest.spyOn(User, 'findByPk').mockResolvedValue(mockFindAll);
+			expect(await profileService.getFollowersById(2)).toEqual(mockResult);
+			
 		});
 		it('should return status code 404 when user doesnt not exist',async()=>{
-			jest.spyOn(User, 'findOne').mockResolvedValue(null);
-			expect(async()=>await profileService.getFollowersById(300)).rejects.toThrow(new HTTPError('404','User not found'));
+			jest.spyOn(User, 'findByPk').mockResolvedValue(null);
+			expect(async()=>await profileService.getFollowersById(1)).rejects.toThrow(new HTTPError(404,'User not found'));
 		});
 	});
 });
