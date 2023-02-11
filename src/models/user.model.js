@@ -27,14 +27,6 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		email: {
-			allowNull: false,
-			type: DataTypes.STRING
-		},
-		passwordHash: {
-			allowNull: false,
-			type: DataTypes.TEXT
-		},
 		bio: DataTypes.TEXT,
 		userName: {
 			allowNull: false,

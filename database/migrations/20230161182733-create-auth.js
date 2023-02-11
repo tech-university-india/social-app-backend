@@ -2,25 +2,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Auths', {
       FMNO: {
         allowNull: false,
         unique: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'FMNO'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
-      bio: {
-        type: Sequelize.TEXT
-      },
-      userName: {
+      email: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING
       },
-      designation: {
-        type: Sequelize.STRING
-      },
-      profilePictureURL: {
-        type: Sequelize.STRING
+      passwordHash: {
+        allowNull: false,
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
@@ -33,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Auths');
   }
 };
