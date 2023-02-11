@@ -1,20 +1,21 @@
 'use strict';
 const {
-  Model
+	Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Auth extends Model {
-    /**
+	class Auth extends Model {
+		/**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
-    }
-  }
-  Auth.init({
-    FMNO: {
+		static associate(models) {
+			// define association here
+			this.belongsTo(models.User, { foreignKey: 'FMNO' });
+		}
+	}
+	Auth.init({
+		FMNO: {
 			allowNull: false,
 			unique: true,
 			primaryKey: true,
@@ -28,10 +29,10 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 			type: DataTypes.TEXT
 		},
-  }, {
-    sequelize,
-    modelName: 'Auth',
-  });
-  Auth.removeAttribute('id');
-  return Auth;
+	}, {
+		sequelize,
+		modelName: 'Auth',
+	});
+	Auth.removeAttribute('id');
+	return Auth;
 };

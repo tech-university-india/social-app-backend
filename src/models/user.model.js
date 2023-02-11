@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
 		static associate(models) {
 			// define association here
+			this.hasOne(models.Auth, { foreignKey: 'FMNO', onDelete: 'CASCADE', hooks: true });
 			this.hasMany(models.Entity, { foreignKey: 'createdBy', onDelete: 'CASCADE', hooks: true });
 			this.belongsToMany(models.Interest, { through: 'UserInterests', foreignKey: 'userId', onDelete: 'CASCADE', hooks: true });
 			this.hasMany(models.Action, { foreignKey: 'createdBy', onDelete: 'CASCADE', hooks: true });
