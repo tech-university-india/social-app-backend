@@ -1,5 +1,5 @@
 const profileService = require('../../src/services/profile.service');
-const { User} = require('../../src/models');
+const { User,Follow} = require('../../src/models');
 const HTTPError = require('../../src/errors/httperror');
 
 describe('Profile Service', () => {
@@ -137,5 +137,18 @@ describe('Profile Service', () => {
 			expect(async()=>await profileService.getFollowingById(1)).rejects.toThrow(new HTTPError(404,'User not found'));
 		});
 	});
+	describe('Unfollow User', () => {
+		it('should unfollow user', async () => {
+			jest.spyOn(Follow, 'findOne').mockResolvedValue(true);
+			jest.spyOn(Follow, 'destroy').mockResolvedValue(true);
+			expect(await profileService.unfollowById(2,3)).toEqual(true);
+		});
+		it('should throw 404 when user doesnt follow given id', async () => {
+			jest.spyOn(Follow, 'findOne').mockResolvedValue(false);
+			//jest.spyOn(Follow, 'destroy').mockResolvedValue(true);
+			expect(async()=>await profileService.unfollowById(2,3)).rejects.toThrow(new HTTPError(404,'Not following user'));
+		});
+	});
+			
 });
 

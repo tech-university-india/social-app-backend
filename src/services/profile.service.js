@@ -1,4 +1,4 @@
-const { User} = require('../models');
+const { User,Follow } = require('../models');
 const HTTPError = require('../errors/httperror');
 
 
@@ -65,4 +65,10 @@ const getFollowingById = async (id) => {
 	return followingDetails;
 };
 
-module.exports = { getUserById ,getFollowersById,getFollowingById };
+const unfollowById = async (id,user) => {
+	const isFollowing = await Follow.findOne({where:{followerId:user, followingId:id}});
+	if(!isFollowing) throw new HTTPError(404, 'Not following user');
+	return await Follow.destroy({where:{followerId:user, followingId:id}});
+};
+
+module.exports = { getUserById ,getFollowersById,getFollowingById,unfollowById };

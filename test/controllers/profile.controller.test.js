@@ -146,4 +146,38 @@ describe('Profile Controller', () => {
 			expect(mockRes.status).toBeCalledWith(500);
 		});
 	});
+	describe('DELETE /profile/unfollow/{userId}', () => {
+		it('should unfollow {userId} & return 200 OK', async () => {
+			const mockReq = { 'params': { 'userId': 1 },  'user':{'id':2} };
+			const  mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(profileService, 'unfollowById').mockResolvedValue(1);
+			await profileController.unfollowById(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(200);
+			expect(mockRes.json).toBeCalledWith({ message: 'Unfollowed successfully' });
+		});
+		it('should throw 404 Not following', async () => {
+			const mockReq = { 'params': { 'userId': 1 },  'user':{'id':2} };
+			const  mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(profileService, 'unfollowById').mockRejectedValue(new HTTPError(404, 'Not following user'));
+			await profileController.unfollowById(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(404);
+			expect(mockRes.json).toBeCalledWith({ message: 'Not following user' });
+		});
+		it('should throw 500 error', async () => {
+			const mockReq = { 'params': { 'userId': 1 },  'user':{'id':2} };
+			const  mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(profileService, 'unfollowById').mockRejectedValue(new Error());
+			await profileController.unfollowById(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(500);
+		});
+	});
 });
