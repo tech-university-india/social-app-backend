@@ -1,4 +1,4 @@
-const { User,Follow} = require('../models');
+const { User} = require('../models');
 const HTTPError = require('../errors/httperror');
 
 
@@ -11,52 +11,58 @@ const getUserById = async (id) => {
 };
 
 const getFollowersById = async (id) => {
-
-	const isUser = await User.findOne({ where: { FMNO: id } });
-	if(!isUser) throw new HTTPError(404,'User not found');
-
-	const followers = await Follow.findAll({where: {followingId:id}});
-	if(followers.length===0){
-		return [];
-	}
-	const followersId = [];
-	followers.forEach(follower => {
-		followersId.push(follower.dataValues.followerId);
+	const followersData = await User.findByPk(id, { 
+		include: {
+			association: 'Following',
+			attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+			through: { attributes: [] },
+			include: {
+				association: 'Following',
+				attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+				through: { attributes: [] },
+			},
+		},
 	});
-	const followingData = await Follow.findAll({where:{followerId:id,followingId:followersId}}); 
-	const followingIds = [];
-	const followersData = await User.findAll({where:{FMNO:followersId}});
-	followingData.forEach(follower => {
-		followingIds.push(follower.dataValues.followingId);
-	});
-	const followersDetails = [];
-	followersData.forEach(follower => {
-		const {FMNO,email,designation,profilePictureURL} = follower.dataValues;
-		followersDetails.push({FMNO,email,designation,isFollowed:followingIds.includes(FMNO),profilePictureURL});
+	if(!followersData) throw new HTTPError(404,'User not found');
+	if(followersData.Following.length===0)return [];
+
+	const followersDetails=followersData.Following.map(following => {
+		const {FMNO,userName,designation,profilePictureURL} = following.dataValues;
+		let isFollowed = false;
+		following.dataValues.Following.forEach(follower => {
+			if(follower.dataValues.FMNO===id) isFollowed = true;
+		});
+		return {FMNO,userName,designation,isFollowed:isFollowed,profilePictureURL};
 	});
 	return followersDetails;
 };
 
 const getFollowingById = async (id) => {
-
-	const isUser = await User.findOne({ where: { FMNO: id } });
-	if(!isUser) throw new HTTPError(404,'User not found');
-
-	const followingList = await Follow.findAll({where: {followerId:id}});
-	if(followingList.length===0){
-		return [];
-	}
-	const followingIds = followingList.map(follower=> follower.dataValues.followingId);
-	const followingUserData = await User.findAll({where:{FMNO:followingIds}});
-
-	const followBackData = await Follow.findAll({where: {followingId:id}});
-	const followBackIds = followBackData.map(follower=> follower.dataValues.followerId);
-
-	const followingUsersDetails = followingUserData.map(follower=>{
-		const {FMNO,userName,designation,profilePictureURL} = follower.dataValues;
-		return {FMNO,userName,designation,isFollowed:followBackIds.includes(FMNO),profilePictureURL};
+	const followingData = await User.findByPk(id, { 
+		include: {
+			association: 'Followers',
+			attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+			through: { attributes: [] },
+			include: {
+				association: 'Followers',
+				attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+				through: { attributes: [] },
+			}
+		},
 	});
-	return followingUsersDetails;
+
+	if(!followingData) throw new HTTPError(404,'User not found');
+	if(followingData.Followers.length===0)return [];
+
+	const followingDetails = followingData.Followers.map(follower => {
+		const {FMNO,userName,designation,profilePictureURL} = follower.dataValues;
+		let isFollowing = false;
+		follower.dataValues.Followers.forEach(following => {
+			if(following.dataValues.FMNO===id) isFollowing = true;
+		});
+		return {FMNO,userName,designation,isFollowing:isFollowing,profilePictureURL};
+	});
+	return followingDetails;
 };
 
 module.exports = { getUserById ,getFollowersById,getFollowingById };
