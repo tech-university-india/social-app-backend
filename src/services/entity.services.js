@@ -89,6 +89,7 @@ const getEntitiesBySingleUser = async (userId, type) => {
 
 	return entities;
 };
+
 /*
 This function is used to update the entity data in the database
 @param {object} response
@@ -113,4 +114,16 @@ const updateEntityService = async (requestedEntityUpdateData,entityId)=>{
 	return updatedResponseFromDB;
 
 };
-module.exports = { getSingleEntityData, getEntitiesBySingleUser ,updateEntityService };
+
+const deleteSingleEntity = async (entityId) => {
+	const entity = await Entity.destroy({
+		where: {
+			id: entityId
+		}
+	});
+	console.log(entity);
+	if (!entity) throw new customHTTPError(404, 'Entity not found');
+	return true;
+};
+
+module.exports = { getSingleEntityData, getEntitiesBySingleUser ,updateEntityService , deleteSingleEntity};

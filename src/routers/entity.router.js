@@ -8,6 +8,7 @@ entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entities.s
 
 
 entityRouter.get('/:type/:userId', entityValidator.entitiesBySingleUserValidator, entities.entitiesBySingleUserRetiver);
+entityRouter.delete('/:entityId', entityValidator.singleEntityValidator, entities.singleEntityDeleter);
 
 entityRouter.put('/:entityId', entityValidator.updateValidatior, entities.updateEntity);
 

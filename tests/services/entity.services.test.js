@@ -183,6 +183,28 @@ describe('Entity Service', () => {
 			});
 			
 		});
+  });
+  
+  describe('deleteSingleEntity', () => {
+
+		it('should return true and delete entity', async () => {
+
+			const mockEntity = [1];
+			jest.spyOn(Entity, 'destroy').mockResolvedValue(mockEntity);
+			const entity = await entityService.deleteSingleEntity(1);
+
+			expect(entity).toEqual(true);
+
+		});
+
+
+		it('should throw error if entity not found', async () => {
+			
+			const mockEntity = null;
+			jest.spyOn(Entity, 'destroy').mockResolvedValue(mockEntity);
+		
+			await expect(entityService.deleteSingleEntity(1)).rejects.toThrow('Entity not found');
+
+		});
 	});
 });
-
