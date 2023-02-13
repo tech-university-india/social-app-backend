@@ -137,7 +137,87 @@ describe('Entity Controller', () => {
 			});
 
 		});
+		describe('updateEntity', () => {
+			it('should return 200 status code with updated entity data when entity is updated successfully', async () => {
 
+				const mockReq = {
+					params: {
+						entityId: 1
+					},
+					body: {
+						'caption': 'test',
+						imgaeUrl: 'test',
+						'location': 'test',
+						'meta':{
+							'date': 'test',
+							'venue': 'test',
+						}
+
+					}
+				};
+				const mockRes = {
+					status: jest.fn().mockReturnThis(),
+					json: jest.fn()
+				};
+				jest.spyOn(entities, 'updateEntityService').mockResolvedValue([1]);
+				await entityControllers.updateEntity(mockReq, mockRes);
+				expect(mockRes.status).toHaveBeenCalledWith(201);
+				expect(mockRes.json).toHaveBeenCalledWith({
+					message: 'Number of Rows update',
+					entityDataUpdate: 1
+				});
+
+			}
+			);
+
+			it('should return 500 status code when entity is not present ', async () => {
+				
+				const mockReq = {
+					params: {
+						userId: 1,
+						type: 'test'
+					},
+					body: {
+						'caption': 'test',
+						imgaeUrl: 'test',
+						'location': 'test',
+						'meta':{
+							'date': 'test',
+							'venue': 'test',
+						}
+					}
+				};
+				const mockRes = {
+					status: jest.fn().mockReturnThis(),
+					json: jest.fn()
+				};
+				jest.spyOn(entities, 'updateEntityService').mockRejectedValue(new Error('Internal Server Error'));
+				await entityControllers.updateEntity(mockReq, mockRes);
+				expect(mockRes.status).toHaveBeenCalledWith(500);
+				expect(mockRes.json).toHaveBeenCalledWith({
+					message: 'Internal Server Error'
+				});
+			});
+			it('should return the HTTP error status code and message if the error is an HTTPError', async () => {
+				const error = new customHTTPError(400, 'Bad Request');
+				jest.spyOn(entities, 'updateEntityService').mockRejectedValue(error);
+				const request = {
+					body: { /* some test data */ },
+					params: { entityId: '123' }
+				};
+				const  response = {
+					status: jest.fn().mockReturnThis(),
+					json: jest.fn()
+					
+				};
+				await entityControllers.updateEntity(request, response);
+				
+				expect(response.status).toHaveBeenCalledWith(400);
+				expect(response.json).toHaveBeenCalledWith({
+					message: 'Bad Request'
+				});
+			});
+		});
 	});
 
 	describe('singleEntityDeleter', () => {
