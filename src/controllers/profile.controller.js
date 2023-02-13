@@ -16,7 +16,7 @@ const followUser = async (req, res) => {
 	try {
 		//console.log(req.user, req.body.userId);
 		const user = await profileService.followUser(Number(req.user.id), Number(req.body.userId));
-		//console.log(req.user);
+		console.log(user);
 		res.status(201).json(user);
 	} catch (err) {
 		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });

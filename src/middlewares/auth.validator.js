@@ -36,7 +36,7 @@ const JWTVaidator = (req, res, next) => {
 		const token = authHeader && authHeader.split(' ')[1];
 		if (!token) throw new HTTPError(401, 'Access denied');
 		const verifiedData = JWT.verify(token, process.env.JWT_SECRET);
-		console.log(verifiedData);
+		//console.log(verifiedData);
 		req.user = verifiedData;
 		next();
 	} catch (err) {
