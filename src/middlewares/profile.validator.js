@@ -8,4 +8,12 @@ const getProfileByIdValidator = (req, res, next) => {
 	next();
 };
 
-module.exports = { getProfileByIdValidator };
+const postFollowUserValidator = (req, res, next) => {
+	const { error } = Joi.object({
+		userId: Joi.number().integer().required()
+	}).validate(req.body);
+	if (error) return res.status(400).json({ message: error.message });
+	next();
+};
+
+module.exports = { getProfileByIdValidator, postFollowUserValidator };

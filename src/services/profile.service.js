@@ -1,8 +1,9 @@
-const { User, Interest } = require('../models');
+const { User, Interest, Follow } = require('../models');
 const HTTPError = require('../errors/httperror');
+//const { response } = require('express');
 
 const getUserById = async (id) => {
-	const user = await User.findByPk(id, { 
+	const user = await User.findByPk(id, {
 		include: {
 			model: Interest,
 			attributes: ['id', 'interestName'],
@@ -17,8 +18,22 @@ const getUserById = async (id) => {
 	// 		through: { attributes: [] },
 	// 	} 
 	// });
-	if(!user) throw new HTTPError(404, 'User not found');
+	if (!user) throw new HTTPError(404, 'User not found');
 	return user;
 };
 
-module.exports = { getUserById };
+const followUser = async (followerId, followingId) => {
+	//const follower = await User.findByPk(followerId);
+	const following = await User.findByPk(followingId);
+	if (!following) throw new HTTPError(404, 'User not found');
+	//await follower.addFollowing(following);
+	//const data = { followerId: followerId, followingId: followingId };
+	return await Follow.create({
+		followerId: followerId,
+		followingId: followingId
+
+	});
+	
+};
+
+module.exports = { getUserById, followUser };
