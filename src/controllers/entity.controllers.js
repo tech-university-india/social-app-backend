@@ -37,5 +37,20 @@ const entitiesBySingleUserRetiver = async (request, response) => {
 		}
 	}
 };
+const updateEntity = async(request,response)=>{
+	try{
+		const updateResponse = await entityService.updateEntity(request.body,request.params.entityId);
+		if(updateResponse===undefined){
+			throw new customHTTPError('Post couldn\'t update',404);
+		}
+		response.status(201).json({message : 'Successful Updated '+request.params.type});
+		
+	}	catch(error){
+		if(error instanceof customHTTPError){
+			response.status(error.code).json({message : error.message});
+		}
+		response.status(500).json({message : error.message});
+	}
+};
 
-module.exports = { singleEntityRetiver , entitiesBySingleUserRetiver };
+module.exports = { singleEntityRetiver , entitiesBySingleUserRetiver ,updateEntity};

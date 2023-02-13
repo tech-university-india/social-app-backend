@@ -1,8 +1,9 @@
 const { Entity, Action, User } = require('../models');
 const customHTTPError = require('../errors/httpError');
-const { actionTypes, entityTypes } = require('../utils/constants');
+const { actionTypes } = require('../utils/constants');
 
 const sequelize = require('sequelize');
+const HTTPError = require('../errors/httpError');
 
 /* This function is used to get single entity data from Entities table
  and also get the user data from User table and also get the like 
@@ -89,4 +90,31 @@ const getEntitiesBySingleUser = async (userId, type) => {
 
 	return entities;
 };
-module.exports = { getSingleEntityData, getEntitiesBySingleUser };
+/*
+This function is used to update the entity data in the database
+@param {object} response
+@param {object} request
+*/
+
+const updateEntity = (requestedEntityUpdateData,entityId)=>{
+	
+	const update = Entity.update({
+		caption: requestedEntityUpdateData.caption,
+		meta : requestedEntityUpdateData.meta,
+		imageURL : requestedEntityUpdateData.imageURL,
+		location : requestedEntityUpdateData.location
+	},{
+		where :{
+			id: entityId
+		}
+	}
+	);
+	if(update===undefined){
+		throw new HTTPError('Entity ',404);
+	}
+	else{
+		return update;
+	}
+
+};
+module.exports = { getSingleEntityData, getEntitiesBySingleUser ,updateEntity };

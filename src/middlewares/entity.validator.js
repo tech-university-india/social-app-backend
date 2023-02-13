@@ -1,6 +1,5 @@
 const joi = require('joi');
 
-
 /* This Schema used to verify entity ID which is 
 given through path
 
@@ -12,6 +11,17 @@ const entitySchmea = joi.object({
 const entityForUserIDSchema = joi.object({
 	userId: joi.string().required(),
 	type: joi.string().required()
+});
+
+
+const entityUpdatingSchema = joi.object({
+	imageURL: joi.array().items(joi.string().uri()),
+	caption:joi.string(),
+	meta : joi.object().keys({
+		date : joi.date(),
+		venue : joi.string()
+	}),
+	location: joi.array().items(joi.string())
 });
 
 const singleEntityValidator = (request, response, next) => {
@@ -31,4 +41,19 @@ const entitiesBySingleUserValidator = (request, response, next) => {
 	next();
 };
 
-module.exports = { singleEntityValidator, entitiesBySingleUserValidator };
+
+const updateValidatior = (request, response, next) => {
+	
+	const {error1} =entitySchmea.validate({entityId: request.params.entityId});
+	if(error1){
+		response.status(400).json({message:error1.message});
+	}
+
+	const { error } = entityUpdatingSchema.validate(request.body);
+	if (error) {
+		return response.status(400).json({ message: error.message });
+	}
+	next();
+};
+
+module.exports = { singleEntityValidator, entitiesBySingleUserValidator, updateValidatior };
