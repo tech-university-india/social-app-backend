@@ -1,4 +1,4 @@
-const { Entity, Action, User } = require('../../src/models');
+const { Entity } = require('../../src/models');
 const entityService = require('../../src/services/entity.services');
 
 describe('Entity Service', () => {
@@ -137,5 +137,52 @@ describe('Entity Service', () => {
 		});
 
 	});
+	describe('updateEntity', () => {
+		describe('Verfiy when porper input given ', () => {
+			it('should update entity caption', async () => {
+				const entityID = {
+					entityId: 1
+				};
+					
+				const body =  {
+					id: 1,
+					caption: 'This is a test caption',
+					imageURL: ['https://www.google.com',],
+					location: ['Bangalore',],
+					meta: {
+						date: '2020-10-10',
+						venue: 'Bangalore'
+					}
+					
+				};
+				const updateResponseFromDB = [1];
+				jest.spyOn(Entity, 'update').mockResolvedValue(updateResponseFromDB);
+				const update = await entityService.updateEntityService(body,entityID);
+				expect(update).toEqual(updateResponseFromDB);
+			});
+		});
+		describe('Verfiy when improper input given ', () => {
+			it('should throw error if entity not found', async () => {
+				const entityID = 1;
+					
+				const body =  {
+					id: 1,
+					caption: 'This is a test caption',
+					imageURL: ['https://www.google.com',],
+					location: ['Bangalore',],
+					meta: {
+						date: '2020-10-10',
+						venue: 'Bangalore'
+					}
+					
+				};
+				jest.spyOn(Entity, 'update').mockResolvedValue([0]);
 
+
+				await expect(entityService.updateEntityService(body,entityID)).rejects.toThrow('Entity not found');
+			});
+			
+		});
+	});
 });
+

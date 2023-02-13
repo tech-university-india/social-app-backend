@@ -3,7 +3,6 @@ const customHTTPError = require('../errors/httpError');
 const { actionTypes } = require('../utils/constants');
 
 const sequelize = require('sequelize');
-const HTTPError = require('../errors/httpError');
 
 /* This function is used to get single entity data from Entities table
  and also get the user data from User table and also get the like 
@@ -96,9 +95,9 @@ This function is used to update the entity data in the database
 @param {object} request
 */
 
-const updateEntity = (requestedEntityUpdateData,entityId)=>{
+const updateEntityService = async (requestedEntityUpdateData,entityId)=>{
 	
-	const update = Entity.update({
+	const updatedResponseFromDB = await Entity.update({
 		caption: requestedEntityUpdateData.caption,
 		meta : requestedEntityUpdateData.meta,
 		imageURL : requestedEntityUpdateData.imageURL,
@@ -109,12 +108,9 @@ const updateEntity = (requestedEntityUpdateData,entityId)=>{
 		}
 	}
 	);
-	if(update===undefined){
-		throw new HTTPError('Entity ',404);
-	}
-	else{
-		return update;
-	}
+	if(updatedResponseFromDB[0]===0) throw new customHTTPError(404,'Entity not found');
+
+	return updatedResponseFromDB;
 
 };
-module.exports = { getSingleEntityData, getEntitiesBySingleUser ,updateEntity };
+module.exports = { getSingleEntityData, getEntitiesBySingleUser ,updateEntityService };
