@@ -44,4 +44,4 @@ const constructEntitiesForSingleUser = (entities, numberLikesOfEntities, numberC
 	return finalEntitiesData;
 };
 
-module.exports = { constructEntity , constructEntitiesForSingleUser };
+module.exports = { constructEntity, constructEntitiesForSingleUser };

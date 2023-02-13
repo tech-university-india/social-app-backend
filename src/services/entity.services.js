@@ -33,14 +33,14 @@ const getSingleEntityData = async (entityId) => {
 		},
 		{
 			model: Action,
-			attributes: ['meta',[sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'CommentsCount']],
+			attributes: ['meta', [sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'CommentsCount']],
 			where: {
 				type: actionTypes.COMMENT
 			},
 			require: false
 		}
 		],
-		group: ['"Entity"."id"', '"Actions"."id"','"User"."FMNO"']
+		group: ['"Entity"."id"', '"Actions"."id"', '"User"."FMNO"']
 	});
 	if (!entity) throw new customHTTPError(404, 'Entity not found');
 	return entity;
@@ -74,7 +74,7 @@ const getEntitiesBySingleUser = async (userId, type) => {
 			where: {
 				type: actionTypes.COMMENT
 			},
-			required: false 
+			required: false
 		}
 
 		],
@@ -96,20 +96,20 @@ This function is used to update the entity data in the database
 @param {object} request
 */
 
-const updateEntityService = async (requestedEntityUpdateData,entityId)=>{
-	
+const updateEntityService = async (requestedEntityUpdateData, entityId) => {
+
 	const updatedResponseFromDB = await Entity.update({
 		caption: requestedEntityUpdateData.caption,
-		meta : requestedEntityUpdateData.meta,
-		imageURL : requestedEntityUpdateData.imageURL,
-		location : requestedEntityUpdateData.location
-	},{
-		where :{
+		meta: requestedEntityUpdateData.meta,
+		imageURL: requestedEntityUpdateData.imageURL,
+		location: requestedEntityUpdateData.location
+	}, {
+		where: {
 			id: entityId
 		}
 	}
 	);
-	if(updatedResponseFromDB[0]===0) throw new customHTTPError(404,'Entity not found');
+	if (updatedResponseFromDB[0] === 0) throw new customHTTPError(404, 'Entity not found');
 
 	return updatedResponseFromDB;
 
@@ -126,4 +126,4 @@ const deleteSingleEntity = async (entityId) => {
 	return true;
 };
 
-module.exports = { getSingleEntityData, getEntitiesBySingleUser ,updateEntityService , deleteSingleEntity};
+module.exports = { getSingleEntityData, getEntitiesBySingleUser, updateEntityService, deleteSingleEntity };

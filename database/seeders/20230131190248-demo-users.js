@@ -2,9 +2,9 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-	async up (queryInterface, Sequelize) {
+	async up(queryInterface, Sequelize) {
 		return queryInterface.bulkInsert('Users', [{
-			FMNO:1,
+			FMNO: 1,
 			email: 'exampleuser1@example.com',
 			passwordHash: "pass@123",
 			bio: "Backend and fishing expert",
@@ -15,7 +15,7 @@ module.exports = {
 			updatedAt: new Date(),
 		},
 		{
-			FMNO:2,
+			FMNO: 2,
 			email: 'exampleuser3@example.com',
 			passwordHash: "pass@123",
 			bio: "backend developer and photography hobbyist",
@@ -26,7 +26,7 @@ module.exports = {
 			updatedAt: new Date(),
 		},
 		{
-			FMNO:3,
+			FMNO: 3,
 			email: 'exampleuser4@example.com',
 			passwordHash: "pass@123",
 			bio: "full-stack developer and music lover",
@@ -37,7 +37,7 @@ module.exports = {
 			updatedAt: new Date(),
 		},
 		{
-			FMNO:4,
+			FMNO: 4,
 			email: 'exampleuser5@example.com',
 			passwordHash: "pass@123",
 			bio: "data analyst and reading enthusiast",
@@ -48,7 +48,7 @@ module.exports = {
 			updatedAt: new Date(),
 		},
 		{
-			FMNO:5,
+			FMNO: 5,
 			email: 'exampleuser6@example.com',
 			passwordHash: "pass@123",
 			bio: "devops and gardening hobbyist",
@@ -60,7 +60,7 @@ module.exports = {
 		}]);
 	},
 
-	async down (queryInterface, Sequelize) {
+	async down(queryInterface, Sequelize) {
 		return queryInterface.bulkDelete('Users', null, {});
 	}
 };

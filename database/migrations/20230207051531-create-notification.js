@@ -11,7 +11,7 @@ module.exports = {
       },
       destinationURL: {
         type: Sequelize.STRING
-      }, 
+      },
       meta: {
         type: Sequelize.JSONB
       },

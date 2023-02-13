@@ -1,12 +1,12 @@
 const actionTypes = Object.freeze({
 	LIKE: 'LIKE',
-	COMMENT:'COMMENT'
+	COMMENT: 'COMMENT'
 
 });
 
 const entityTypes = Object.freeze({
-	POST:'POST',
-	ANNOUNCEMENT:'ANNOUNCEMENT'
+	POST: 'POST',
+	ANNOUNCEMENT: 'ANNOUNCEMENT'
 });
 
 module.exports = {

@@ -33,9 +33,9 @@ describe('Entity Validator', () => {
 			};
 			const response = {};
 			const next = jest.fn();
-          
+
 			entityValidator.singleEntityValidator(request, response, next);
-          
+
 			expect(next).toHaveBeenCalled();
 		});
 

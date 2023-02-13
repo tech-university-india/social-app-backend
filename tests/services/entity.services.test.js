@@ -11,7 +11,7 @@ describe('Entity Service', () => {
 				id: 1,
 				createdBy: 1,
 				type: 'POST',
-				caption : 'This is a test caption',
+				caption: 'This is a test caption',
 				imageURL: ['https://www.google.com',],
 				location: ['Bangalore',],
 				User: {
@@ -24,7 +24,7 @@ describe('Entity Service', () => {
 						LikesCount: 1,
 						CommentsCount: 1,
 						meta: {
-							commentText:  'This is a test comment'
+							commentText: 'This is a test comment'
 						}
 					}
 				]
@@ -43,7 +43,7 @@ describe('Entity Service', () => {
 				id: 1,
 				createdBy: 1,
 				type: 'POST',
-				caption : 'This is a test caption',
+				caption: 'This is a test caption',
 				imageURL: ['https://www.google.com',],
 				location: ['Bangalore',],
 				User: {
@@ -58,7 +58,7 @@ describe('Entity Service', () => {
 						meta: null
 					}
 				],
-				meta:{
+				meta: {
 					date: '2020-10-10',
 					venue: 'Bangalore'
 				}
@@ -71,7 +71,7 @@ describe('Entity Service', () => {
 		});
 
 		it('should throw error if entity not found', async () => {
-                
+
 			const mockFindOne = 1;
 			const mockEntity = null;
 			jest.spyOn(Entity, 'findOne').mockResolvedValue(mockEntity);
@@ -84,12 +84,12 @@ describe('Entity Service', () => {
 	describe('getEntitiesBySingleUser', () => {
 		it('should return an array of entities data for a user', async () => {
 
-			
+
 			const mockEntity = [{
 				id: 1,
 				createdBy: 1,
 				type: 'POST',
-				caption : 'This is a test caption',
+				caption: 'This is a test caption',
 				imageURL: ['https://www.google.com',],
 				location: ['Bangalore',],
 				Actions: [
@@ -97,7 +97,7 @@ describe('Entity Service', () => {
 						LikesCount: 1,
 						CommentsCount: 1,
 						meta: {
-							commentText:  'This is a test comment'
+							commentText: 'This is a test comment'
 						}
 					}
 				]
@@ -106,7 +106,7 @@ describe('Entity Service', () => {
 				id: 1,
 				createdBy: 1,
 				type: 'POST',
-				caption : 'This is a test caption',
+				caption: 'This is a test caption',
 				imageURL: ['https://www.google.com',],
 				location: ['Bangalore',],
 				Actions: [
@@ -114,14 +114,14 @@ describe('Entity Service', () => {
 						LikesCount: 1,
 						CommentsCount: 1,
 						meta: {
-							commentText:  'This is a test comment'
+							commentText: 'This is a test comment'
 						}
 					}
 				]
 			}];
 
 			jest.spyOn(Entity, 'findAll').mockResolvedValue([mockEntity]);
-			const entity = await entityService.getEntitiesBySingleUser(1,'POST');
+			const entity = await entityService.getEntitiesBySingleUser(1, 'POST');
 
 			expect(entity).toEqual([mockEntity]);
 
@@ -132,7 +132,7 @@ describe('Entity Service', () => {
 			const mockEntity = null;
 			jest.spyOn(Entity, 'findAll').mockResolvedValue(mockEntity);
 
-			await expect(entityService.getEntitiesBySingleUser(1,'POST')).rejects.toThrow('No entities found');
+			await expect(entityService.getEntitiesBySingleUser(1, 'POST')).rejects.toThrow('No entities found');
 
 		});
 
@@ -143,8 +143,8 @@ describe('Entity Service', () => {
 				const entityID = {
 					entityId: 1
 				};
-					
-				const body =  {
+
+				const body = {
 					id: 1,
 					caption: 'This is a test caption',
 					imageURL: ['https://www.google.com',],
@@ -153,19 +153,19 @@ describe('Entity Service', () => {
 						date: '2020-10-10',
 						venue: 'Bangalore'
 					}
-					
+
 				};
 				const updateResponseFromDB = [1];
 				jest.spyOn(Entity, 'update').mockResolvedValue(updateResponseFromDB);
-				const update = await entityService.updateEntityService(body,entityID);
+				const update = await entityService.updateEntityService(body, entityID);
 				expect(update).toEqual(updateResponseFromDB);
 			});
 		});
 		describe('Verfiy when improper input given ', () => {
 			it('should throw error if entity not found', async () => {
 				const entityID = 1;
-					
-				const body =  {
+
+				const body = {
 					id: 1,
 					caption: 'This is a test caption',
 					imageURL: ['https://www.google.com',],
@@ -174,18 +174,18 @@ describe('Entity Service', () => {
 						date: '2020-10-10',
 						venue: 'Bangalore'
 					}
-					
+
 				};
 				jest.spyOn(Entity, 'update').mockResolvedValue([0]);
 
 
-				await expect(entityService.updateEntityService(body,entityID)).rejects.toThrow('Entity not found');
+				await expect(entityService.updateEntityService(body, entityID)).rejects.toThrow('Entity not found');
 			});
-			
+
 		});
-  });
-  
-  describe('deleteSingleEntity', () => {
+	});
+
+	describe('deleteSingleEntity', () => {
 
 		it('should return true and delete entity', async () => {
 
@@ -199,10 +199,10 @@ describe('Entity Service', () => {
 
 
 		it('should throw error if entity not found', async () => {
-			
+
 			const mockEntity = null;
 			jest.spyOn(Entity, 'destroy').mockResolvedValue(mockEntity);
-		
+
 			await expect(entityService.deleteSingleEntity(1)).rejects.toThrow('Entity not found');
 
 		});

@@ -45,7 +45,7 @@ const singleEntityDeleter = async (request, response) => {
 		await entityService.deleteSingleEntity(entityId);
 		response.status(200).json({ message: 'Entity data deleted successfully' });
 	} catch (error) {
-		if (error instanceof customHTTPError) {
+		if (error instanceof HTTPError) {
 			return response.status(error.statusCode).json({ message: error.message });
 		} else {
 			return response.status(500).json({ message: error.message });
@@ -54,18 +54,18 @@ const singleEntityDeleter = async (request, response) => {
 };
 
 
-const updateEntity = async(request,response)=>{
-	try{
-		const updateResponse = await entityService.updateEntityService(request.body,request.params.entityId);
-		response.status(201).json({message : 'Number of Rows update',entityDataUpdate: updateResponse[0]});
-		
-	}	catch(error){
-		if(error instanceof HTTPError){
-			response.status(error.statusCode).json({message : error.message});
-		}else {
-			response.status(500).json({message : error.message});
+const updateEntity = async (request, response) => {
+	try {
+		const updateResponse = await entityService.updateEntityService(request.body, request.params.entityId);
+		response.status(201).json({ message: 'Number of Rows update', entityDataUpdate: updateResponse[0] });
+
+	} catch (error) {
+		if (error instanceof HTTPError) {
+			response.status(error.statusCode).json({ message: error.message });
+		} else {
+			response.status(500).json({ message: error.message });
 		}
 	}
 };
 
-module.exports = { singleEntityRetiver , entitiesBySingleUserRetiver ,updateEntity, singleEntityDeleter};
+module.exports = { singleEntityRetiver, entitiesBySingleUserRetiver, updateEntity, singleEntityDeleter };

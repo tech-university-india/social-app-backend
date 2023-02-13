@@ -1,6 +1,6 @@
 'use strict';
 
-const {entityTypes} = require('../../src/Utils/Constants');
+const { entityTypes } = require('../../src/Utils/Constants');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
       location: ['USA'],
       createdBy: 1,
       createdAt: new Date(),
-			updatedAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       type: entityTypes.ANNOUNCEMENT,
@@ -22,7 +22,7 @@ module.exports = {
       location: ['Gurgoan'],
       createdBy: 2,
       createdAt: new Date(),
-			updatedAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       type: entityTypes.POST,
@@ -37,11 +37,11 @@ module.exports = {
       type: entityTypes.ANNOUNCEMENT,
       caption: 'Fourth Entity',
       imageURL: ['https://example.com/image7.jpg', 'https://example.com/image8.jpg'],
-      meta: JSON.stringify({ venue: "Bengaluru", date: '2023-02-07T16:10:26.603Z'  }),
+      meta: JSON.stringify({ venue: "Bengaluru", date: '2023-02-07T16:10:26.603Z' }),
       location: ["Bengaluru"],
       createdBy: 4,
       createdAt: new Date(),
-			updatedAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       type: entityTypes.POST,
@@ -50,7 +50,7 @@ module.exports = {
       location: ['USA'],
       createdBy: 1,
       createdAt: new Date(),
-			updatedAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       type: entityTypes.POST,
@@ -59,7 +59,7 @@ module.exports = {
       location: ['Paris', 'France'],
       createdBy: 1,
       createdAt: new Date(),
-			updatedAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       type: entityTypes.ANNOUNCEMENT,
@@ -69,17 +69,17 @@ module.exports = {
       location: ['Bengaluru'],
       createdBy: 4,
       createdAt: new Date(),
-			updatedAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       type: entityTypes.ANNOUNCEMENT,
       caption: 'Eighth Entity',
       imageURL: ['https://example.com/image15.jpg', 'https://example.com/image16.jpg'],
-      meta: JSON.stringify({venue:"Bengaluru", date: '2023-02-07T16:10:26.603Z'}),
+      meta: JSON.stringify({ venue: "Bengaluru", date: '2023-02-07T16:10:26.603Z' }),
       location: ["Bengaluru"],
       createdBy: 4,
       createdAt: new Date(),
-			updatedAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       type: entityTypes.ANNOUNCEMENT,
@@ -89,9 +89,9 @@ module.exports = {
       location: ['Gurgoan'],
       createdBy: 2,
       createdAt: new Date(),
-			updatedAt: new Date(),
-      },
-      {
+      updatedAt: new Date(),
+    },
+    {
       type: entityTypes.ANNOUNCEMENT,
       caption: 'Ninth Entity',
       imageURL: ['https://example.com/image17.jpg', 'https://example.com/image18.jpg'],
@@ -99,9 +99,9 @@ module.exports = {
       location: ['Bengaluru'],
       createdBy: 3,
       createdAt: new Date(),
-			updatedAt: new Date(),
-      },
-      {
+      updatedAt: new Date(),
+    },
+    {
       type: entityTypes.ANNOUNCEMENT,
       caption: 'Tenth Entity',
       imageURL: ['https://example.com/image19.jpg', 'https://example.com/image20.jpg'],
@@ -109,27 +109,27 @@ module.exports = {
       location: ['Bengaluru'],
       createdBy: 3,
       createdAt: new Date(),
-			updatedAt: new Date(),
-      },
-      {
+      updatedAt: new Date(),
+    },
+    {
       type: entityTypes.POST,
       caption: 'Eleventh Entity',
       imageURL: ['https://example.com/image21.jpg', 'https://example.com/image22.jpg'],
       location: ['USA'],
       createdBy: 1,
       createdAt: new Date(),
-			updatedAt: new Date(),
-      },
-      {
+      updatedAt: new Date(),
+    },
+    {
       type: entityTypes.POST,
       caption: 'Twelfth Entity',
       imageURL: ['https://example.com/image23.jpg', 'https://example.com/image24.jpg'],
       location: ['USA'],
       createdBy: 1,
       createdAt: new Date(),
-			updatedAt: new Date(),
-      },
-      {
+      updatedAt: new Date(),
+    },
+    {
       type: entityTypes.ANNOUNCEMENT,
       caption: 'Thirteenth Entity',
       imageURL: ['https://example.com/image25.jpg', 'https://example.com/image26.jpg'],
@@ -137,80 +137,80 @@ module.exports = {
       location: ['Gurgoan'],
       createdBy: 2,
       createdAt: new Date(),
-			updatedAt: new Date(),
-      },
-      {
-        type: entityTypes.POST,
-        caption: '14th Entity',
-        imageURL: ['https://example.com/image14.jpg', 'https://example.com/image15.jpg'],
-        location: ['Delhi'],
-        createdBy: 5,
-        createdAt: new Date(),
-			  updatedAt: new Date(),
-        },
-        // 15th entity
-        {
-        type: entityTypes.ANNOUNCEMENT,
-        caption: '15th Entity',
-        imageURL: ['https://example.com/image16.jpg', 'https://example.com/image17.jpg'],
-        meta: JSON.stringify({ venue: "Gurgoan", date: '2023-02-07T16:10:26.603Z' }),
-        location: ['Gurgoan'],
-        createdBy: 3,
-        createdAt: new Date(),
-			  updatedAt: new Date(),
-        },
-        // 16th entity
-        {
-        type: entityTypes.POST,
-        caption: '16th Entity',
-        imageURL: ['https://example.com/image18.jpg', 'https://example.com/image19.jpg'],
-        location: ['Noida'],
-        createdBy: 1,
-        createdAt: new Date(),
-			  updatedAt: new Date(),
-        },
-        // 17th entity
-        {
-        type: entityTypes.ANNOUNCEMENT,
-        caption: '17th Entity',
-        imageURL: ['https://example.com/image20.jpg', 'https://example.com/image21.jpg'],
-        meta: JSON.stringify({ venue: "Bengaluru", date: '2023-02-07T16:10:26.603Z' }),
-        location: ['Bengaluru'],
-        createdBy: 2,
-        createdAt: new Date(),
-			  updatedAt: new Date(),
-        },
-        // 18th entity
-        {
-        type: entityTypes.POST,
-        caption: '18th Entity',
-        imageURL: ['https://example.com/image22.jpg', 'https://example.com/image23.jpg'],
-        location: ['Mumbai'],
-        createdBy: 5,
-        createdAt: new Date(),
-			  updatedAt: new Date(),
-        },
-        // 19th entity
-        {
-        type: entityTypes.ANNOUNCEMENT,
-        caption: '19th Entity',
-        imageURL: ['https://example.com/image24.jpg', 'https://example.com/image25.jpg'],
-        meta: JSON.stringify({ venue: "Gurgoan", date: '2023-02-07T16:10:26.603Z' }),
-        location: ['Gurgoan'],
-        createdBy: 5,
-        createdAt: new Date(),
-			  updatedAt: new Date(),
-        },
-        // 20th entity
-        {
-        type: entityTypes.POST,
-        caption: '20th Entity',
-        imageURL: ['https://example.com/image26.jpg', 'https://example.com/image27.jpg'],
-        location: ['Bangalore'],
-        createdBy: 2,
-        createdAt: new Date(),
-			  updatedAt: new Date(),
-        },
+      updatedAt: new Date(),
+    },
+    {
+      type: entityTypes.POST,
+      caption: '14th Entity',
+      imageURL: ['https://example.com/image14.jpg', 'https://example.com/image15.jpg'],
+      location: ['Delhi'],
+      createdBy: 5,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    // 15th entity
+    {
+      type: entityTypes.ANNOUNCEMENT,
+      caption: '15th Entity',
+      imageURL: ['https://example.com/image16.jpg', 'https://example.com/image17.jpg'],
+      meta: JSON.stringify({ venue: "Gurgoan", date: '2023-02-07T16:10:26.603Z' }),
+      location: ['Gurgoan'],
+      createdBy: 3,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    // 16th entity
+    {
+      type: entityTypes.POST,
+      caption: '16th Entity',
+      imageURL: ['https://example.com/image18.jpg', 'https://example.com/image19.jpg'],
+      location: ['Noida'],
+      createdBy: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    // 17th entity
+    {
+      type: entityTypes.ANNOUNCEMENT,
+      caption: '17th Entity',
+      imageURL: ['https://example.com/image20.jpg', 'https://example.com/image21.jpg'],
+      meta: JSON.stringify({ venue: "Bengaluru", date: '2023-02-07T16:10:26.603Z' }),
+      location: ['Bengaluru'],
+      createdBy: 2,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    // 18th entity
+    {
+      type: entityTypes.POST,
+      caption: '18th Entity',
+      imageURL: ['https://example.com/image22.jpg', 'https://example.com/image23.jpg'],
+      location: ['Mumbai'],
+      createdBy: 5,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    // 19th entity
+    {
+      type: entityTypes.ANNOUNCEMENT,
+      caption: '19th Entity',
+      imageURL: ['https://example.com/image24.jpg', 'https://example.com/image25.jpg'],
+      meta: JSON.stringify({ venue: "Gurgoan", date: '2023-02-07T16:10:26.603Z' }),
+      location: ['Gurgoan'],
+      createdBy: 5,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    // 20th entity
+    {
+      type: entityTypes.POST,
+      caption: '20th Entity',
+      imageURL: ['https://example.com/image26.jpg', 'https://example.com/image27.jpg'],
+      location: ['Bangalore'],
+      createdBy: 2,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
     ])
   },
 

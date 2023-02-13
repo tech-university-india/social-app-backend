@@ -97,7 +97,7 @@ describe('Entity Controller', () => {
 		});
 
 		it('should return 404 status code when entities for userId is not present ', async () => {
-			
+
 			const mockReq = {
 				params: {
 					userId: 1,
@@ -148,7 +148,7 @@ describe('Entity Controller', () => {
 						'caption': 'test',
 						imgaeUrl: 'test',
 						'location': 'test',
-						'meta':{
+						'meta': {
 							'date': 'test',
 							'venue': 'test',
 						}
@@ -171,7 +171,7 @@ describe('Entity Controller', () => {
 			);
 
 			it('should return 500 status code when entity is not present ', async () => {
-				
+
 				const mockReq = {
 					params: {
 						userId: 1,
@@ -181,7 +181,7 @@ describe('Entity Controller', () => {
 						'caption': 'test',
 						imgaeUrl: 'test',
 						'location': 'test',
-						'meta':{
+						'meta': {
 							'date': 'test',
 							'venue': 'test',
 						}
@@ -205,13 +205,13 @@ describe('Entity Controller', () => {
 					body: { /* some test data */ },
 					params: { entityId: '123' }
 				};
-				const  response = {
+				const response = {
 					status: jest.fn().mockReturnThis(),
 					json: jest.fn()
-					
+
 				};
 				await entityControllers.updateEntity(request, response);
-				
+
 				expect(response.status).toHaveBeenCalledWith(400);
 				expect(response.json).toHaveBeenCalledWith({
 					message: 'Bad Request'
