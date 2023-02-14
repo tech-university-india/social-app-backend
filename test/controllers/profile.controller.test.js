@@ -62,7 +62,7 @@ describe('Profile Controller', () => {
 					'profilePictureURL': 'https://example.com/image3.jpg'
 				}
 			];
-			const mockReq = { 'params': { 'userId': 1 } };
+			const mockReq = { 'params': { 'userId': 1 }, 'user':{id:1} };
 			const  mockRes = {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
@@ -73,7 +73,7 @@ describe('Profile Controller', () => {
 			expect(mockRes.json).toBeCalledWith(followers);
 		});
 		it('should throw 404 Followers not found', async () => {
-			const mockReq = { 'params': { 'userId': 1 } };
+			const mockReq = { 'params': { 'userId': 1 }, 'user':{id:1} };
 			const  mockRes = {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
@@ -85,7 +85,7 @@ describe('Profile Controller', () => {
 			expect(mockRes.status().json).toBeCalledWith({ message: 'Followers not found' });
 		});
 		it('should throw 500 error', async () => {
-			const mockReq = { 'params': { 'userId': 1 } };
+			const mockReq = { 'params': { 'userId': 1 }, 'user':{id:1} };
 			const  mockRes = {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
@@ -113,7 +113,7 @@ describe('Profile Controller', () => {
 					'profilePictureURL': 'https://example.com/image3.jpg'
 				}
 			];
-			const mockReq = { 'params': { 'userId': 4 } };
+			const mockReq = { 'params': { 'userId': 1 }, 'user':{id:1} };
 			const  mockRes = {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
@@ -124,7 +124,7 @@ describe('Profile Controller', () => {
 			expect(mockRes.json).toBeCalledWith(followers);
 		});
 		it('should throw 404 Followers not found', async () => {
-			const mockReq = { 'params': { 'userId': 1 } };
+			const mockReq = { 'params': { 'userId': 1 }, 'user':{id:1} };
 			const  mockRes = {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
@@ -136,7 +136,7 @@ describe('Profile Controller', () => {
 			expect(mockRes.status().json).toBeCalledWith({ message: 'User not found' });
 		});
 		it('should throw 500 error', async () => {
-			const mockReq = { 'params': { 'userId': 1 } };
+			const mockReq = { 'params': { 'userId': 1 }, 'user':{id:1} };
 			const  mockRes = {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()

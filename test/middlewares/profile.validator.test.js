@@ -12,7 +12,7 @@ describe('Profile Validator', () => {
 				status: jest.fn().mockReturnValue({ json: jest.fn() })
 			};
 			const mockNext = jest.fn();
-			await profileValidator.getProfileByIdValidator(mockReq, mockRes, mockNext);
+			await profileValidator.getByUserValidator(mockReq, mockRes, mockNext);
 			expect(mockNext).toBeCalled();
 		});
 		it('should return 400 "id is required"', async () => {
@@ -24,7 +24,7 @@ describe('Profile Validator', () => {
 				status: jest.fn().mockReturnValue({ json: jest.fn() })
 			};
 			const mockNext = jest.fn();
-			await profileValidator.getProfileByIdValidator(mockReq, mockRes, mockNext);
+			await profileValidator.getByUserValidator(mockReq, mockRes, mockNext);
 			expect(mockRes.status).toBeCalledWith(400);
 			expect(mockRes.status().json).toBeCalledWith({ message: '"userId" is required' });
 			expect(mockNext).not.toBeCalled();
@@ -39,7 +39,7 @@ describe('Profile Validator', () => {
 				status: jest.fn().mockReturnValue({ json: jest.fn() })
 			};
 			const mockNext = jest.fn();
-			await profileValidator.getProfileByIdValidator(mockReq, mockRes, mockNext);
+			await profileValidator.getByUserValidator(mockReq, mockRes, mockNext);
 			expect(mockRes.status).toBeCalledWith(400);
 			expect(mockRes.status().json).toBeCalledWith({ message: '"userId" must be a number' });
 			expect(mockNext).not.toBeCalled();

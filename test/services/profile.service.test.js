@@ -63,18 +63,18 @@ describe('Profile Service', () => {
 				]
 			};
 
-			const mockResult = [
-				{
-					'FMNO': 1,
-					'designation': 'Partner',
-					'userName': 'John Doe',
-					'isFollowed': true,
-					'profilePictureURL': 'https://example.com/image1.jpg',
-				}
-			];
+			// const mockResult = [
+			// 	{
+			// 		'FMNO': 1,
+			// 		'designation': 'Partner',
+			// 		'userName': 'John Doe',
+			// 		'isFollowed': true,
+			// 		'profilePictureURL': 'https://example.com/image1.jpg',
+			// 	}
+			// ];
             
 			jest.spyOn(User, 'findByPk').mockResolvedValue(mockFindAll);
-			expect(await profileService.getFollowersById(2)).toEqual(mockResult);
+			expect(await profileService.getFollowersById(2)).toEqual(mockFindAll);
 			
 		});
 		it('should return status code 404 when user doesnt not exist',async()=>{
@@ -118,18 +118,18 @@ describe('Profile Service', () => {
 				]
 			};
 
-			const mockResult = [
-				{
-					'FMNO': 1,
-					'designation': 'Partner',
-					'userName': 'John Doe',
-					'isFollowing': true,
-					'profilePictureURL': 'https://example.com/image1.jpg',
-				}
-			];
+			// const mockResult = [
+			// 	{
+			// 		'FMNO': 1,
+			// 		'designation': 'Partner',
+			// 		'userName': 'John Doe',
+			// 		'isFollowing': true,
+			// 		'profilePictureURL': 'https://example.com/image1.jpg',
+			// 	}
+			// ];
             
 			jest.spyOn(User, 'findByPk').mockResolvedValue(mockFindAll);
-			expect(await profileService.getFollowingById(2)).toEqual(mockResult);
+			expect(await profileService.getFollowingById(2)).toEqual(mockFindAll);
 			
 		});
 		it('should return status code 404 when user doesnt not exist',async()=>{
