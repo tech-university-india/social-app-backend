@@ -36,7 +36,7 @@ const createEntitySchema = joi.object({
 		venue: joi.string()
 	},
 	location: joi.array().items(joi.string()),
-	createdBy: joi.string().required()
+	createdBy: joi.number().integer().required()
 });
   
 const createEntityValidator = (req, res, next) => {

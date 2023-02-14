@@ -226,7 +226,7 @@ describe('Entity Validator', () => {
 						venue: 'Brigade'
 					},
 					location: ['Mumbai', 'Bangalore'],
-					createdBy: 'Aditya'
+					createdBy: 1
 				}
 			};
 

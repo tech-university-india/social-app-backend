@@ -3,7 +3,7 @@ const entityRouter = require('express').Router();
 const entityValidator = require('../middlewares/entity.validator');
 
 
-entityRouter.post('/entity', entityValidator.createEntityValidator, entityController.createEntity);
+entityRouter.post('/', entityValidator.createEntityValidator, entityController.createEntity);
 
 entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entityController.singleEntityRetiver);
 
