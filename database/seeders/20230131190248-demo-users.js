@@ -5,8 +5,6 @@ module.exports = {
 	async up (queryInterface, Sequelize) {
 		return queryInterface.bulkInsert('Users', [{
 			FMNO:1,
-			email: 'exampleuser1@example.com',
-			passwordHash: "pass@123",
 			bio: "Backend and fishing expert",
 			userName: 'John Doe',
 			designation: 'Partner',
@@ -16,8 +14,6 @@ module.exports = {
 		},
 		{
 			FMNO:2,
-			email: 'exampleuser3@example.com',
-			passwordHash: "pass@123",
 			bio: "backend developer and photography hobbyist",
 			userName: 'Jane Doe',
 			designation: 'Manager',
@@ -27,8 +23,6 @@ module.exports = {
 		},
 		{
 			FMNO:3,
-			email: 'exampleuser4@example.com',
-			passwordHash: "pass@123",
 			bio: "full-stack developer and music lover",
 			userName: 'Jim Smith',
 			designation: 'Team Lead',
@@ -38,8 +32,6 @@ module.exports = {
 		},
 		{
 			FMNO:4,
-			email: 'exampleuser5@example.com',
-			passwordHash: "pass@123",
 			bio: "data analyst and reading enthusiast",
 			userName: 'Sarah Johnson',
 			designation: 'Analyst',
@@ -49,8 +41,6 @@ module.exports = {
 		},
 		{
 			FMNO:5,
-			email: 'exampleuser6@example.com',
-			passwordHash: "pass@123",
 			bio: "devops and gardening hobbyist",
 			userName: 'Tom Brown',
 			designation: 'Consultant',

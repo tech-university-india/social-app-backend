@@ -1,74 +1,103 @@
-const { User,Follow } = require('../models');
+const { User, Interest, Follow } = require('../models');
 const HTTPError = require('../errors/httperror');
 
+const sequelize = require('sequelize');
 
-
-const getUserById = async (id) => {
-
-	const user = await User.findByPk(id);
-	if(!user) throw new HTTPError(404, 'User not found');
+const getUserById = async (id, userId) => {
+	const user = await User.findByPk(id, {
+		attributes: ['FMNO', 'userName', 'bio', 'designation', 'profilePictureURL', [sequelize.literal('(SELECT COUNT("Following"."FMNO"))'), 'isFollowed']],
+		include: [{
+			model: Interest,
+			attributes: ['id', 'interestName'],
+			through: { attributes: [] },
+			required: false,
+		}, {
+			association: 'Following',
+			attributes: [],
+			through: { attributes: [] },
+			where: { FMNO: userId },
+			required: false,
+		}],
+		group: ['"User"."FMNO"', '"Interests"."id"', '"Following"."FMNO"']
+	});
+	if (!user) throw new HTTPError(404, 'User not found');
 	return user;
 };
 
-const getFollowersById = async (id) => {
-	const followersData = await User.findByPk(id, { 
+const getFollowersById = async (id, userId) => {
+	// const followersData = await User.findByPk(id, { 
+	// 	attributes: [],
+	// 	include: {
+	// 		association: 'Following',
+	// 		attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+	// 		through: { attributes: [] },
+	// 		required: false,
+	// 	},
+	// });
+	// // Filter "Follows" By paramUserId JOIN with "Users" Filter and Count the "Following" of "Users" by requestedUserId
+	const followersData = await Follow.findAll({
+		where: { followingId: id },
+		attributes: [],
 		include: {
-			association: 'Following',
-			attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
-			through: { attributes: [] },
+			model: User,
+			on: { 'FMNO': { [sequelize.Op.eq]: sequelize.col('Follow.followerId') } },
+			attributes: ['FMNO', 'designation', 'userName', 'profilePictureURL', [sequelize.literal('(SELECT COUNT("User->Following"."FMNO"))'), 'isFollowed']],
 			include: {
 				association: 'Following',
-				attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+				attributes: [],
 				through: { attributes: [] },
+				where: { FMNO: userId },
+				required: false,
 			},
+			required: false,
 		},
+		group: ['"Follow"."id"', '"User"."FMNO"', '"User->Following"."FMNO"']
 	});
-	if(!followersData) throw new HTTPError(404,'User not found');
-	if(followersData.Following.length===0)return [];
-
-	const followersDetails=followersData.Following.map(following => {
-		const {FMNO,userName,designation,profilePictureURL} = following.dataValues;
-		let isFollowed = false;
-		following.dataValues.Following.forEach(follower => {
-			if(follower.dataValues.FMNO===id) isFollowed = true;
-		});
-		return {FMNO,userName,designation,isFollowed:isFollowed,profilePictureURL};
-	});
-	return followersDetails;
+	// if(!followersData) throw new HTTPError(404, 'User not found');
+	return followersData;
 };
 
-const getFollowingById = async (id) => {
-	const followingData = await User.findByPk(id, { 
+const getFollowingById = async (id, userId) => {
+	// const followingData = await User.findByPk(id, { 
+	// 	include: {
+	// 		association: 'Followers',
+	// 		attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+	// 		through: { attributes: [] },
+	// 		include: {
+	// 			association: 'Followers',
+	// 			attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+	// 			through: { attributes: [] },
+	// 			where: { FMNO: userId },
+	// 		}
+	// 	},
+	// });
+	// // Filter "Follows" By paramUserId JOIN with "Users" Filter and Count the "Following" of "Users" by requestedUserId
+	const followingData = await Follow.findAll({
+		where: { followerId: id },
+		attributes: [],
 		include: {
-			association: 'Followers',
-			attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
-			through: { attributes: [] },
+			model: User,
+			on: { 'FMNO': { [sequelize.Op.eq]: sequelize.col('Follow.followingId') } },
+			attributes: ['FMNO', 'designation', 'userName', 'profilePictureURL', [sequelize.literal('(SELECT COUNT("User->Following"."FMNO"))'), 'isFollowed']],
 			include: {
-				association: 'Followers',
-				attributes: ['FMNO','designation', 'userName', 'profilePictureURL'],
+				association: 'Following',
+				attributes: [],
 				through: { attributes: [] },
-			}
+				where: { FMNO: userId },
+				required: false,
+			},
+			required: false,
 		},
+		group: ['"Follow"."id"', '"User"."FMNO"', '"User->Following"."FMNO"']
 	});
-
-	if(!followingData) throw new HTTPError(404,'User not found');
-	if(followingData.Followers.length===0)return [];
-
-	const followingDetails = followingData.Followers.map(follower => {
-		const {FMNO,userName,designation,profilePictureURL} = follower.dataValues;
-		let isFollowing = false;
-		follower.dataValues.Followers.forEach(following => {
-			if(following.dataValues.FMNO===id) isFollowing = true;
-		});
-		return {FMNO,userName,designation,isFollowing:isFollowing,profilePictureURL};
-	});
-	return followingDetails;
+	// if(!followingData) throw new HTTPError(404,'User not found');
+	return followingData;
 };
 
-const unfollowById = async (id,user) => {
-	const isFollowing = await Follow.findOne({where:{followerId:user, followingId:id}});
-	if(!isFollowing) throw new HTTPError(404, 'Not following user');
-	return await Follow.destroy({where:{followerId:user, followingId:id}});
+const unfollowById = async (id, userId) => {
+	// const isFollowing = await Follow.findOne({ where: { followerId: userId, followingId: id } });
+	// if (!isFollowing) throw new HTTPError(404, 'Not following user');
+	return await Follow.destroy({ where: { followerId: userId, followingId: id } });
 };
 
-module.exports = { getUserById ,getFollowersById,getFollowingById,unfollowById };
+module.exports = { getUserById, getFollowersById, getFollowingById, unfollowById };
