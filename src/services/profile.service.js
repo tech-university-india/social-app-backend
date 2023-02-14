@@ -18,7 +18,8 @@ const getUserById = async (id, userId) => {
 			where: { FMNO: userId },
 			required: false,
 		}],
-		group: ['"User"."FMNO"', '"Interests"."id"', '"Following"."FMNO"']
+		group: ['"User"."FMNO"', '"Interests"."id"', '"Following"."FMNO"'],
+		order: [[Interest, 'interestName', 'ASC']],
 	});
 	if (!user) throw new HTTPError(404, 'User not found');
 	return user;
@@ -51,7 +52,8 @@ const getFollowersById = async (id, userId) => {
 			},
 			required: false,
 		},
-		group: ['"Follow"."id"', '"User"."FMNO"', '"User->Following"."FMNO"']
+		group: ['"Follow"."id"', '"User"."FMNO"', '"User->Following"."FMNO"'],
+		order: [[User, 'userName', 'ASC'], [User, 'FMNO', 'ASC']],
 	});
 	// if(!followersData) throw new HTTPError(404, 'User not found');
 	return followersData;
@@ -88,7 +90,8 @@ const getFollowingById = async (id, userId) => {
 			},
 			required: false,
 		},
-		group: ['"Follow"."id"', '"User"."FMNO"', '"User->Following"."FMNO"']
+		group: ['"Follow"."id"', '"User"."FMNO"', '"User->Following"."FMNO"'],
+		order: [[User, 'userName', 'ASC'], [User, 'FMNO', 'ASC']],
 	});
 	// if(!followingData) throw new HTTPError(404,'User not found');
 	return followingData;
