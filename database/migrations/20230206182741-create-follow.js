@@ -31,6 +31,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }, {
+      uniqueKeys: {
+        follow_unique: {
+          fields: ['followerId', 'followingId']
+        }
+      }
     });
   },
   async down(queryInterface, Sequelize) {
