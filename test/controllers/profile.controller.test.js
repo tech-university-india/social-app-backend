@@ -16,7 +16,7 @@ describe('Profile Controller', () => {
 				'updatedAt': '2023-02-08T17:56:02.800Z'
 			};
 			jest.spyOn(profileService, 'getUserById').mockResolvedValue(user);
-			const mockReq = { params: { userId: 1 } };
+			const mockReq = { params: { userId: 1 }, user: { id: 1 } };
 			const mockRes = {
 				status: jest.fn().mockReturnValue({ json: jest.fn() })
 			};
@@ -26,7 +26,7 @@ describe('Profile Controller', () => {
 		});
 		it('should throw 404 User not found', async () => {
 			jest.spyOn(profileService, 'getUserById').mockRejectedValue(new HTTPError(404, 'User not found'));
-			const mockReq = { params: { userId: 1 } };
+			const mockReq = { params: { userId: 1 }, user: { id: 1 }  };
 			const mockRes = {
 				status: jest.fn().mockReturnValue({ json: jest.fn() })
 			};

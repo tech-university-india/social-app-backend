@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      followingId: {
+      followerId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -18,7 +18,7 @@ module.exports = {
         },
         onDelete: 'CASCADE'
       },
-      followerId: {
+      followingId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {

@@ -3,8 +3,7 @@ const HTTPError = require('../errors/httperror');
 
 const getUserById = async (req, res) => {
 	try{
-		const user = await profileService.getUserById(req.params.userId);
-		// console.log(req.user);
+		const user = await profileService.getUserById(req.params.userId, req.user.id);
 		res.status(200).json(user);
 	} catch(err) {
 		if(err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
