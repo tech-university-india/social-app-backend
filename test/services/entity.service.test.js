@@ -5,15 +5,15 @@ describe('Entity Service', () => {
   describe('Create Post', () => {
     it('should return 201 CREATED', async () => {
       const mockBody = {
-        type: "announcement",
-        caption: "This is an announcement",
-        imageURL: "https://example.com/image1.jpg",
+        type: 'announcement',
+        caption: 'This is an announcement',
+        imageURL: 'https://example.com/image1.jpg',
         meta: {
-          date: "2023-02-08",
-          venue: "Online"
+          date: '2023-02-08',
+          venue: 'Online'
         },
-        location: "Online",
-        createdBy: "John Doe",
+        location: 'Online',
+        createdBy: 'John Doe',
       };
 
       jest.spyOn(Entity, 'create').mockResolvedValue(mockBody);
