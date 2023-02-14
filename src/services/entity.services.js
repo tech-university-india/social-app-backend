@@ -121,7 +121,6 @@ const deleteSingleEntity = async (entityId) => {
 			id: entityId
 		}
 	});
-	console.log(entity);
 	if (!entity) throw new customHTTPError(404, 'Entity not found');
 	return true;
 };

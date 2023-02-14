@@ -100,5 +100,114 @@ describe('Entity Validator', () => {
 		});
 
 	});
+	describe('updateValidatior', () => {
+		it('should return 400 status code when name is not a string',  () => {
+			const request = {
+				params: {
+					entityId: 'not-a-number',
+				},
+				body: {
+					caption : 'Update is a test caption',
+					imageURL: ['https://www.google.com'],
+					location: ['Bangalore'],
+					meta: {
+						date: '2020-10-10',
+						'venue': 'Bangalore'
+					}
+				},
+			};
+			const response = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn(),
+			};
+			const next = jest.fn();
+			entityValidator.updateValidatior(request, response,next);
+			expect(response.status).toBeCalledWith(400);
+			expect(response.json).toHaveBeenCalledWith({ message: '"entityId" must be a number' });
+	
+		});
+		it('should return 400 status code when name is not a string',  () => {
+			const request = {
+				params: {
+					entityId: 1,
+				},
+				body: {
+					
+					caption : 'Update is a test caption',
+					imageURL: 'https://www.google.com',
+					location: ['Bangalore'],
+					meta: {
+						date: '2020-10-10',
+						'venue': 'Bangalore'
+					}
+					
+				},
+			};
+			const response = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn(),
+			};
+			const next = jest.fn();
 
+			entityValidator.updateValidatior(request, response,next);
+	
+			expect(response.status).toHaveBeenCalledWith(400);
+			expect(response.json).toHaveBeenCalledWith({ message: '"imageURL" must be an array' });
+	
+		});
+		it('should return 400 status code when name is not a string',  () => {
+			const request = {
+				params: {
+					entityId: 1,
+				},
+				body: {
+					
+					caption : 1,
+					imageURL: ['https://www.google.com'],
+					location: ['Bangalore'],
+					meta: {
+						date: '2020-10-10',
+						'venue': 'Bangalore'
+					}
+					
+				},
+			};
+			const response = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn(),
+			};
+			const next = jest.fn();
+
+			entityValidator.updateValidatior(request, response,next);
+	
+			expect(response.status).toHaveBeenCalledWith(400);
+			expect(response.json).toHaveBeenCalledWith({ message: '"caption" must be a string' });
+	
+		});
+		it('should return to router when all data is given correctly',  () => {
+			const request = {
+				params: {
+					entityId: 1,
+				},
+				body: {
+					
+					caption : 'Update is a test caption',
+					imageURL: ['https://www.google.com'],
+					location: ['Bangalore'],
+					meta: {
+						date: '2020-10-10',
+						'venue': 'Bangalore'
+					}
+					
+				},
+			};
+			const response = {};
+			const next = jest.fn();
+
+			entityValidator.updateValidatior(request, response,next);
+
+			expect(next).toHaveBeenCalled();
+	
+		});
+	});
 });

@@ -15,6 +15,7 @@ const entityForUserIDSchema = joi.object({
 
 
 const entityUpdatingSchema = joi.object({
+	entityId: joi.number().integer().required(),
 	imageURL: joi.array().items(joi.string().uri()),
 	caption: joi.string(),
 	meta: joi.object().keys({
@@ -42,13 +43,8 @@ const entitiesBySingleUserValidator = (request, response, next) => {
 };
 
 
-const updateValidatior = (request, response, next) => {
-
-	const { error1 } = entitySchmea.validate({ entityId: request.params.entityId });
-	if (error1) {
-		response.status(400).json({ message: error1.message });
-	}
-
+const updateValidatior = (request, response,next) => {
+	request.body.entityId=request.params.entityId;
 	const { error } = entityUpdatingSchema.validate(request.body);
 	if (error) {
 		return response.status(400).json({ message: error.message });
