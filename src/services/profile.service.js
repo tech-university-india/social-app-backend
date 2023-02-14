@@ -36,4 +36,10 @@ const followUser = async (followerId, followingId) => {
 	
 };
 
-module.exports = { getUserById, followUser };
+const updateProfile = async (id, data) => {
+	const user = await User.findByPk(id);
+	if (!user) throw new HTTPError(404, 'User not found');
+	return await user.update(data);
+};
+
+module.exports = { getUserById, followUser , updateProfile};
