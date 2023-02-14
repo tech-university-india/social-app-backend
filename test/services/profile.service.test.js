@@ -133,5 +133,17 @@ describe('Profile Service', () => {
 			expect(async () => await profileService.getFollowingById(1, 1)).rejects.toThrow(new Error());
 		});
 	});
+	describe('Unfollow User', () => {
+		it('should unfollow user', async () => {
+			jest.spyOn(Follow, 'destroy').mockResolvedValue(1);
+			expect(await profileService.unfollowById(2,3)).toEqual(1);
+		});
+		it('should throw 404 when user doesnt follow given id', async () => {
+			// jest.spyOn(Follow, 'findOne').mockResolvedValue(0);
+			jest.spyOn(Follow, 'destroy').mockRejectedValue(new Error());;
+			expect(async()=>await profileService.unfollowById(2,3)).rejects.toThrow(new Error());
+		});
+	});
+			
 });
 
