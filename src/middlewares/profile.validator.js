@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const getProfileByIdValidator = (req, res, next) => {
+const getByUserValidator = (req, res, next) => {
 	const { error } = Joi.object({
 		userId: Joi.number().integer().required()
 	}).validate(req.params);
@@ -8,4 +8,4 @@ const getProfileByIdValidator = (req, res, next) => {
 	next();
 };
 
-module.exports = { getProfileByIdValidator };
+module.exports = { getByUserValidator };

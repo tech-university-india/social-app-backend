@@ -15,8 +15,10 @@ module.exports = (sequelize, DataTypes) => {
 			this.hasMany(models.Entity, { foreignKey: 'createdBy', onDelete: 'CASCADE', hooks: true });
 			this.belongsToMany(models.Interest, { through: 'UserInterests', foreignKey: 'userId', onDelete: 'CASCADE', hooks: true });
 			this.hasMany(models.Action, { foreignKey: 'createdBy', onDelete: 'CASCADE', hooks: true });
-			this.belongsToMany(models.User, { through: 'UserFollows', foreignKey: 'followingId', as: 'following', onDelete: 'CASCADE', hooks: true });
-			this.belongsToMany(models.User, { through: 'UserFollows', foreignKey: 'followerId', as: 'followers', onDelete: 'CASCADE', hooks: true });
+			this.belongsToMany(models.User, { through: 'Follows', foreignKey: 'followingId', as: 'Following', onDelete: 'CASCADE', hooks: true });
+			this.belongsToMany(models.User, { through: 'Follows', foreignKey: 'followerId', as: 'Followers', onDelete: 'CASCADE', hooks: true });
+			// this.hasMany(models.Action, { foreignKey: 'followerId',  onDelete: 'CASCADE', hooks: true });
+			// this.hasMany(models.Action, { foreignKey: 'followingId',  onDelete: 'CASCADE', hooks: true });
 			this.hasMany(models.Tag, { foreignKey: 'taggedId', onDelete: 'CASCADE', hooks: true });
 			this.hasMany(models.Notification, { foreignKey: 'createdBy', onDelete: 'CASCADE', hooks: true });
 		}
