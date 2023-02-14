@@ -1,4 +1,4 @@
-const entities = require('../controllers/entity.controllers');
+const entities = require('../controllers/entity.controller');
 const entityRouter = require('express').Router();
 const entityValidator = require('../middlewares/entity.validator');
 
