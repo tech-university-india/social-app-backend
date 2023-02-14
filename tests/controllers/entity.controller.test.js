@@ -1,4 +1,4 @@
-const entities = require('../../src/services/entity.services');
+const entities = require('../../src/services/entity.service');
 const entityControllers = require('../../src/controllers/entity.controllers');
 const customHTTPError = require('../../src/errors/httperror');
 

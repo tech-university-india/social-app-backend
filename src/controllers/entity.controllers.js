@@ -1,4 +1,4 @@
-const entityService = require('../services/entity.services');
+const entityService = require('../services/entity.service');
 const HTTPError = require('../errors/httpError');
 
 /*

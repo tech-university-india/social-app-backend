@@ -1,5 +1,5 @@
 const { Entity } = require('../../src/models');
-const entityService = require('../../src/services/entity.services');
+const entityService = require('../../src/services/entity.service');
 
 describe('Entity Service', () => {
 
