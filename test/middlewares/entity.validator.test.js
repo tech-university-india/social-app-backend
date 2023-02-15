@@ -225,18 +225,14 @@ describe('Entity Validator', () => {
 						date: '10 Feb 2023',
 						venue: 'Brigade'
 					},
-					location: ['Mumbai', 'Bangalore'],
-					createdBy: 1
+					location: ['Mumbai', 'Bangalore']
 				}
 			};
-
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
 			};
-
 			const mockNext = jest.fn();
-
 			entityValidator.createEntityValidator(mockReq, mockRes, mockNext);
 			expect(mockNext).toBeCalled();
 		});

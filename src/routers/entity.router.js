@@ -5,13 +5,11 @@ const entityValidator = require('../middlewares/entity.validator');
 
 entityRouter.post('/', entityValidator.createEntityValidator, entityController.createEntity);
 
-entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entityController.singleEntityRetiver);
+entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entityController.getSingleEntityData);
 
+entityRouter.get('/:type/:userId', entityValidator.entitiesBySingleUserValidator, entityController.getEntitiesBySingleUser);
 
-entityRouter.get('/:type/:userId', entityValidator.entitiesBySingleUserValidator, entityController.entitiesBySingleUserRetiver);
-
-entityRouter.delete('/:entityId', entityValidator.singleEntityValidator, entityController.singleEntityDeleter);
-
+entityRouter.delete('/:entityId', entityValidator.singleEntityValidator, entityController.deleteSingleEntity);
 
 entityRouter.put('/:entityId', entityValidator.updateValidatior, entityController.updateEntity);
 

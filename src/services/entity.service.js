@@ -1,26 +1,17 @@
 const { Entity, Action, User } = require('../models');
-const customHTTPError = require('../errors/httpError');
+const HTTPError = require('../errors/httpError');
 const { actionTypes } = require('../utils/constants');
 
 const sequelize = require('sequelize');
+// const { group } = require('console');
 
 
-const createPost = async (type, caption, imageURL, meta, location, createdBy) => {
-	const newPost = {
-		type,
-		caption,
-		imageURL,
-		meta: {
-			date: meta.date,
-			venue: meta.venue
-		},
-		location,
-		createdBy
+const createEntity = async (entityBody, userId) => {
+	const newEntity = {
+		...entityBody,
+		createdBy: userId
 	};
-  
-	const createPostResponseFromDB = await  Entity.create(newPost);
-	if(!createPostResponseFromDB ) throw new customHTTPError(400, 'Error while creating post');
-	return createPostResponseFromDB;
+	return await Entity.create(newEntity);
 };
 
 /* This function is used to get single entity data from Entities table
@@ -30,38 +21,64 @@ entity  JSON Object  return it.
  @param { integer } entityId 
 */
 
-const getSingleEntityData = async (entityId) => {
+const getSingleEntityData = async (entityId, userId) => {
+	// const entity = await Entity.findOne({
+	// 	attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', ],
+	// 	// [sequelize.literal(`(SELECT COUNT("Actions"."id") FROM "Actions" WHERE "Actions"."type" = 'LIKE' AND "Entity"."id" = ${entityId})`), 'LikeCount'], [sequelize.literal(`(SELECT COUNT("Actions"."id") FROM "Actions" WHERE "Actions"."type" = 'COMMENT' AND "Entity"."id" = ${entityId})`), 'commentCount']],
+	// 	where: {
+	// 		id: entityId
+	// 	},
+	// 	include: [{
+	// 		model: User,
+	// 		attributes: ['userName', 'designation', 'profilePictureURL']
+	// 	},
+	// 	{
+	// 		model: Action,
+	// 		attributes: [[sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'LikesCount']],
+	// 		where: {
+	// 			type: actionTypes.LIKE
+	// 		},
+	// 		required: false
+	// 	},
+	// 	{
+	// 		model: Action,
+	// 		attributes: ['meta', [sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'CommentsCount']],
+	// 		// attributes: ['meta'],
+	// 		where: {
+	// 			type: actionTypes.COMMENT
+	// 		},
+	// 		require: false
+	// 	}],
+	// 	group: ['"Entity"."id"', '"Actions"."id"', '"User"."FMNO"']
+	// });
+	// const entity = await Entity.findOne({
+	// 	where: { id: entityId },
+	// 	include: [{
+	// 		model: User,
+	// 		attributes: ['userName', 'designation', 'profilePictureURL']
+	// 	}, {
+	// 		model: Action,
+	// 		attributes: ["type", [sequelize.literal('(SELECT COUNT("Actions"."type"))'), 'count']],
+	// 		group: ["type"],
+	// 		required: false
+	// 	}],
+	// 	group: ['"Entity"."id"', '"User"."FMNO"', '"Actions"."type"']
+	// });
 	const entity = await Entity.findOne({
-		attributes: {
-			exclude: ['createdAt', 'updatedAt'],
-		},
-		where: {
-			id: entityId
-		},
+		where: { id: entityId },
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', ],
 		include: [{
 			model: User,
 			attributes: ['userName', 'designation', 'profilePictureURL']
-		},
-		{
+		}, {
 			model: Action,
-			attributes: [[sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'LikesCount']],
-			where: {
-				type: actionTypes.LIKE
-			},
-			required: false
-		},
-		{
-			model: Action,
-			attributes: ['meta', [sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'CommentsCount']],
-			where: {
-				type: actionTypes.COMMENT
-			},
-			require: false
-		}
-		],
-		group: ['"Entity"."id"', '"Actions"."id"', '"User"."FMNO"']
+			attributes: ["type", [sequelize.literal(`(SELECT COUNT("Actions"."type"))`), 'count']],
+			group: ["type"],
+			required: false,
+		}],
+		group: ['"Entity"."id"', '"User"."FMNO"', '"Actions"."type"']
 	});
-	if (!entity) throw new customHTTPError(404, 'Entity not found');
+	if (!entity) throw new HTTPError(404, 'Entity not found');
 	return entity;
 };
 
@@ -104,8 +121,6 @@ const getEntitiesBySingleUser = async (userId, type) => {
 		},
 		group: ['"Entity"."id"', '"Actions"."id"']
 	});
-	if (!entities) throw new customHTTPError(404, 'No entities found');
-
 	return entities;
 };
 
@@ -128,8 +143,7 @@ const updateEntityService = async (requestedEntityUpdateData, entityId) => {
 		}
 	}
 	);
-	if (updatedResponseFromDB[0] === 0) throw new customHTTPError(404, 'Entity not found');
-
+	if (updatedResponseFromDB[0] === 0) throw new HTTPError(404, 'Entity not found');
 	return updatedResponseFromDB;
 
 };
@@ -140,10 +154,10 @@ const deleteSingleEntity = async (entityId) => {
 			id: entityId
 		}
 	});
-	if (!entity) throw new customHTTPError(404, 'Entity not found');
+	if (!entity) throw new HTTPError(404, 'Entity not found');
 	return true;
 };
 
   
 
-module.exports = { getSingleEntityData, getEntitiesBySingleUser, updateEntityService, deleteSingleEntity, createPost };
+module.exports = { getSingleEntityData, getEntitiesBySingleUser, updateEntityService, deleteSingleEntity, createEntity };

@@ -4,8 +4,7 @@ const HTTPError = require('../errors/httpError');
 
 const createEntity = async (req, res) => {
 	try {
-		const { type, caption, imageURL, meta, location, createdBy } = req.body;
-		const newPost = await entityService.createPost(type, caption, imageURL, meta, location, createdBy);
+		const newPost = await entityService.createEntity(req.body, req.user.id);
 		res.status(201).json(newPost);
 	}
   
@@ -15,15 +14,13 @@ const createEntity = async (req, res) => {
 	}
 };
 
-
 /*
 This function acts as controller to retiver single user data
 from databse where it's paramters are:
 @param {Object} request
 @params {Object} response
-
 */
-const singleEntityRetiver = async (request, response) => {
+const getSingleEntityData = async (request, response) => {
 	try {
 		const entityId = request.params.entityId;
 		const entityData = await entityService.getSingleEntityData(entityId);
@@ -38,7 +35,7 @@ const singleEntityRetiver = async (request, response) => {
 	}
 };
 
-const entitiesBySingleUserRetiver = async (request, response) => {
+const getEntitiesBySingleUser = async (request, response) => {
 	try {
 		const userId = request.params.userId;
 		const type = request.params.type;
@@ -53,8 +50,7 @@ const entitiesBySingleUserRetiver = async (request, response) => {
 	}
 };
 
-
-const singleEntityDeleter = async (request, response) => {
+const deleteSingleEntity = async (request, response) => {
 	try {
 		const entityId = request.params.entityId;
 		await entityService.deleteSingleEntity(entityId);
@@ -67,7 +63,6 @@ const singleEntityDeleter = async (request, response) => {
 		}
 	}
 };
-
 
 const updateEntity = async (request, response) => {
 	try {
@@ -83,4 +78,4 @@ const updateEntity = async (request, response) => {
 	}
 };
 
-module.exports = { singleEntityRetiver, entitiesBySingleUserRetiver, updateEntity, singleEntityDeleter ,createEntity };
+module.exports = { createEntity, getSingleEntityData, getEntitiesBySingleUser, deleteSingleEntity, updateEntity };

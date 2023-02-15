@@ -16,9 +16,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/auth', authRouter);
-
 app.use('/profile', authValidator.JWTVaidator, profileRouter);
-app.use('/entity', entityRouter);
+app.use('/entity', authValidator.JWTVaidator, entityRouter);
 
 app.listen(PORT, () => {
 	console.log(`The Application has started on PORT: ${PORT}`);
