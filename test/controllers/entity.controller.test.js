@@ -4,7 +4,6 @@ const HTTPError = require('../../src/errors/httperror');
 
 describe('Entity Controller', () => {
 	describe('getSingleEntityData', () => {
-
 		it('should return 200 status code with entity data when entity is present ', async () => {
 			const mockReq = {
 				params: {
@@ -168,12 +167,22 @@ describe('Entity Controller', () => {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
 			};
-			jest.spyOn(entityService, 'updateEntityService').mockResolvedValue([1]);
+			const resolvedUpdate = [{
+				id: 1,
+				caption: 'This is a test caption',
+				imageURL: ['https://www.google.com',],
+				location: ['Bangalore',],
+				meta: {
+					date: '2020-10-10',
+					venue: 'Bangalore'
+				}
+			}];
+			jest.spyOn(entityService, 'updateEntityService').mockResolvedValue(resolvedUpdate);
 			await entityControllers.updateEntity(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(201);
 			expect(mockRes.json).toHaveBeenCalledWith({
-				message: 'Number of Rows update',
-				entityDataUpdate: 1
+				message: 'Entity data updated successfully',
+				updateResponse: resolvedUpdate
 			});
 		});
 		it('should return 500 status code when entity is not present ', async () => {
@@ -211,7 +220,8 @@ describe('Entity Controller', () => {
 			jest.spyOn(entityService, 'updateEntityService').mockRejectedValue(error);
 			const request = {
 				body: { /* some test data */ },
-				params: { entityId: '123' }
+				params: { entityId: '123' },
+				user: { id: 1 }
 			};
 			const response = {
 				status: jest.fn().mockReturnThis(),

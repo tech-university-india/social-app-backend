@@ -24,7 +24,10 @@ const entityUpdatingSchema = joi.object({
 		date: joi.date(),
 		venue: joi.string()
 	}),
-	location: joi.array().items(joi.string())
+	location: joi.array().items(joi.string()),
+	tags: joi.array().items(joi.object({
+		id: joi.number().integer().required(),
+	})),
 });
 
 const createEntitySchema = joi.object({
@@ -36,11 +39,13 @@ const createEntitySchema = joi.object({
 		venue: joi.string()
 	},
 	location: joi.array().items(joi.string()),
+	tags: joi.array().items(joi.object({
+		id: joi.number().integer().required(),
+	})),
 });
   
 const createEntityValidator = (req, res, next) => {
 	const { error } = createEntitySchema.validate(req.body);
-  
 	if (error) {
 		res.status(400).json({ message: error.message });
 		return;

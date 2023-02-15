@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER
 		}
 	}, {
+		updatedAt: false,
 		sequelize,
 		modelName: 'Tag',
 	});

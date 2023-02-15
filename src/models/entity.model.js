@@ -27,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
 		caption: DataTypes.TEXT,
 		imageURL: DataTypes.ARRAY(DataTypes.STRING),
 		meta: DataTypes.JSONB,
+		likeCount: DataTypes.INTEGER,
+		commentCount: DataTypes.INTEGER,
 		location: DataTypes.ARRAY(DataTypes.STRING),
 		createdBy: DataTypes.INTEGER
 	}, {

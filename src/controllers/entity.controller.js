@@ -23,7 +23,7 @@ from databse where it's paramters are:
 const getSingleEntityData = async (request, response) => {
 	try {
 		const entityId = request.params.entityId;
-		const entityData = await entityService.getSingleEntityData(entityId);
+		const entityData = await entityService.getSingleEntityData(entityId, request.user.id);
 		response.status(200).json({ message: 'Entity data fetched successfully', entityData });
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -37,9 +37,7 @@ const getSingleEntityData = async (request, response) => {
 
 const getEntitiesBySingleUser = async (request, response) => {
 	try {
-		const userId = request.params.userId;
-		const type = request.params.type;
-		const entityData = await entityService.getEntitiesBySingleUser(userId, type);
+		const entityData = await entityService.getEntitiesBySingleUser(request.params.userId, request.params.type, request.user.id);
 		response.status(200).json({ message: 'Entity data fetched successfully', entityData });
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -52,8 +50,7 @@ const getEntitiesBySingleUser = async (request, response) => {
 
 const deleteSingleEntity = async (request, response) => {
 	try {
-		const entityId = request.params.entityId;
-		await entityService.deleteSingleEntity(entityId);
+		await entityService.deleteSingleEntity(request.params.entityId, request.user.id);
 		response.status(200).json({ message: 'Entity data deleted successfully' });
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -66,8 +63,8 @@ const deleteSingleEntity = async (request, response) => {
 
 const updateEntity = async (request, response) => {
 	try {
-		const updateResponse = await entityService.updateEntityService(request.body, request.params.entityId);
-		response.status(201).json({ message: 'Number of Rows update', entityDataUpdate: updateResponse[0] });
+		const updateResponse = await entityService.updateEntityService(request.body, request.params.entityId, request.user.id);
+		response.status(201).json({ message: 'Entity data updated successfully', updateResponse });
 
 	} catch (error) {
 		if (error instanceof HTTPError) {
