@@ -8,8 +8,8 @@ const registerDTO = Joi.object({
 	FMNO: Joi.number().required(),
 	email: Joi.string().email().required(),
 	password: Joi.string().min(8).max(30).required(),
-	bio: Joi.string().max(255),
 	userName: Joi.string().min(3).max(30).required(),
+	bio: Joi.string().max(255),
 	designation: Joi.string().min(3).max(30).required(),
 	profilePictureURL: Joi.string().uri()
 });
