@@ -148,7 +148,8 @@ const getEntitiesBySingleUser = async (id, type, userId) => {
 				attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
 			}
 		}],
-		group: ['"Entity"."id"', '"User"."FMNO"', '"Tags"."id"', '"Tags->User"."FMNO"']
+		group: ['"Entity"."id"', '"User"."FMNO"', '"Tags"."id"', '"Tags->User"."FMNO"'],
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']]
 	});
 	return entities;
 };
@@ -159,6 +160,7 @@ This function is used to update the entity data in the database
 @param {object} request
 */
 const updateEntityService = async (requestedEntityUpdateData, entityId, userId) => {
+	//TODO: Better Logic and Error Handling for checking the user is the owner of the entity
 	const updatedResponseFromDB = await Entity.update({
 		caption: requestedEntityUpdateData.caption,
 		meta: requestedEntityUpdateData.meta,
@@ -166,14 +168,13 @@ const updateEntityService = async (requestedEntityUpdateData, entityId, userId) 
 		location: requestedEntityUpdateData.location
 	}, {
 		where: {
-			id: entityId
+			id: entityId,
+			createdBy: userId
 		},
 		returning: true
 	});
 	if (updatedResponseFromDB[0] === 0) throw new HTTPError(404, 'Entity not found');
-	const deletedTags = Tag.destroy({
-		where: { entityId: entityId }
-	});
+	await Tag.destroy({ where: { entityId: entityId } });
 	const createdTags = await Tag.bulkCreate(requestedEntityUpdateData.tags.map(tag => ({ taggedId: tag.id, entityId: entityId })));
 	return { entity: updatedResponseFromDB[1], tags: createdTags };
 };
