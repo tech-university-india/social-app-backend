@@ -85,4 +85,6 @@ describe('Profile Controller', () => {
         expect(mockRes.status).toBeCalledWith(401);
         expect(mockRes.status().json).toBeCalledWith({ message: 'Unauthorized' });
     });
+
+       
 });
