@@ -1,16 +1,17 @@
-const entities = require('../controllers/entity.controller');
+const entityController = require('../controllers/entity.controller');
 const entityRouter = require('express').Router();
 const entityValidator = require('../middlewares/entity.validator');
 
 
+entityRouter.post('/', entityValidator.createEntityValidator, entityController.createEntity);
 
-entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entities.singleEntityRetiver);
+entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entityController.getSingleEntityData);
 
+entityRouter.get('/:type/:userId', entityValidator.entitiesBySingleUserValidator, entityController.getEntitiesBySingleUser);
 
-entityRouter.get('/:type/:userId', entityValidator.entitiesBySingleUserValidator, entities.entitiesBySingleUserRetiver);
-entityRouter.delete('/:entityId', entityValidator.singleEntityValidator, entities.singleEntityDeleter);
+entityRouter.delete('/:entityId', entityValidator.singleEntityValidator, entityController.deleteSingleEntity);
 
-entityRouter.put('/:entityId', entityValidator.updateValidatior, entities.updateEntity);
+entityRouter.put('/:entityId', entityValidator.updateValidatior, entityController.updateEntity);
 
 
 module.exports = entityRouter;

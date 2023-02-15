@@ -100,6 +100,8 @@ describe('Entity Validator', () => {
 		});
 
 	});
+
+
 	describe('updateValidatior', () => {
 		it('should return 400 status code when name is not a string',  () => {
 			const request = {
@@ -210,4 +212,46 @@ describe('Entity Validator', () => {
 	
 		});
 	});
+
+
+	describe('Create Entity Validator', () => {
+		it('should return nothing if all fields are valid', () => {
+			const mockReq = {
+				body: {
+					type: 'ANNOUNCEMENT',
+					caption: 'lorem ipsum',
+					imageURL: ['abc.jpg'],
+					meta: {
+						date: '10 Feb 2023',
+						venue: 'Brigade'
+					},
+					location: ['Mumbai', 'Bangalore']
+				}
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			const mockNext = jest.fn();
+			entityValidator.createEntityValidator(mockReq, mockRes, mockNext);
+			expect(mockNext).toBeCalled();
+		});
+ 
+		it('should throw an error', () => {
+			const mockReq = {
+				body: jest.fn()
+			};
+ 
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+
+			const mockNext = jest.fn();
+ 
+			entityValidator.createEntityValidator(mockReq, mockRes, mockNext);
+			expect(mockRes.status).toBeCalledWith(400);
+		});
+	});
+
 });

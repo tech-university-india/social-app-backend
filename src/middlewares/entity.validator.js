@@ -1,5 +1,7 @@
 const joi = require('joi');
 
+const { entityTypes } = require('../../src/utils/constants');
+
 /* This Schema used to verify entity ID which is 
 given through path
 
@@ -22,8 +24,34 @@ const entityUpdatingSchema = joi.object({
 		date: joi.date(),
 		venue: joi.string()
 	}),
-	location: joi.array().items(joi.string())
+	location: joi.array().items(joi.string()),
+	tags: joi.array().items(joi.object({
+		id: joi.number().integer().required(),
+	})),
 });
+
+const createEntitySchema = joi.object({
+	type: joi.string().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required(),
+	caption: joi.string(),
+	imageURL: joi.array().items(joi.string()),
+	meta: {
+		date: joi.string(),
+		venue: joi.string()
+	},
+	location: joi.array().items(joi.string()),
+	tags: joi.array().items(joi.object({
+		id: joi.number().integer().required(),
+	})),
+});
+  
+const createEntityValidator = (req, res, next) => {
+	const { error } = createEntitySchema.validate(req.body);
+	if (error) {
+		res.status(400).json({ message: error.message });
+		return;
+	}
+	next();
+};
 
 const singleEntityValidator = (request, response, next) => {
 	const { error } = entitySchmea.validate({ entityId: request.params.entityId });
@@ -52,4 +80,4 @@ const updateValidatior = (request, response,next) => {
 	next();
 };
 
-module.exports = { singleEntityValidator, entitiesBySingleUserValidator, updateValidatior };
+module.exports = { singleEntityValidator, entitiesBySingleUserValidator, updateValidatior, createEntityValidator };

@@ -31,6 +31,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }, {
+      uniqueKeys: {
+        tag_unique: {
+          fields: ['entityId', 'taggedId']
+        }
+      }
     });
   },
   async down(queryInterface, Sequelize) {
