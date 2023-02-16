@@ -24,7 +24,7 @@ const getSingleEntityData = async (request, response) => {
 	try {
 		const entityId = request.params.entityId;
 		const entityData = await entityService.getSingleEntityData(entityId, request.user.id);
-		response.status(200).json({ message: 'Entity data fetched successfully', entityData });
+		response.status(200).json(entityData);
 	} catch (error) {
 		if (error instanceof HTTPError) {
 			return response.status(error.statusCode).json({ message: error.message });
@@ -32,6 +32,20 @@ const getSingleEntityData = async (request, response) => {
 			return response.status(500).json({ message: error.message });
 		}
 
+	}
+};
+
+const getCommentsByEntityId = async (request, response) => {
+	try {
+		const entityId = request.params.entityId;
+		const comments = await entityService.getCommentsByEntityId(entityId);
+		response.status(200).json(comments);
+	} catch (error) {
+		if (error instanceof HTTPError) {
+			return response.status(error.statusCode).json({ message: error.message });
+		} else {
+			return response.status(500).json({ message: error.message });
+		}
 	}
 };
 
@@ -75,4 +89,4 @@ const updateEntity = async (request, response) => {
 	}
 };
 
-module.exports = { createEntity, getSingleEntityData, getEntitiesBySingleUser, deleteSingleEntity, updateEntity };
+module.exports = { createEntity, getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, deleteSingleEntity, updateEntity };

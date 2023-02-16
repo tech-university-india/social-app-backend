@@ -23,10 +23,7 @@ describe('Entity Controller', () => {
 			await entityControllers.getSingleEntityData(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(200);
 			expect(mockRes.json).toHaveBeenCalledWith({
-				message: 'Entity data fetched successfully',
-				entityData: {
-					id: 1, name: 'test', type: 'test', userId: 1
-				}
+				id: 1, name: 'test', type: 'test', userId: 1
 			});
 		});
 
@@ -68,10 +65,98 @@ describe('Entity Controller', () => {
 			jest.spyOn(entityService, 'getSingleEntityData').mockRejectedValue(new Error('Internal Server Error'));
 			await entityControllers.getSingleEntityData(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(500);
-			expect(mockRes.json).toHaveBeenCalledWith({
-				message: 'Internal Server Error'
-			});
-
+			expect(mockRes.json).toHaveBeenCalledWith({ message: 'Internal Server Error' });
+		});
+	});
+	describe('getCommentsByEntityId', () => {
+		it('should return 200 status code with array of comments when comments for entityId is present ', async () => {
+			const mockReq = {
+				params: {
+					entityId: 1
+				},
+				user: {
+					id: 1
+				}
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			const comments = [
+				{
+					"meta": {
+						"commentText": "comment4"
+					},
+					"User": {
+						"FMNO": 3,
+						"userName": "Jim Smith",
+						"designation": "Team Lead",
+						"profilePictureURL": "https://example.com/image3.jpg"
+					}
+				},
+				{
+					"meta": {
+						"commentText": "comment4"
+					},
+					"User": {
+						"FMNO": 3,
+						"userName": "Jim Smith",
+						"designation": "Team Lead",
+						"profilePictureURL": "https://example.com/image3.jpg"
+					}
+				},
+				{
+					"meta": {
+						"commentText": "comment4"
+					},
+					"User": {
+						"FMNO": 4,
+						"userName": "Sarah Johnson",
+						"designation": "Analyst",
+						"profilePictureURL": "https://example.com/image4.jpg"
+					}
+				}
+			]
+			jest.spyOn(entityService, 'getCommentsByEntityId').mockResolvedValue(comments);
+			await entityControllers.getCommentsByEntityId(mockReq, mockRes);
+			expect(mockRes.status).toHaveBeenCalledWith(200);
+			expect(mockRes.json).toHaveBeenCalledWith(comments);
+		});
+		it('should return HTTPError', async () => {
+			const mockReq = {
+				params: {
+					entityId: 1
+				},
+				user: {
+					id: 1
+				}
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(entityService, 'getCommentsByEntityId').mockRejectedValue(new HTTPError(404, 'Comments not found'));
+			await entityControllers.getCommentsByEntityId(mockReq, mockRes);
+			expect(mockRes.status).toHaveBeenCalledWith(404);
+			expect(mockRes.json).toHaveBeenCalledWith({ message: 'Comments not found' });
+		});
+		it('should return 500 status code when any other error is thrown ', async () => {
+			const mockReq = {
+				params: {
+					entityId: 1
+				},
+				user: {
+					id: 1
+				}
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			jest.spyOn(entityService, 'getCommentsByEntityId').mockRejectedValue(new Error("Internal Server Error"));
+			await entityControllers.getCommentsByEntityId(mockReq, mockRes);
+			expect(mockRes.status).toHaveBeenCalledWith(500);
+			expect(mockRes.json).toHaveBeenCalledWith({ message: 'Internal Server Error' });
 		});
 	});
 	describe('getEntitiesBySingleUser', () => {
@@ -353,20 +438,19 @@ describe('Entity Controller', () => {
 			await entityControllers.createEntity(mockReq, mockRes);
 			expect(mockRes.status).toBeCalledWith(500);
 		});
-		// it('should throw 400', async () => {
-		// 	jest.spyOn(entityService, 'createPost').mockRejectedValue(new HTTPError(400, 'Error while creating post'));
-		// 	const mockReq = {
-		// 		body: jest.fn()
-		// 	};
-
-		// 	const mockRes = {
-		// 		status: jest.fn().mockReturnThis(),
-		// 		json: jest.fn()
-		// 	};
-
-		// 	await entityControllers.createEntity(mockReq, mockRes);
-		// 	expect(mockRes.status).toBeCalledWith(400);
-		// 	expect(mockRes.json).toBeCalledWith({ message: 'Error while creating post' });
-		// });
+		it('should throw 400', async () => {
+			jest.spyOn(entityService, 'createEntity').mockRejectedValue(new HTTPError(400, 'Error while creating post'));
+			const mockReq = {
+				body: jest.fn(),
+				user: { id: 1 }
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			await entityControllers.createEntity(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(400);
+			expect(mockRes.json).toBeCalledWith({ message: 'Error while creating post' });
+		});
 	});
 });

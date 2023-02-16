@@ -7,6 +7,8 @@ entityRouter.post('/', entityValidator.createEntityValidator, entityController.c
 
 entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entityController.getSingleEntityData);
 
+entityRouter.get('/:entityId/comments', entityValidator.singleEntityValidator, entityController.getCommentsByEntityId);
+
 entityRouter.get('/:type/:userId', entityValidator.entitiesBySingleUserValidator, entityController.getEntitiesBySingleUser);
 
 entityRouter.delete('/:entityId', entityValidator.singleEntityValidator, entityController.deleteSingleEntity);
