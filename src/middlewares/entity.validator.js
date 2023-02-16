@@ -10,9 +10,10 @@ const entitySchmea = Joi.object({
 	entityId: Joi.number().integer().required(),
 });
 
+
 const entityForUserIDSchema = Joi.object({
 	userId: Joi.string().required(),
-	type: Joi.string().required()
+	type: Joi.string().uppercase().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required()
 });
 
 
@@ -70,6 +71,12 @@ const entitiesBySingleUserValidator = (request, response, next) => {
 	next();
 };
 
+const entityFeedValidator = (request, response, next) => {
+	const { error } = Joi.object({ type: Joi.string().uppercase().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required() }).validate(request.params);
+	if (error) return response.status(400).json({ message: error.message });
+	request.params.type = request.params.type.toUpperCase();
+	next();
+};
 
 const updateValidatior = (request, response,next) => {
 	request.body.entityId=request.params.entityId;
@@ -80,4 +87,4 @@ const updateValidatior = (request, response,next) => {
 	next();
 };
 
-module.exports = { singleEntityValidator, entitiesBySingleUserValidator, updateValidatior, createEntityValidator };
+module.exports = { singleEntityValidator, entitiesBySingleUserValidator, entityFeedValidator, updateValidatior, createEntityValidator };

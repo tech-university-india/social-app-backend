@@ -9,6 +9,8 @@ entityRouter.get('/:entityId', entityValidator.singleEntityValidator, entityCont
 
 entityRouter.get('/:entityId/comments', entityValidator.singleEntityValidator, entityController.getCommentsByEntityId);
 
+entityRouter.get('/:type/feed', entityValidator.entityFeedValidator, entityController.getFeed);
+
 entityRouter.get('/:type/:userId', entityValidator.entitiesBySingleUserValidator, entityController.getEntitiesBySingleUser);
 
 entityRouter.delete('/:entityId', entityValidator.singleEntityValidator, entityController.deleteSingleEntity);

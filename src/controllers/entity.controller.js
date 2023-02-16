@@ -1,5 +1,6 @@
 const entityService = require('../services/entity.service');
 const HTTPError = require('../errors/httpError');
+const { entityTypes } = require('../utils/constants');
 
 
 const createEntity = async (req, res) => {
@@ -52,7 +53,25 @@ const getCommentsByEntityId = async (request, response) => {
 const getEntitiesBySingleUser = async (request, response) => {
 	try {
 		const entityData = await entityService.getEntitiesBySingleUser(request.params.userId, request.params.type, request.user.id);
-		response.status(200).json({ message: 'Entity data fetched successfully', entityData });
+		response.status(200).json(entityData);
+	} catch (error) {
+		if (error instanceof HTTPError) {
+			return response.status(error.statusCode).json({ message: error.message });
+		} else {
+			return response.status(500).json({ message: error.message });
+		}
+	}
+};
+
+const getFeed = async (request, response) => {
+	try {
+		if (request.params.type === entityTypes.POST) {
+			const postFeed = await entityService.getPostFeed(request.user.id);
+			response.status(200).json(postFeed);
+		} else if(request.params.type == entityTypes.ANNOUNCEMENT) {
+			const announcementFeed = await entityService.getAnnouncementFeed(request.user.id);
+			response.status(200).json(announcementFeed);
+		}
 	} catch (error) {
 		if (error instanceof HTTPError) {
 			return response.status(error.statusCode).json({ message: error.message });
@@ -78,7 +97,7 @@ const deleteSingleEntity = async (request, response) => {
 const updateEntity = async (request, response) => {
 	try {
 		const updateResponse = await entityService.updateEntityService(request.body, request.params.entityId, request.user.id);
-		response.status(201).json({ message: 'Entity data updated successfully', updateResponse });
+		response.status(201).json(updateResponse);
 
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -89,4 +108,4 @@ const updateEntity = async (request, response) => {
 	}
 };
 
-module.exports = { createEntity, getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, deleteSingleEntity, updateEntity };
+module.exports = { createEntity, getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, getFeed, deleteSingleEntity, updateEntity };

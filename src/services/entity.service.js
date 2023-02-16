@@ -1,6 +1,6 @@
 const { Entity, Action, User, Tag } = require('../models');
 const HTTPError = require('../errors/httpError');
-const { actionTypes } = require('../utils/constants');
+const { actionTypes, entityTypes } = require('../utils/constants');
 
 const sequelize = require('sequelize');
 
@@ -71,14 +71,18 @@ entity  JSON Object  return it.
  @param { integer } userId
  @param { string } type
 */
-const getEntitiesBySingleUser = async (id, type, userId) => {
+const getEntitiesBySingleUser = async (id, type, userId, pageDate = Date.now()) => {
 	const entities = await Entity.findAll({
-		where: { createdBy: id, type: type.toUpperCase() },
+		where: { 
+			createdBy: id, 
+			type: type.toUpperCase(),
+			updatedAt: { [sequelize.Op.lte]: pageDate }
+		},
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
 		include: [{
 			model: User,
 			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
-		}, 
+		},
 		{
 			model: Action,
 			where: { type: actionTypes.LIKE, createdBy: userId },
@@ -97,6 +101,53 @@ const getEntitiesBySingleUser = async (id, type, userId) => {
 	});
 	return entities;
 };
+
+const getPostFeed = async (userId, pageDate = Date.now()) => {
+	//TODO: Better Logic on sequelize.literal 
+	const entites = await Entity.findAll({
+		where: {
+			type: entityTypes.POST,
+			[sequelize.Op.or]: [{
+				id: { [sequelize.Op.in]: sequelize.literal(`(SELECT "Tags"."entityId" FROM "Tags" WHERE "Tags"."taggedId" = ${userId})`) }
+			}, {
+				createdBy: { [sequelize.Op.in]: sequelize.literal(`(SELECT "Follows"."followingId" FROM "Follows" WHERE "Follows"."followerId" = ${userId})`) }
+			}],
+			updatedAt: { [sequelize.Op.lte]: pageDate }
+		},
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
+		include: [{
+			model: User,
+			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
+		}, {
+			model: Action,
+			where: { type: actionTypes.LIKE, createdBy: userId },
+			attributes: [],
+			required: false
+		}],
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']]
+	});
+	return entites;
+};
+
+const getAnnouncementFeed = async (userId, locations, startDate, endDate) => {
+	const entites = await Entity.findAll({
+		where: {
+			type: entityTypes.ANNOUNCEMENT,
+		},
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
+		include: [{
+			model: User,
+			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
+		}, {
+			model: Action,
+			where: { type: actionTypes.LIKE, createdBy: userId },
+			attributes: [],
+			required: false
+		}],
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']]
+	});
+	return entites;
+}
 
 /*
 This function is used to update the entity data in the database
@@ -135,6 +186,6 @@ const deleteSingleEntity = async (entityId, userId) => {
 	return true;
 };
 
-  
 
-module.exports = { getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, updateEntityService, deleteSingleEntity, createEntity };
+
+module.exports = { createEntity, getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, getPostFeed, getAnnouncementFeed, updateEntityService, deleteSingleEntity };

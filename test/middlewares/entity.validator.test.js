@@ -1,12 +1,9 @@
 const entityValidator = require('../../src/middlewares/entity.validator');
+const { entityTypes } = require('../../src/utils/constants');
 
 describe('Entity Validator', () => {
-
 	describe('singleEntityValidator', () => {
-
-
 		it('should call next function when entity id is a number', async () => {
-
 			const request = {
 				params: {
 					entityId: 'not-a-number',
@@ -17,14 +14,10 @@ describe('Entity Validator', () => {
 					json: jest.fn(),
 				}),
 			};
-
 			entityValidator.singleEntityValidator(request, response);
-
 			expect(response.status).toHaveBeenCalledWith(400);
 			expect(response.status().json).toHaveBeenCalledWith({ message: '"entityId" must be a number' });
-
 		});
-
 		it('should return 400 status code when entity id is not a number', async () => {
 			const request = {
 				params: {
@@ -33,17 +26,11 @@ describe('Entity Validator', () => {
 			};
 			const response = {};
 			const next = jest.fn();
-
 			entityValidator.singleEntityValidator(request, response, next);
-
 			expect(next).toHaveBeenCalled();
 		});
-
 	});
-
-
 	describe('entitiesBySingleUserValidator', () => {
-
 		it('should return 400 status code when userId is not a string', async () => {
 			const request = {
 				params: {
@@ -56,14 +43,10 @@ describe('Entity Validator', () => {
 					json: jest.fn(),
 				}),
 			};
-
 			entityValidator.entitiesBySingleUserValidator(request, response);
-
 			expect(response.status).toHaveBeenCalledWith(400);
 			expect(response.status().json).toHaveBeenCalledWith({ message: '"userId" must be a string' });
-
 		});
-
 		it('should return 400 status code when type is not a string', async () => {
 			const request = {
 				params: {
@@ -76,14 +59,10 @@ describe('Entity Validator', () => {
 					json: jest.fn(),
 				}),
 			};
-
 			entityValidator.entitiesBySingleUserValidator(request, response);
-
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.status().json).toHaveBeenCalledWith({ message: '"type" must be a string' });
-
+			expect(response.status().json).toHaveBeenCalledWith({ message: '\"type\" must be one of [ANNOUNCEMENT, POST]' });
 		});
-
 		it('should call next function when userId and type are valid', async () => {
 			const request = {
 				params: {
@@ -93,15 +72,35 @@ describe('Entity Validator', () => {
 			};
 			const response = {};
 			const next = jest.fn();
-
 			entityValidator.entitiesBySingleUserValidator(request, response, next);
-
 			expect(next).toHaveBeenCalled();
 		});
 
 	});
-
-
+	describe('entityFeedValidator', () => {
+		it('should call next function when type is valid', async () => {
+			const request = {
+				params: { type: entityTypes.POST },
+			};
+			const response = {};
+			const next = jest.fn();
+			entityValidator.entityFeedValidator(request, response, next);
+			expect(next).toHaveBeenCalled();
+		});
+		it('should return 400 status code when type is not a string', async () => {
+			const request = {
+				params: { type: 42 },
+			};
+			const response = {
+				status: jest.fn().mockReturnValue({
+					json: jest.fn(),
+				}),
+			};
+			entityValidator.entityFeedValidator(request, response);
+			expect(response.status).toHaveBeenCalledWith(400);
+			expect(response.status().json).toHaveBeenCalledWith({ message: '\"type\" must be one of [ANNOUNCEMENT, POST]' });
+		});
+	});
 	describe('updateValidatior', () => {
 		it('should return 400 status code when name is not a string',  () => {
 			const request = {
