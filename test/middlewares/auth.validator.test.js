@@ -104,7 +104,7 @@ describe('Auth Validator', () => {
   });
   describe('JWT Validator', () => {
     it('should return nothing if all fields are valid', async () => {
-      jest.spyOn(JWT, 'verify').mockReturnValue({ FMNO: 12 });
+      jest.spyOn(JWT, 'verify').mockReturnValue({ id: 12 });
       const mockReq = {
         headers: {
           authorization: 'Bearer token'
@@ -116,6 +116,22 @@ describe('Auth Validator', () => {
       const mockNext = jest.fn();
       await authValidator.JWTVaidator(mockReq, mockRes, mockNext);
       expect(mockNext).toBeCalled();
+    });
+    it('should return 401 Access token for Invalid Access Token when id not present', async () => {
+      jest.spyOn(JWT, 'verify').mockReturnValue({ name: 3 });
+      const mockReq = {
+        headers: {
+          authorization: 'Bearer token'
+        }
+      };
+      const mockRes = {
+        status: jest.fn().mockReturnValue({ json: jest.fn() })
+      };
+      const mockNext = jest.fn();
+      await authValidator.JWTVaidator(mockReq, mockRes, mockNext);
+      expect(mockRes.status).toBeCalledWith(401);
+      expect(mockRes.status().json).toBeCalledWith({ message: 'Invalid Token' });
+      expect(mockNext).not.toBeCalled();
     });
     it('should return 401 Access token for Invalid Access Token', async () => {
       const mockReq = {
