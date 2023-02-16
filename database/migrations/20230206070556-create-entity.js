@@ -25,6 +25,16 @@ module.exports = {
       meta: {
         type: Sequelize.JSONB
       },
+      likeCount: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
+      commentCount: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
       location: {
         type: Sequelize.ARRAY(Sequelize.STRING)
       },
