@@ -104,7 +104,7 @@ describe('Auth Validator', () => {
   });
   describe('JWT Validator', () => {
     it('should return nothing if all fields are valid', async () => {
-      jest.spyOn(JWT, 'verify').mockReturnValue({ id: 12 });
+      jest.spyOn(JWT, 'verify').mockReturnValue({ id: 12, iat: 20, exp: 30 });
       const mockReq = {
         headers: {
           authorization: 'Bearer token'

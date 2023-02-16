@@ -37,7 +37,7 @@ const JWTVaidator = (req, res, next) => {
 		const token = authHeader && authHeader.split(' ')[1];
 		if (!token) throw new HTTPError(401, 'Access denied');
 		const verifiedData = JWT.verify(token, process.env.JWT_SECRET);
-		const { error } = Joi.object({ id: Joi.number().required() }).validate(verifiedData);
+		const { error } = Joi.object({ id: Joi.number().required(), iat: Joi.number().required(), exp: Joi.number().required() }).validate(verifiedData);
 		if (error) throw new HTTPError(401, 'Invalid Token');
 		req.user = verifiedData;
 		next();

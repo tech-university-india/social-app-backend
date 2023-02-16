@@ -26,54 +26,12 @@ entity  JSON Object  return it.
  @param { integer } entityId 
 */
 const getSingleEntityData = async (entityId, userId) => {
-	// const entity = await Entity.findOne({
-	// 	attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', ],
-	// 	// [sequelize.literal(`(SELECT COUNT("Actions"."id") FROM "Actions" WHERE "Actions"."type" = 'LIKE' AND "Entity"."id" = ${entityId})`), 'LikeCount'], [sequelize.literal(`(SELECT COUNT("Actions"."id") FROM "Actions" WHERE "Actions"."type" = 'COMMENT' AND "Entity"."id" = ${entityId})`), 'commentCount']],
-	// 	where: {
-	// 		id: entityId
-	// 	},
-	// 	include: [{
-	// 		model: User,
-	// 		attributes: ['userName', 'designation', 'profilePictureURL']
-	// 	},
-	// 	{
-	// 		model: Action,
-	// 		attributes: [[sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'LikesCount']],
-	// 		where: {
-	// 			type: actionTypes.LIKE
-	// 		},
-	// 		required: false
-	// 	},
-	// 	{
-	// 		model: Action,
-	// 		attributes: ['meta', [sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'CommentsCount']],
-	// 		// attributes: ['meta'],
-	// 		where: {
-	// 			type: actionTypes.COMMENT
-	// 		},
-	// 		require: false
-	// 	}],
-	// 	group: ['"Entity"."id"', '"Actions"."id"', '"User"."FMNO"']
-	// });
-	// const entity = await Entity.findOne({
-	// 	where: { id: entityId },
-	// 	include: [{
-	// 		model: User,
-	// 		attributes: ['userName', 'designation', 'profilePictureURL']
-	// 	}, {
-	// 		model: Action,
-	// 		attributes: ["type", [sequelize.literal('(SELECT COUNT("Actions"."type"))'), 'count']],
-	// 		group: ["type"],
-	// 		required: false
-	// 	}],
-	// 	group: ['"Entity"."id"', '"User"."FMNO"', '"Actions"."type"']
-	// });
 	const entity = await Entity.findOne({
 		where: { id: entityId },
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'isLiked']],
 		include: [{
 			model: User,
-			attributes: ['userName', 'designation', 'profilePictureURL']
+			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
 		}, {
 			model: Action,
 			where: { type: actionTypes.LIKE, createdBy: userId },
@@ -93,7 +51,20 @@ const getSingleEntityData = async (entityId, userId) => {
 	return entity;
 };
 
-
+const getCommentsByEntityId = async (entityId) => {
+	return await Action.findAll({
+		where: {
+			type: actionTypes.COMMENT,
+			entityId: entityId
+		},
+		attributes: ['meta'],
+		include: {
+			model: User,
+			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL'],
+			required: false,
+		}
+	});
+};
 
 /* This function is used to get all the entities of a single user from Entities table
  and also get the like and comments of the entity from Action table and construct the final
@@ -101,39 +72,13 @@ entity  JSON Object  return it.
  @param { integer } userId
  @param { string } type
 */
-
 const getEntitiesBySingleUser = async (id, type, userId) => {
-	// const entities = await Entity.findAll({
-	// 	attributes: {
-	// 		exclude: ['createdAt', 'updatedAt'],
-	// 	},
-	// 	include: [{
-	// 		model: Action,
-	// 		attributes: [[sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'LikesCount']],
-	// 		where: {
-	// 			type: actionTypes.LIKE
-	// 		},
-	// 		required: false
-	// 	}, {
-	// 		model: Action,
-	// 		attributes: [[sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'CommentsCount']],
-	// 		where: {
-	// 			type: actionTypes.COMMENT
-	// 		},
-	// 		required: false
-	// 	}],
-	// 	where: {
-	// 		createdBy: userId,
-	// 		type: type.toUpperCase()
-	// 	},
-	// 	group: ['"Entity"."id"', '"Actions"."id"']
-	// });
 	const entities = await Entity.findAll({
 		where: { createdBy: id, type: type.toUpperCase() },
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'isLiked']],
 		include: [{
 			model: User,
-			attributes: ['userName', 'designation', 'profilePictureURL']
+			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
 		}, 
 		{
 			model: Action,
@@ -180,6 +125,7 @@ const updateEntityService = async (requestedEntityUpdateData, entityId, userId) 
 };
 
 const deleteSingleEntity = async (entityId, userId) => {
+	//TODO: Better Logic and Error Handling for checking the user is the owner of the entity
 	const isDeleted = await Entity.destroy({
 		where: {
 			id: entityId,
@@ -192,4 +138,4 @@ const deleteSingleEntity = async (entityId, userId) => {
 
   
 
-module.exports = { getSingleEntityData, getEntitiesBySingleUser, updateEntityService, deleteSingleEntity, createEntity };
+module.exports = { getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, updateEntityService, deleteSingleEntity, createEntity };
