@@ -65,7 +65,7 @@ const getEntitiesBySingleUser = async (request, response) => {
 const deleteSingleEntity = async (request, response) => {
 	try {
 		await entityService.deleteSingleEntity(request.params.entityId, request.user.id);
-		response.status(200).json({ message: 'Entity data deleted successfully' });
+		response.sendStatus(204);
 	} catch (error) {
 		if (error instanceof HTTPError) {
 			return response.status(error.statusCode).json({ message: error.message });

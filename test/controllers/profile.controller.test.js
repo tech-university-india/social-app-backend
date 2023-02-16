@@ -151,12 +151,12 @@ describe('Profile Controller', () => {
 			const mockReq = { 'params': { 'userId': 1 }, 'user': { 'id': 2 } };
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
-				json: jest.fn()
+				json: jest.fn(),
+				sendStatus: jest.fn()
 			};
 			jest.spyOn(profileService, 'unfollowById').mockResolvedValue(1);
 			await profileController.unfollowById(mockReq, mockRes);
-			expect(mockRes.status).toBeCalledWith(200);
-			expect(mockRes.json).toBeCalledWith({ message: 'Unfollowed successfully' });
+			expect(mockRes.sendStatus).toBeCalledWith(204);
 		});
 		it('should return 200 OK with Not following user', async () => {
 			const mockReq = { 'params': { 'userId': 1 }, 'user': { 'id': 2 } };
