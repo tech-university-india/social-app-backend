@@ -29,16 +29,6 @@ module.exports = {
 			createdAt: new Date(),
 		},
 		{
-			entityId: 5,
-			taggedId: 3,
-			createdAt: new Date(),
-		},
-		{
-			entityId: 6,
-			taggedId: 4,
-			createdAt: new Date(),
-		},
-		{
 			entityId: 6,
 			taggedId: 4,
 			createdAt: new Date(),

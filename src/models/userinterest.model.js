@@ -5,10 +5,10 @@ const {
 module.exports = (sequelize, DataTypes) => {
 	class UserInterest extends Model {
 		/**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+	 * Helper method for defining associations.
+	 * This method is not a part of Sequelize lifecycle.
+	 * The `models/index` file will call this method automatically.
+	 */
 		static associate(models) {
 			// define association here
 			this.belongsTo(models.Interest, { foreignKey: 'interestId' });
@@ -22,6 +22,6 @@ module.exports = (sequelize, DataTypes) => {
 		sequelize,
 		modelName: 'UserInterest',
 	});
-	UserInterest.removeAttribute('updatedAt');
+	//UserInterest.removeAttribute('updatedAt');
 	return UserInterest;
 };
