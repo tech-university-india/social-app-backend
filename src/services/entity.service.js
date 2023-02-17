@@ -146,7 +146,7 @@ const getAnnouncementFeed = async (userId, locations, startDate, endDate, pageDa
 	const whereQuery = {
 		type: entityTypes.ANNOUNCEMENT,
 		updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
-	}
+	};
 	if(locations) whereQuery['location'] = { [sequelize.Op.overlap]: locations };
 	if(startDate || endDate){
 		whereQuery['meta'] = { date: {} };
@@ -169,7 +169,7 @@ const getAnnouncementFeed = async (userId, locations, startDate, endDate, pageDa
 		limit: limit, offset: offset
 	});
 	return entites;
-}
+};
 
 /*
 This function is used to update the entity data in the database

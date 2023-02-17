@@ -42,7 +42,7 @@ const entityFeedSchema = Joi.object({
 		page: Joi.number().integer(),
 		size: Joi.number().integer(),
 	})
-})
+});
 
 const entityUpdatingSchema = Joi.object({
 	params: Joi.object({
@@ -105,17 +105,17 @@ const entitiesBySingleUserValidator = (request, response, next) => {
 const entityFeedValidator = (request, response, next) => {
 	try{
 		const { error } = entityFeedSchema.validate({ params: request.params, query: request.query });
-		if (error) throw new HTTPError(400, error.message)
+		if (error) throw new HTTPError(400, error.message);
 		if(request.query.locations) {
-			const { error, value } = Joi.array().items(Joi.string()).validate(JSON.parse(request.query.locations))
-			if(error) throw new HTTPError(400, error.message)
+			const { error, value } = Joi.array().items(Joi.string()).validate(JSON.parse(request.query.locations));
+			if(error) throw new HTTPError(400, error.message);
 			request.query.locations = value;
 		}
 		request.params.type = request.params.type.toUpperCase();
 		next();
 	} catch (error) {
 		if (error instanceof HTTPError) return response.status(400).json({ message: error.message });
-		return response.status(400).json({ message: "Bad Request" });
+		return response.status(400).json({ message: 'Bad Request' });
 	}
 };
 
