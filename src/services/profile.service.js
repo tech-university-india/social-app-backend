@@ -1,5 +1,6 @@
-const { User, Interest, Follow } = require('../models');
+const { User, Interest, Follow, UserInterest } = require('../models');
 const HTTPError = require('../errors/httperror');
+//const { response } = require('express');
 
 const sequelize = require('sequelize');
 
@@ -23,6 +24,43 @@ const getUserById = async (id, userId) => {
 	});
 	if (!user) throw new HTTPError(404, 'User not found');
 	return user;
+};
+
+const followUser = async (followerId, followingId) => {
+	//const follower = await User.findByPk(followerId);
+	// const following = await User.findByPk(followingId);
+	// if (!following) throw new HTTPError(404, 'User not found');
+	//await follower.addFollowing(following);
+	//const data = { followerId: followerId, followingId: followingId };
+	return await Follow.create({
+		followerId: followerId,
+		followingId: followingId
+	});
+
+};
+
+const updateProfile = async (id, data) => {
+	const userDataUpdateBio = await User.update({
+		userName: data.userName,
+		bio: data.bio,
+		designation: data.designation,
+		profilePictureURL: data.profilePictureURL
+	}, {
+		where: { FMNO: id }
+	});
+	if (userDataUpdateBio[0] === 0) throw new HTTPError(400, 'User not updated');
+	await UserInterest.destroy({
+		where: {
+			userId: id
+		}
+	});
+	console.log(data.interests);
+	const temp = data.interests.map((interest) => ({
+		userId: id,
+		interestId: interest.interestId
+	}));
+	const updatedInterests = await UserInterest.bulkCreate(temp);
+	return { updateProfile: userDataUpdateBio[0], updatedInterests: updatedInterests };
 };
 
 const getFollowersById = async (id, userId) => {
@@ -103,4 +141,4 @@ const unfollowById = async (id, userId) => {
 	return await Follow.destroy({ where: { followerId: userId, followingId: id } });
 };
 
-module.exports = { getUserById, getFollowersById, getFollowingById, unfollowById };
+module.exports = { getUserById, getFollowersById, getFollowingById, unfollowById, followUser, updateProfile };

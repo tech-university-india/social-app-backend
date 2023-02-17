@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-	async up (queryInterface, Sequelize) {
+	async up(queryInterface, Sequelize) {
 		return queryInterface.bulkInsert('Users', [{
 			FMNO:1,
 			bio: "Backend and fishing expert",
@@ -50,7 +50,7 @@ module.exports = {
 		}]);
 	},
 
-	async down (queryInterface, Sequelize) {
+	async down(queryInterface, Sequelize) {
 		return queryInterface.bulkDelete('Users', null, {});
 	}
 };

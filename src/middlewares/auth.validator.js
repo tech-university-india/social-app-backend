@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const Joi = require('joi');
 const JWT = require('jsonwebtoken');
 
@@ -31,18 +32,19 @@ const loginValidator = (req, res, next) => {
 };
 
 const JWTVaidator = (req, res, next) => {
-	try{
+	try {
 		const authHeader = req.headers['authorization'];
 		const token = authHeader && authHeader.split(' ')[1];
 		if (!token) throw new HTTPError(401, 'Access denied');
 		const verifiedData = JWT.verify(token, process.env.JWT_SECRET);
+		const { error } = Joi.object({ id: Joi.number().required(), iat: Joi.number().required(), exp: Joi.number().required() }).validate(verifiedData);
+		if (error) throw new HTTPError(401, 'Invalid Token');
 		req.user = verifiedData;
 		next();
-	} catch(err) {
-		if(err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
+	} catch (err) {
+		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
 		res.status(400).json({ message: err.message });
 	}
-
 };
 
 

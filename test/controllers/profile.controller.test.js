@@ -151,12 +151,12 @@ describe('Profile Controller', () => {
 			const mockReq = { 'params': { 'userId': 1 }, 'user': { 'id': 2 } };
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
-				json: jest.fn()
+				json: jest.fn(),
+				sendStatus: jest.fn()
 			};
 			jest.spyOn(profileService, 'unfollowById').mockResolvedValue(1);
 			await profileController.unfollowById(mockReq, mockRes);
-			expect(mockRes.status).toBeCalledWith(200);
-			expect(mockRes.json).toBeCalledWith({ message: 'Unfollowed successfully' });
+			expect(mockRes.sendStatus).toBeCalledWith(204);
 		});
 		it('should return 200 OK with Not following user', async () => {
 			const mockReq = { 'params': { 'userId': 1 }, 'user': { 'id': 2 } };
@@ -191,4 +191,129 @@ describe('Profile Controller', () => {
 			expect(mockRes.status).toBeCalledWith(500);
 		});
 	});
+    describe('POST /profile/follow', () => {
+        it('should return 201 OK', async () => {
+            const user = {
+                "id": 15,
+                "followerId": 90,
+                "followingId": 1,
+                "createdAt": "2023-02-13T05:29:58.286Z"
+            }
+            jest.spyOn(profileService, 'followUser').mockResolvedValue(user);
+            const mockReq = { body: { userId: 1 }, user: { id: 90 } };
+
+            const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+            await profileController.followUser(mockReq, mockRes);
+            expect(mockRes.status).toBeCalledWith(201);
+            expect(mockRes.status().json).toBeCalledWith(user);
+        });
+		it('should throw 400 Bad Request', async () => {
+			jest.spyOn(profileService, 'followUser').mockRejectedValue(new HTTPError(400, 'Bad Request'));
+			const mockReq = { body: { userId: 1 }, user: { id: 90 } };
+			const mockRes = {
+				status: jest.fn().mockReturnValue({ json: jest.fn() })
+			};
+			await profileController.followUser(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(400);
+			expect(mockRes.status().json).toBeCalledWith({ message: 'Bad Request' });
+		}
+		);
+		it('should throw 401', async () => {
+			jest.spyOn(profileService, 'followUser').mockRejectedValue(new HTTPError(401, 'Unauthorized'));
+			const mockReq = { body: { userId: 1 }, user: { id: 90 } };
+			const mockRes = {
+				status: jest.fn().mockReturnValue({ json: jest.fn() })
+			};
+			await profileController.followUser(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(401);
+			expect(mockRes.status().json).toBeCalledWith({ message: 'Unauthorized' });
+		});
+		it('should throw 500', async () => {
+			jest.spyOn(profileService, 'followUser').mockRejectedValue(new Error('500 Error'));
+			const mockReq = { body: { userId: 1 }, user: { id: 90 } };
+			const mockRes = {
+				status: jest.fn().mockReturnValue({ json: jest.fn() })
+			};
+			await profileController.followUser(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(500);
+			expect(mockRes.status().json).toBeCalledWith({ message: '500 Error' });
+		});
+	});
+    describe('PUT /profile/update', () => {
+        it('should return 200 OK', async () => {
+            const user = {
+                "userName": "rm19",
+                "designation": "sde1",
+                "profilePictureURL": "https://example.com/image7.jpg",
+                "interests": [
+                    {
+                        "InterestId": 1,
+                        "InterestName": "Javascript"
+                    }
+                ]
+            }
+            jest.spyOn(profileService, 'updateProfile').mockResolvedValue(user);
+            const mockReq = { body: { user }, user: { id: 90 } };
+            const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+            await profileController.updateProfile(mockReq, mockRes);
+            expect(mockRes.status).toBeCalledWith(200);
+            expect(mockRes.status().json).toBeCalledWith(user);
+        });
+        it('should throw 400 Bad Request', async () => {
+            const user = {
+                "userName": "rm19",
+                "designation": "sde1",
+                "profilePictureURL": "https://example.com/image7.jpg",
+                "interests": [
+                    {
+                        "InterestId": 1,
+                        "InterestName": "Javascript"
+                    }
+                ]
+            }
+            jest.spyOn(profileService, 'updateProfile').mockRejectedValue(new HTTPError(400, 'Bad Request'));
+            const mockReq = { body: { user }, user: { id: 90 } };
+            const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+            await profileController.updateProfile(mockReq, mockRes);
+            expect(mockRes.status).toBeCalledWith(400);
+            expect(mockRes.status().json).toBeCalledWith({ message: 'Bad Request' });
+        });
+        it('should throw 401 Unauthorized', async () => {
+            const user = {
+                "userName": "rm19",
+                "designation": "sde1",
+                "profilePictureURL": "https://example.com/image7.jpg",
+                "interests": [
+                    {
+                        "InterestId": 1,
+                        "InterestName": "Javascript"
+                    }
+                ]
+            }
+            jest.spyOn(profileService, 'updateProfile').mockRejectedValue(new HTTPError(401, 'Unauthorized'));
+            const mockReq = { body: { user }, user: { id: 90 } };
+            const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+            await profileController.updateProfile(mockReq, mockRes);
+            expect(mockRes.status).toBeCalledWith(401);
+            expect(mockRes.status().json).toBeCalledWith({ message: 'Unauthorized' });
+        });
+		it('should throw 500 error', async () => {
+			jest.spyOn(profileService, 'updateProfile').mockRejectedValue(new Error('500 Error'));
+			const mockReq = { body: { }, user: { id: 90 } };
+			const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+			await profileController.updateProfile(mockReq, mockRes);
+            expect(mockRes.status).toBeCalledWith(500);
+			expect(mockRes.status().json).toBeCalledWith({ message: '500 Error' });
+		});
+    });
 });
