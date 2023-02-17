@@ -38,7 +38,7 @@ const getSingleEntityData = async (request, response) => {
 
 const getCommentsByEntityId = async (request, response) => {
 	try {
-		const { pageDate, page, size } = request.query;
+		const { pageDate = Date.now(), page = 1, size = 10 } = request.query;
 		const comments = await entityService.getCommentsByEntityId(request.params.entityId, pageDate, page, size);
 		response.status(200).json(comments);
 	} catch (error) {
@@ -53,7 +53,7 @@ const getCommentsByEntityId = async (request, response) => {
 const getEntitiesBySingleUser = async (request, response) => {
 	try {
 		const { userId, type } = request.params;
-		const { pageDate, page, size } = request.query;
+		const { pageDate = Date.now(), page = 1, size = 10 } = request.query;
 		const entityData = await entityService.getEntitiesBySingleUser(userId, type, request.user.id, pageDate, page, size);
 		response.status(200).json(entityData);
 	} catch (error) {
@@ -68,14 +68,11 @@ const getEntitiesBySingleUser = async (request, response) => {
 const getFeed = async (request, response) => {
 	try {
 		const { type } = request.params;
-		const { pageDate, page, size } = request.query;
-		if (type === entityTypes.POST) {
-			const postFeed = await entityService.getPostFeed(request.user.id, pageDate, page, size);
-			response.status(200).json(postFeed);
-		} else if(request.params.type == entityTypes.ANNOUNCEMENT) {
-			const announcementFeed = await entityService.getAnnouncementFeed(request.user.id);
-			response.status(200).json(announcementFeed);
-		}
+		const { locations, startDate, endDate, pageDate = Date.now(), page = 1, size = 10 } = request.query;
+		const feed = type === entityTypes.POST 
+			? await entityService.getPostFeed(request.user.id, pageDate, page, size) 
+			: await entityService.getAnnouncementFeed(request.user.id, locations, startDate, endDate, pageDate, page, size);
+		response.status(200).json(feed);
 	} catch (error) {
 		if (error instanceof HTTPError) {
 			return response.status(error.statusCode).json({ message: error.message });

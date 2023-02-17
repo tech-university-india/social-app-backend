@@ -288,7 +288,103 @@ describe('Entity Service', () => {
 				}			
 			]
 			jest.spyOn(Entity, 'findAll').mockResolvedValue([announcementFeed]);
-			const entity = await entityService.getAnnouncementFeed(1, 1);
+			const entity = await entityService.getAnnouncementFeed(1);
+			expect(entity).toEqual([announcementFeed]);
+		});
+		it('should return an array of announcements for a user with locations', async () => {
+			const announcementFeed = [
+				{
+					"id": 19,
+					"type": "ANNOUNCEMENT",
+					"caption": "19th Entity",
+					"imageURL": [
+						"https://example.com/image24.jpg",
+						"https://example.com/image25.jpg"
+					],
+					"meta": {
+						"date": "2023-02-07T16:10:26.603Z",
+						"venue": "Gurgoan"
+					},
+					"location": [
+						"Gurgoan"
+					],
+					"likeCount": 0,
+					"commentCount": 1,
+					"isLiked": null,
+					"User": {
+						"FMNO": 5,
+						"userName": "Tom Brown",
+						"designation": "Consultant",
+						"profilePictureURL": "https://example.com/image5.jpg"
+					}
+				}			
+			]
+			jest.spyOn(Entity, 'findAll').mockResolvedValue([announcementFeed]);
+			const entity = await entityService.getAnnouncementFeed(1, ['Gurgoan']);
+			expect(entity).toEqual([announcementFeed]);
+		});
+		it('should return an array of announcements for a user with location and startDate', async () => {
+			const announcementFeed = [
+				{
+					"id": 19,
+					"type": "ANNOUNCEMENT",
+					"caption": "19th Entity",
+					"imageURL": [
+						"https://example.com/image24.jpg",
+						"https://example.com/image25.jpg"
+					],
+					"meta": {
+						"date": "2023-02-07T16:10:26.603Z",
+						"venue": "Gurgoan"
+					},
+					"location": [
+						"Gurgoan"
+					],
+					"likeCount": 0,
+					"commentCount": 1,
+					"isLiked": null,
+					"User": {
+						"FMNO": 5,
+						"userName": "Tom Brown",
+						"designation": "Consultant",
+						"profilePictureURL": "https://example.com/image5.jpg"
+					}
+				}			
+			]
+			jest.spyOn(Entity, 'findAll').mockResolvedValue([announcementFeed]);
+			const entity = await entityService.getAnnouncementFeed(1, ["bangalore"], 545, null, 4567);
+			expect(entity).toEqual([announcementFeed]);
+		});
+		it('should return an array of announcements for a user with endDate', async () => {
+			const announcementFeed = [
+				{
+					"id": 19,
+					"type": "ANNOUNCEMENT",
+					"caption": "19th Entity",
+					"imageURL": [
+						"https://example.com/image24.jpg",
+						"https://example.com/image25.jpg"
+					],
+					"meta": {
+						"date": "2023-02-07T16:10:26.603Z",
+						"venue": "Gurgoan"
+					},
+					"location": [
+						"Gurgoan"
+					],
+					"likeCount": 0,
+					"commentCount": 1,
+					"isLiked": null,
+					"User": {
+						"FMNO": 5,
+						"userName": "Tom Brown",
+						"designation": "Consultant",
+						"profilePictureURL": "https://example.com/image5.jpg"
+					}
+				}			
+			]
+			jest.spyOn(Entity, 'findAll').mockResolvedValue([announcementFeed]);
+			const entity = await entityService.getAnnouncementFeed(1, null, null, 123456, 4567);
 			expect(entity).toEqual([announcementFeed]);
 		});
 		it('should throw error if db Fails', async () => {

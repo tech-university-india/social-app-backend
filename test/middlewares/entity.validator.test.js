@@ -78,11 +78,28 @@ describe('Entity Validator', () => {
 
 	});
 	describe('entityFeedValidator', () => {
-		it('should call next function when type is valid', async () => {
+		it('should call next function when type is valid without query params', async () => {
 			const request = {
 				params: { type: entityTypes.POST },
+				query: {},
 			};
-			const response = {};
+			const response = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn(),
+			};
+			const next = jest.fn();
+			entityValidator.entityFeedValidator(request, response, next);
+			expect(next).toHaveBeenCalled();
+		});
+		it('should call next function when type is valid with query params', async () => {
+			const request = {
+				params: { type: entityTypes.POST },
+				query: { locations: '["Bangalore"]' },
+			};
+			const response = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn(),
+			};
 			const next = jest.fn();
 			entityValidator.entityFeedValidator(request, response, next);
 			expect(next).toHaveBeenCalled();
@@ -90,15 +107,47 @@ describe('Entity Validator', () => {
 		it('should return 400 status code when type is not a string', async () => {
 			const request = {
 				params: { type: 42 },
+				query: {},
 			};
 			const response = {
 				status: jest.fn().mockReturnValue({
+					status: jest.fn().mockReturnThis(),
 					json: jest.fn(),
 				}),
 			};
 			entityValidator.entityFeedValidator(request, response);
 			expect(response.status).toHaveBeenCalledWith(400);
 			expect(response.status().json).toHaveBeenCalledWith({ message: "\"params.type\" must be one of [ANNOUNCEMENT, POST]" });
+		});
+		it('should return 400 status code when JSON.stringify throws error', async () => {
+			const request = {
+				params: { type: entityTypes.POST },
+				query: { locations: '["Bangalore"' },
+			};
+			const response = {
+				status: jest.fn().mockReturnValue({
+					status: jest.fn().mockReturnThis(),
+					json: jest.fn(),
+				}),
+			};
+			entityValidator.entityFeedValidator(request, response);
+			expect(response.status).toHaveBeenCalledWith(400);
+			expect(response.status().json).toHaveBeenCalledWith({ message: "Bad Request" });
+		});
+		it('should return 400 status code when invalid locations array', async () => {
+			const request = {
+				params: { type: entityTypes.POST },
+				query: { locations: '["Bangalore", 42]' },
+			};
+			const response = {
+				status: jest.fn().mockReturnValue({
+					status: jest.fn().mockReturnThis(),
+					json: jest.fn(),
+				}),
+			};
+			entityValidator.entityFeedValidator(request, response);
+			expect(response.status).toHaveBeenCalledWith(400);
+			expect(response.status().json).toHaveBeenCalledWith({ message: "\"[1]\" must be a string" });
 		});
 	});
 	describe('updateValidatior', () => {
