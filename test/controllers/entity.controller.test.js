@@ -72,12 +72,9 @@ describe('Entity Controller', () => {
 	describe('getCommentsByEntityId', () => {
 		it('should return 200 status code with array of comments when comments for entityId is present ', async () => {
 			const mockReq = {
-				params: {
-					entityId: 1
-				},
-				user: {
-					id: 1
-				}
+				params: { entityId: 1 },
+				user: { id: 1 },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -125,12 +122,9 @@ describe('Entity Controller', () => {
 		});
 		it('should return HTTPError', async () => {
 			const mockReq = {
-				params: {
-					entityId: 1
-				},
-				user: {
-					id: 1
-				}
+				params: { entityId: 1 },
+				user: { id: 1 },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -143,12 +137,9 @@ describe('Entity Controller', () => {
 		});
 		it('should return 500 status code when any other error is thrown ', async () => {
 			const mockReq = {
-				params: {
-					entityId: 1
-				},
-				user: {
-					id: 1
-				}
+				params: { entityId: 1 },
+				user: { id: 1 },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -163,13 +154,9 @@ describe('Entity Controller', () => {
 	describe('getEntitiesBySingleUser', () => {
 		it('should return 200 status code with array of entity data when entities for userId is present ', async () => {
 			const mockReq = {
-				params: {
-					userId: 1,
-					type: 'test'
-				},
-				user: {
-					id: 1
-				}
+				params: { userId: 1, type: 'test' },
+				user: { id: 1 },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -186,13 +173,9 @@ describe('Entity Controller', () => {
 		});
 		it('should return 404 status code when entities for userId is not present ', async () => {
 			const mockReq = {
-				params: {
-					userId: 1,
-					type: 'test'
-				},
-				user: {
-					id: 1
-				}
+				params: { userId: 1, type: 'test' },
+				user: { id: 1 },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -207,13 +190,9 @@ describe('Entity Controller', () => {
 		});
 		it('should return 500 status code when any other error is thrown ', async () => {
 			const mockReq = {
-				params: {
-					userId: 1,
-					type: 'test'
-				},
-				user: {
-					id: 1
-				}
+				params: { userId: 1, type: 'test' },
+				user: { id: 1 },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -231,7 +210,8 @@ describe('Entity Controller', () => {
 		it('should return 200 status code with array of Post data ', async () => {
 			const mockReq = {
 				user: { id: 1 },
-				params: { type: entityTypes.POST }
+				params: { type: entityTypes.POST },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -269,7 +249,8 @@ describe('Entity Controller', () => {
 		it('should return 200 status code with array of Announcement data ', async () => {
 			const mockReq = {
 				user: { id: 1 },
-				params: { type: entityTypes.ANNOUNCEMENT }
+				params: { type: entityTypes.ANNOUNCEMENT },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -310,7 +291,8 @@ describe('Entity Controller', () => {
 		it('should throw HTTPError ', async () => {
 			const mockReq = {
 				user: { id: 1 },
-				params: { type: entityTypes.POST }
+				params: { type: entityTypes.POST },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -324,7 +306,8 @@ describe('Entity Controller', () => {
 		it('should return 500 status code when any other error is thrown ', async () => {
 			const mockReq = {
 				user: { id: 1 },
-				params: { type: entityTypes.POST }
+				params: { type: entityTypes.POST },
+				query: {}
 			};
 			const mockRes = {
 				status: jest.fn().mockReturnThis(),
@@ -339,12 +322,9 @@ describe('Entity Controller', () => {
 	describe('updateEntity', () => {
 		it('should return 200 status code with updated entity data when entity is updated successfully', async () => {
 			const mockReq = {
-				params: {
-					entityId: 1
-				},
-				user: {
-					id: 1
-				},
+				params: { entityId: 1 },
+				user: { id: 1 },
+				query: {},
 				body: {
 					'caption': 'test',
 					imgaeUrl: 'test',
@@ -374,15 +354,11 @@ describe('Entity Controller', () => {
 			expect(mockRes.status).toHaveBeenCalledWith(201);
 			expect(mockRes.json).toHaveBeenCalledWith(resolvedUpdate);
 		});
-		it('should return 500 status code when entity is not present ', async () => {
+		it('should return 500 status code when DB error', async () => {
 			const mockReq = {
-				params: {
-					userId: 1,
-					type: 'test'
-				},
-				user: {
-					id: 1
-				},
+				params: { userId: 1, type: 'test' },
+				user: { id: 1 },
+				query: {},
 				body: {
 					'caption': 'test',
 					imgaeUrl: 'test',
@@ -410,7 +386,8 @@ describe('Entity Controller', () => {
 			const request = {
 				body: { /* some test data */ },
 				params: { entityId: '123' },
-				user: { id: 1 }
+				user: { id: 1 },
+				query: {}
 			};
 			const response = {
 				status: jest.fn().mockReturnThis(),
