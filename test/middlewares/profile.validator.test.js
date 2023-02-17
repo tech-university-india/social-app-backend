@@ -1,3 +1,4 @@
+const { describe } = require('node:test');
 const profileValidator = require('../../src/middlewares/profile.validator');
 
 describe('Profile Validator', () => {
@@ -101,25 +102,72 @@ describe('Profile Validator', () => {
         });
     });
 
-    describe('Uodate Profile Validator', () => {
+    describe('Update Profile Validator', () => {
         it('should return nothing if all fields are valid', async () => {
             const mockReq = {
                 body: {
-                },
-                user: {
-                    id: 1
+                    userName: "John",
+                    designation: "Developer",
+                    bio: "I am a developer",
+                    profilePictureURL: "https://example.com/image7.jpg",
+                    interests : [{
+                        "interestId": 1,
+                        "interestName": "Technology"
+                    }]
                 }
             }
             const mockRes = {
                 status: jest.fn().mockReturnValue({ json: jest.fn() })
             };
             const mockNext = jest.fn();
-            await profileValidator.putProfileValidator(mockReq, mockRes, mockNext);
+            await profileValidator.updateProfileValidator(mockReq, mockRes, mockNext);
             expect(mockNext).toBeCalled();
         });
+        it('should return 400 "userName is required"', async () => {
+            const mockReq = {
+                body: {
+                    designation: "Developer",
+                    bio: "I am a developer",
+                    profilePictureURL: "https://example.com/image7.jpg",
+                    interests : [{
+                        "interestId": 1,
+                        "interestName": "Technology"
+                    }]
+                }
+            }
+            const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+            const mockNext = jest.fn();
+            await profileValidator.updateProfileValidator(mockReq, mockRes, mockNext);
+            expect(mockRes.status).toBeCalledWith(400);
+            expect(mockRes.status().json).toBeCalledWith({ message: "\"userName\" is required" });
+            expect(mockNext).not.toBeCalled();
+        });
+        it('should return 400 "username is string"', async () => {
+            const mockReq = {
+                body: {
+                    userName: 1,
+                    designation: "Developer",
+                    bio: "I am a developer",
+                    profilePictureURL: "https://example.com/image7.jpg",
+                    interests : [{
+                        "interestId": 1,
+                        "interestName": "Technology"
+                    }]
+                }
+            }
+            const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+            const mockNext = jest.fn();
+            await profileValidator.updateProfileValidator(mockReq, mockRes, mockNext);
+            expect(mockRes.status).toBeCalledWith(400);
+            expect(mockRes.status().json).toBeCalledWith({ message: "\"userName\" must be a string" });
+            expect(mockNext).not.toBeCalled();
+        });
+
     });
-
-
 
 
     describe('Get By userId Validator', () => {

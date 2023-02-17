@@ -48,20 +48,19 @@ const updateProfile = async (id, data) => {
 	}, {
 		where: { FMNO: id }
 	});
-	if (!userDataUpdateBio) throw new HTTPError(400, 'User not updated');
+	if (userDataUpdateBio[0] === 0) throw new HTTPError(400, 'User not updated');
 	await UserInterest.destroy({
 		where: {
 			userId: id
 		}
 	});
-
+	console.log(data.interests);
 	const temp = data.interests.map((interest) => ({
 		userId: id,
 		interestId: interest.interestId
 	}));
-
 	const updatedInterests = await UserInterest.bulkCreate(temp);
-	return { updateProfile: userDataUpdateBio, updatedInterests: updatedInterests };
+	return { updateProfile: userDataUpdateBio[0], updatedInterests: updatedInterests };
 };
 
 const getFollowersById = async (id, userId) => {

@@ -1,5 +1,5 @@
 const profileService = require('../../src/services/profile.service');
-const { User, Follow } = require('../../src/models');
+const { User, Follow, UserInterest } = require('../../src/models');
 const HTTPError = require('../../src/errors/httperror');
 
 describe('Profile Service', () => {
@@ -92,6 +92,49 @@ describe('Profile Service', () => {
 			expect(async () => await profileService.getFollowersById(1, 1)).rejects.toThrow(new Error());
 		});
 	});
+
+	describe('Update Profile', () => {
+		it('should return 200 with updated profile', async () => {
+			const mockFindOne = {
+				"userName": "rm19",
+				"designation": "sde1",
+				"bio": "I'M GOOD ",
+				"profilePictureURL": "https://example.com/image7.jpg",
+				"interests": [
+					{
+						"interestId": 1,
+						"interestName": "Javascript"
+					}
+				]
+			};
+			const mockUpdate = {
+				"updatedInterests": [
+					{
+						"id": 11,
+						"userId": 1,
+						"interestId": 1,
+						"createdAt": "2023-02-17T05:08:10.209Z"
+					}
+				],
+				"updateProfile": 1
+			};
+			jest.spyOn(User, 'findByPk').mockResolvedValue(mockFindOne);
+			jest.spyOn(User, 'update').mockResolvedValue([1]);
+			jest.spyOn(UserInterest, 'destroy').mockResolvedValue(1);
+			jest.spyOn(UserInterest, 'bulkCreate').mockResolvedValue([
+				{
+					"id": 11,
+					"userId": 1,
+					"interestId": 1,
+					"createdAt": "2023-02-17T05:08:10.209Z"
+				}
+			]);
+			expect(await profileService.updateProfile(1, mockFindOne)).toEqual(mockUpdate);
+		});
+		
+	});
+
+
 	describe('Get Following By Id', () => {
 		it('should return 200 with following list', async () => {
 
@@ -149,6 +192,8 @@ describe('Profile Service', () => {
 			expect(async () => await profileService.unfollowById(2, 3)).rejects.toThrow(new Error());
 		});
 	});
+
+
 
 
 });

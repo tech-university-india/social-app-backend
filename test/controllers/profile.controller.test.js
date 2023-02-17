@@ -169,17 +169,7 @@ describe('Profile Controller', () => {
             expect(mockRes.status).toBeCalledWith(404);
             expect(mockRes.json).toBeCalledWith({ message: 'Not following user' });
         });
-        // it('should throw 404 Not following', async () => {
-        // 	const mockReq = { 'params': { 'userId': 1 },  'user':{'id':2} };
-        // 	const  mockRes = {
-        // 		status: jest.fn().mockReturnThis(),
-        // 		json: jest.fn()
-        // 	};
-        // 	jest.spyOn(profileService, 'unfollowById').mockRejectedValue(new HTTPError(404, 'Not following user'));
-        // 	await profileController.unfollowById(mockReq, mockRes);
-        // 	expect(mockRes.status).toBeCalledWith(404);
-        // 	expect(mockRes.json).toBeCalledWith({ message: 'Not following user' });
-        // });
+       
         it('should throw 500 error', async () => {
             const mockReq = { 'params': { 'userId': 1 }, 'user': { 'id': 2 } };
             const mockRes = {
@@ -298,11 +288,3 @@ describe('Profile Controller', () => {
         });
     });
 });
-
-// "FMNO": 90,
-//     "bio": "real madrid fan",
-//         "userName": "rm19",
-//             "designation": "sde1",
-//                 "profilePictureURL": "https://example.com/image7.jpg",
-//                     "createdAt": "2023-02-15T11:54:03.961Z",
-//                         "updatedAt": "2023-02-15T11:54:25.617Z"

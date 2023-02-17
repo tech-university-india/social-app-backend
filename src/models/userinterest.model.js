@@ -19,9 +19,10 @@ module.exports = (sequelize, DataTypes) => {
 		interestId: DataTypes.INTEGER,
 		userId: DataTypes.INTEGER
 	}, {
+		updatedAt: false,
 		sequelize,
 		modelName: 'UserInterest',
 	});
-	//UserInterest.removeAttribute('updatedAt');
+	UserInterest.removeAttribute('updatedAt');
 	return UserInterest;
 };

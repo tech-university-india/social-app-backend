@@ -44,9 +44,10 @@ const updateProfileValidator = (req, res, next) => {
 		profilePictureURL: Joi.string().uri(),
 		interests: Joi.array().items(Joi.object())
 	}).validate(req.body);
+
 	if (error) return res.status(400).json({ message: error.message });
 	next();
 };
-	
+
 
 module.exports = { getByUserIdValidator, postFollowUserValidator, deleteByUserIdValidator, updateProfileValidator };
