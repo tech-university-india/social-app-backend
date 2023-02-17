@@ -72,20 +72,8 @@ describe('Profile Service', () => {
 					}
 				}
 			];
-
-			// const mockResult = [
-			// 	{
-			// 		'FMNO': 1,
-			// 		'designation': 'Partner',
-			// 		'userName': 'John Doe',
-			// 		'isFollowed': true,
-			// 		'profilePictureURL': 'https://example.com/image1.jpg',
-			// 	}
-			// ];
-
 			jest.spyOn(Follow, 'findAll').mockResolvedValue(mockFindAll);
 			expect(await profileService.getFollowersById(2, 1)).toEqual(mockFindAll);
-
 		});
 		it('should return status code 404 when user doesnt not exist', async () => {
 			jest.spyOn(Follow, 'findAll').mockRejectedValue(new Error());
@@ -118,7 +106,6 @@ describe('Profile Service', () => {
 				],
 				"updateProfile": 1
 			};
-			jest.spyOn(User, 'findByPk').mockResolvedValue(mockFindOne);
 			jest.spyOn(User, 'update').mockResolvedValue([1]);
 			jest.spyOn(UserInterest, 'destroy').mockResolvedValue(1);
 			jest.spyOn(UserInterest, 'bulkCreate').mockResolvedValue([
@@ -131,16 +118,42 @@ describe('Profile Service', () => {
 			]);
 			expect(await profileService.updateProfile(1, mockFindOne)).toEqual(mockUpdate);
 		});
-		
+		it('should return 400 if profile cannot be updated', async () => {
+			const mockFindOne = {
+				"userName": "rm19",
+				"designation": "sde1",
+				"bio": "I'M GOOD ",
+				"profilePictureURL": "https://example.com/image7.jpg",
+				"interests": [
+					{
+						"interestId": 1,
+						"interestName": "Javascript"
+					}
+				]
+			};
+			jest.spyOn(User, 'update').mockResolvedValue([0]);
+			expect(async () => await profileService.updateProfile(1, mockFindOne)).rejects.toThrow(new HTTPError(400, 'User not updated'));
+		});
+		it('should return 500 if DB Fails', async () => {
+			const mockFindOne = {
+				"userName": "rm19",
+				"designation": "sde1",
+				"bio": "I'M GOOD ",
+				"profilePictureURL": "https://example.com/image7.jpg",
+				"interests": [
+					{
+						"interestId": 1,
+						"interestName": "Javascript"
+					}
+				]
+			};
+			jest.spyOn(User, 'update').mockRejectedValue(new Error());
+			expect(async () => await profileService.updateProfile(1, mockFindOne)).rejects.toThrow(new Error());
+		});
 	});
-
-
 	describe('Get Following By Id', () => {
 		it('should return 200 with following list', async () => {
-
-
 			const mockFindAll = {
-
 				'FMNO': 2,
 				'email': 'exampleuser3@example.com',
 				'passwordHash': 'pass@123',
@@ -157,21 +170,16 @@ describe('Profile Service', () => {
 						'userName': 'John Doe',
 						'profilePictureURL': 'https://example.com/image1.jpg',
 						'Followers': [{
-							dataValues:
-							{
+							dataValues:{
 								'FMNO': 2,
 								'designation': 'Manager',
 								'userName': 'Jane Doe',
 								'profilePictureURL': 'https://example.com/image2.jpg'
 							},
-						}
-						]
+						}]
 					}
-
-				},
-				]
+				}]
 			};
-
 			jest.spyOn(Follow, 'findAll').mockResolvedValue(mockFindAll);
 			expect(await profileService.getFollowingById(2, 1)).toEqual(mockFindAll);
 

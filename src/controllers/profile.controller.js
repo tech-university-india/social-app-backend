@@ -12,21 +12,21 @@ const getUserById = async (req, res) => {
 	}
 };
 
-const followUser = async (req, res) => {
-	try {
-		const user = await profileService.followUser(Number(req.user.id), Number(req.body.userId));
-		res.status(201).json(user);
-	} catch (err) {
-		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
-		res.status(400).json({ message: err.message });
-	}
-};
-
 const updateProfile = async (req, res) => {
 	try {
 		const user = await profileService.updateProfile(req.user.id, req.body);
 		console.log(user);
 		res.status(200).json(user);
+	} catch (err) {
+		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
+		res.status(500).json({ message: err.message });
+	}
+};
+
+const followUser = async (req, res) => {
+	try {
+		const user = await profileService.followUser(Number(req.user.id), Number(req.body.userId));
+		res.status(201).json(user);
 	} catch (err) {
 		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
 		res.status(500).json({ message: err.message });
@@ -59,7 +59,7 @@ const unfollowById = async (req, res) => {
 	try {
 		const deleteResponse = await profileService.unfollowById(Number(req.params.userId), Number(req.user.id));
 		if (deleteResponse === 0) throw new HTTPError(404, 'Not following user');
-		res.status(200).json({ 'message': 'Unfollowed successfully' });
+		res.sendStatus(204);
 	}
 	catch (error) {
 		if (error instanceof HTTPError) return res.status(error.statusCode).json({ message: error.message });

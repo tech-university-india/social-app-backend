@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert('Notifications', [{
       destinationURL: 'https://example1.com',
       meta: JSON.stringify({
@@ -107,9 +107,10 @@ module.exports = {
       createdBy: 4,
       createdAt: new Date()
     }]
-  )},
+    )
+  },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     return queryInterface.bulkDelete('Notifications', null, {});
   }
 };
