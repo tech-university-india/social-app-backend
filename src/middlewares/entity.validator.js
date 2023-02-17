@@ -1,4 +1,4 @@
-const joi = require('joi');
+const Joi = require('joi');
 
 const { entityTypes } = require('../../src/utils/constants');
 
@@ -6,41 +6,41 @@ const { entityTypes } = require('../../src/utils/constants');
 given through path
 
 */
-const entitySchmea = joi.object({
-	entityId: joi.number().integer().required(),
+const entitySchmea = Joi.object({
+	entityId: Joi.number().integer().required(),
 });
 
-const entityForUserIDSchema = joi.object({
-	userId: joi.string().required(),
-	type: joi.string().required()
+const entityForUserIDSchema = Joi.object({
+	userId: Joi.string().required(),
+	type: Joi.string().required()
 });
 
 
-const entityUpdatingSchema = joi.object({
-	entityId: joi.number().integer().required(),
-	imageURL: joi.array().items(joi.string().uri()),
-	caption: joi.string(),
-	meta: joi.object().keys({
-		date: joi.date(),
-		venue: joi.string()
+const entityUpdatingSchema = Joi.object({
+	entityId: Joi.number().integer().required(),
+	imageURL: Joi.array().items(Joi.string().uri()),
+	caption: Joi.string(),
+	meta: Joi.object().keys({
+		date: Joi.date(),
+		venue: Joi.string()
 	}),
-	location: joi.array().items(joi.string()),
-	tags: joi.array().items(joi.object({
-		id: joi.number().integer().required(),
+	location: Joi.array().items(Joi.string()),
+	tags: Joi.array().items(Joi.object({
+		id: Joi.number().integer().required(),
 	})),
 });
 
-const createEntitySchema = joi.object({
-	type: joi.string().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required(),
-	caption: joi.string(),
-	imageURL: joi.array().items(joi.string()),
-	meta: {
-		date: joi.string(),
-		venue: joi.string()
-	},
-	location: joi.array().items(joi.string()),
-	tags: joi.array().items(joi.object({
-		id: joi.number().integer().required(),
+const createEntitySchema = Joi.object({
+	type: Joi.string().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required(),
+	caption: Joi.string(),
+	imageURL: Joi.array().items(Joi.string()),
+	meta: Joi.object().keys({
+		date: Joi.string(),
+		venue: Joi.string()
+	}),
+	location: Joi.array().items(Joi.string()),
+	tags: Joi.array().items(Joi.object({
+		id: Joi.number().integer().required(),
 	})),
 });
   

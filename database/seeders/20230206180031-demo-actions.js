@@ -15,7 +15,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 2,
-      meta: JSON.stringify({ commentText: "comment1" }),
+      meta: JSON.stringify({ comment: "comment1" }),
       createdBy: 2,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -23,7 +23,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 3,
-      meta: JSON.stringify({ commentText: "comment2" }),
+      meta: JSON.stringify({ comment: "comment2" }),
       createdBy: 3,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -38,7 +38,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 5,
-      meta: JSON.stringify({ commentText: "comment3" }),
+      meta: JSON.stringify({ comment: "comment3" }),
       createdBy: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -74,7 +74,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 6,
-      meta: JSON.stringify({ commentText: "comment4" }),
+      meta: JSON.stringify({ comment: "comment4" }),
       createdBy: 3,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -82,7 +82,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 6,
-      meta: JSON.stringify({ commentText: "comment4" }),
+      meta: JSON.stringify({ comment: "comment4" }),
       createdBy: 3,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -90,7 +90,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 6,
-      meta: JSON.stringify({ commentText: "comment4" }),
+      meta: JSON.stringify({ comment: "comment4" }),
       createdBy: 4,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -98,7 +98,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 7,
-      meta: JSON.stringify({ commentText: "comment4" }),
+      meta: JSON.stringify({ comment: "comment4" }),
       createdBy: 3,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -113,7 +113,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 9,
-      meta: JSON.stringify({ commentText: "comment5" }),
+      meta: JSON.stringify({ comment: "comment5" }),
       createdBy: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -135,7 +135,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 12,
-      meta: JSON.stringify({ commentText: "comment6" }),
+      meta: JSON.stringify({ comment: "comment6" }),
       createdBy: 3,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -143,7 +143,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 13,
-      meta: JSON.stringify({ commentText: "comment7" }),
+      meta: JSON.stringify({ comment: "comment7" }),
       createdBy: 4,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -173,7 +173,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 17,
-      meta: JSON.stringify({ commentText: "comment9" }),
+      meta: JSON.stringify({ comment: "comment9" }),
       createdBy: 4,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -188,7 +188,7 @@ module.exports = {
     {
       type: actionTypes.COMMENT,
       entityId: 19,
-      meta: JSON.stringify({ commentText: "comment10" }),
+      meta: JSON.stringify({ comment: "comment10" }),
       createdBy: 1,
       createdAt: new Date(),
       updatedAt: new Date(),

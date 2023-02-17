@@ -28,7 +28,7 @@ entity  JSON Object  return it.
 const getSingleEntityData = async (entityId, userId) => {
 	const entity = await Entity.findOne({
 		where: { id: entityId },
-		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'isLiked']],
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
 		include: [{
 			model: User,
 			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
@@ -45,7 +45,6 @@ const getSingleEntityData = async (entityId, userId) => {
 				attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
 			}
 		}],
-		group: ['"Entity"."id"', '"User"."FMNO"', '"Tags"."id"', '"Tags->User"."FMNO"']
 	});
 	if (!entity) throw new HTTPError(404, 'Entity not found');
 	return entity;
@@ -75,7 +74,7 @@ entity  JSON Object  return it.
 const getEntitiesBySingleUser = async (id, type, userId) => {
 	const entities = await Entity.findAll({
 		where: { createdBy: id, type: type.toUpperCase() },
-		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT COUNT("Actions"."id"))'), 'isLiked']],
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
 		include: [{
 			model: User,
 			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
@@ -90,10 +89,10 @@ const getEntitiesBySingleUser = async (id, type, userId) => {
 			attributes: ['taggedId'],
 			include: {
 				model: User,
-				attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
-			}
+				attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL'],
+			},
+			required: false
 		}],
-		group: ['"Entity"."id"', '"User"."FMNO"', '"Tags"."id"', '"Tags->User"."FMNO"'],
 		order: [['updatedAt', 'DESC'], ['id', 'DESC']]
 	});
 	return entities;

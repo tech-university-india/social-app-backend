@@ -37,7 +37,7 @@ const unfollowById = async (req,res) => {
 	try{
 		const deleteResponse = await profileService.unfollowById(Number(req.params.userId),Number(req.user.id));
 		if (deleteResponse === 0) throw new HTTPError(404, 'Not following user');
-		res.status(200).json({'message':'Unfollowed successfully'});
+		res.sendStatus(204);
 	}
 	catch(error){
 		if(error instanceof HTTPError) return res.status(error.statusCode).json({ message: error.message });
