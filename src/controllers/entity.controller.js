@@ -38,8 +38,8 @@ const getSingleEntityData = async (request, response) => {
 
 const getCommentsByEntityId = async (request, response) => {
 	try {
-		const entityId = request.params.entityId;
-		const comments = await entityService.getCommentsByEntityId(entityId);
+		const { pageDate, page, size } = request.query;
+		const comments = await entityService.getCommentsByEntityId(request.params.entityId, pageDate, page, size);
 		response.status(200).json(comments);
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -52,7 +52,9 @@ const getCommentsByEntityId = async (request, response) => {
 
 const getEntitiesBySingleUser = async (request, response) => {
 	try {
-		const entityData = await entityService.getEntitiesBySingleUser(request.params.userId, request.params.type, request.user.id);
+		const { userId, type } = request.params;
+		const { pageDate, page, size } = request.query;
+		const entityData = await entityService.getEntitiesBySingleUser(userId, type, request.user.id, pageDate, page, size);
 		response.status(200).json(entityData);
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -65,8 +67,10 @@ const getEntitiesBySingleUser = async (request, response) => {
 
 const getFeed = async (request, response) => {
 	try {
-		if (request.params.type === entityTypes.POST) {
-			const postFeed = await entityService.getPostFeed(request.user.id);
+		const { type } = request.params;
+		const { pageDate, page, size } = request.query;
+		if (type === entityTypes.POST) {
+			const postFeed = await entityService.getPostFeed(request.user.id, pageDate, page, size);
 			response.status(200).json(postFeed);
 		} else if(request.params.type == entityTypes.ANNOUNCEMENT) {
 			const announcementFeed = await entityService.getAnnouncementFeed(request.user.id);

@@ -7,28 +7,58 @@ given through path
 
 */
 const entitySchmea = Joi.object({
-	entityId: Joi.number().integer().required(),
+	params: Joi.object({
+		entityId: Joi.number().integer().required(),
+	}).required(),
+	query: Joi.object({
+		pageDate: Joi.date(),
+		page: Joi.number().integer(),
+		size: Joi.number().integer(),
+	})
 });
-
 
 const entityForUserIDSchema = Joi.object({
-	userId: Joi.string().required(),
-	type: Joi.string().uppercase().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required()
+	params: Joi.object({
+		userId: Joi.string().required(),
+		type: Joi.string().uppercase().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required()
+	}).required(),
+	query: Joi.object({
+		pageDate: Joi.date(),
+		page: Joi.number().integer(),
+		size: Joi.number().integer(),
+	})
 });
 
+const entityFeedSchema = Joi.object({ 
+	params: Joi.object({
+		type: Joi.string().uppercase().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required(),
+	}).required(),
+	query: Joi.object({
+		locations: Joi.array().items(Joi.string()),
+		startDate: Joi.date(),
+		endDate: Joi.date(),
+		pageDate: Joi.date(),
+		page: Joi.number().integer(),
+		size: Joi.number().integer(),
+	})
+})
 
 const entityUpdatingSchema = Joi.object({
-	entityId: Joi.number().integer().required(),
-	imageURL: Joi.array().items(Joi.string().uri()),
-	caption: Joi.string(),
-	meta: Joi.object().keys({
-		date: Joi.date(),
-		venue: Joi.string()
-	}),
-	location: Joi.array().items(Joi.string()),
-	tags: Joi.array().items(Joi.object({
-		id: Joi.number().integer().required(),
-	})),
+	params: Joi.object({
+		entityId: Joi.number().integer().required(),
+	}).required(),
+	body: Joi.object({
+		imageURL: Joi.array().items(Joi.string().uri()),
+		caption: Joi.string(),
+		meta: Joi.object().keys({
+			date: Joi.date(),
+			venue: Joi.string()
+		}),
+		location: Joi.array().items(Joi.string()),
+		tags: Joi.array().items(Joi.object({
+			id: Joi.number().integer().required(),
+		})),
+	}).required(),
 });
 
 const createEntitySchema = Joi.object({
@@ -55,7 +85,7 @@ const createEntityValidator = (req, res, next) => {
 };
 
 const singleEntityValidator = (request, response, next) => {
-	const { error } = entitySchmea.validate({ entityId: request.params.entityId });
+	const { error } = entitySchmea.validate({ params: request.params, query: request.query });
 	if (error) {
 		return response.status(400).json({ message: error.message });
 	}
@@ -63,7 +93,7 @@ const singleEntityValidator = (request, response, next) => {
 };
 
 const entitiesBySingleUserValidator = (request, response, next) => {
-	const { error } = entityForUserIDSchema.validate({ userId: request.params.userId, type: request.params.type });
+	const { error } = entityForUserIDSchema.validate({ params: request.params, query: request.query });
 	if (error) {
 		return response.status(400).json({ message: error.message });
 	}
@@ -72,15 +102,14 @@ const entitiesBySingleUserValidator = (request, response, next) => {
 };
 
 const entityFeedValidator = (request, response, next) => {
-	const { error } = Joi.object({ type: Joi.string().uppercase().valid(entityTypes.ANNOUNCEMENT, entityTypes.POST).required() }).validate(request.params);
+	const { error } = entityFeedSchema.validate({ params: request.params, query: request.query });
 	if (error) return response.status(400).json({ message: error.message });
 	request.params.type = request.params.type.toUpperCase();
 	next();
 };
 
 const updateValidatior = (request, response,next) => {
-	request.body.entityId=request.params.entityId;
-	const { error } = entityUpdatingSchema.validate(request.body);
+	const { error } = entityUpdatingSchema.validate({ params: request.params, body: request.body });
 	if (error) {
 		return response.status(400).json({ message: error.message });
 	}

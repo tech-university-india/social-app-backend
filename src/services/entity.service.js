@@ -1,6 +1,7 @@
 const { Entity, Action, User, Tag } = require('../models');
 const HTTPError = require('../errors/httpError');
 const { actionTypes, entityTypes } = require('../utils/constants');
+const paginateUtil = require('../utils/paginate.util');
 
 const sequelize = require('sequelize');
 
@@ -50,18 +51,23 @@ const getSingleEntityData = async (entityId, userId) => {
 	return entity;
 };
 
-const getCommentsByEntityId = async (entityId) => {
+const getCommentsByEntityId = async (entityId, pageDate = Date.now(), page = 1, size = 10) => {
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
+	// console.log(pageTimeStamp, limit, offset);
 	return await Action.findAll({
 		where: {
 			type: actionTypes.COMMENT,
-			entityId: entityId
+			entityId: entityId,
+			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
 		},
 		attributes: ['meta'],
 		include: {
 			model: User,
 			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL'],
 			required: false,
-		}
+		},
+		order: [['updatedAt', 'DESC']],
+		limit: limit, offset: offset
 	});
 };
 
@@ -71,12 +77,13 @@ entity  JSON Object  return it.
  @param { integer } userId
  @param { string } type
 */
-const getEntitiesBySingleUser = async (id, type, userId, pageDate = Date.now()) => {
+const getEntitiesBySingleUser = async (id, type, userId, pageDate = Date.now(), size = 10, page = 1) => {
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
 	const entities = await Entity.findAll({
 		where: { 
 			createdBy: id, 
 			type: type.toUpperCase(),
-			updatedAt: { [sequelize.Op.lte]: pageDate }
+			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
 		},
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
 		include: [{
@@ -97,13 +104,15 @@ const getEntitiesBySingleUser = async (id, type, userId, pageDate = Date.now()) 
 			},
 			required: false
 		}],
-		order: [['updatedAt', 'DESC'], ['id', 'DESC']]
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
+		limit: limit, offset: offset
 	});
 	return entities;
 };
 
-const getPostFeed = async (userId, pageDate = Date.now()) => {
+const getPostFeed = async (userId, pageDate = Date.now(), size = 10, page = 1) => {
 	//TODO: Better Logic on sequelize.literal 
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
 	const entites = await Entity.findAll({
 		where: {
 			type: entityTypes.POST,
@@ -112,7 +121,7 @@ const getPostFeed = async (userId, pageDate = Date.now()) => {
 			}, {
 				createdBy: { [sequelize.Op.in]: sequelize.literal(`(SELECT "Follows"."followingId" FROM "Follows" WHERE "Follows"."followerId" = ${userId})`) }
 			}],
-			updatedAt: { [sequelize.Op.lte]: pageDate }
+			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
 		},
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
 		include: [{
@@ -124,15 +133,19 @@ const getPostFeed = async (userId, pageDate = Date.now()) => {
 			attributes: [],
 			required: false
 		}],
-		order: [['updatedAt', 'DESC'], ['id', 'DESC']]
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
+		limit: limit, offset: offset
 	});
 	return entites;
 };
 
-const getAnnouncementFeed = async (userId, locations, startDate, endDate) => {
+const getAnnouncementFeed = async (userId, locations, startDate, endDate, pageDate = Date.now(), size = 10, page = 1) => {
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size);
 	const entites = await Entity.findAll({
 		where: {
 			type: entityTypes.ANNOUNCEMENT,
+			location: { [sequelize.Op.overlap]: locations },
+			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
 		},
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
 		include: [{
@@ -144,7 +157,8 @@ const getAnnouncementFeed = async (userId, locations, startDate, endDate) => {
 			attributes: [],
 			required: false
 		}],
-		order: [['updatedAt', 'DESC'], ['id', 'DESC']]
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
+		limit: limit, offset: offset
 	});
 	return entites;
 }
