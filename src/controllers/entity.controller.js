@@ -1,5 +1,6 @@
 const entityService = require('../services/entity.service');
 const HTTPError = require('../errors/httpError');
+const { entityTypes } = require('../utils/constants');
 
 
 const createEntity = async (req, res) => {
@@ -37,8 +38,8 @@ const getSingleEntityData = async (request, response) => {
 
 const getCommentsByEntityId = async (request, response) => {
 	try {
-		const entityId = request.params.entityId;
-		const comments = await entityService.getCommentsByEntityId(entityId);
+		const { pageDate = Date.now(), page = 1, size = 10 } = request.query;
+		const comments = await entityService.getCommentsByEntityId(request.params.entityId, pageDate, page, size);
 		response.status(200).json(comments);
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -51,8 +52,27 @@ const getCommentsByEntityId = async (request, response) => {
 
 const getEntitiesBySingleUser = async (request, response) => {
 	try {
-		const entityData = await entityService.getEntitiesBySingleUser(request.params.userId, request.params.type, request.user.id);
-		response.status(200).json({ message: 'Entity data fetched successfully', entityData });
+		const { userId, type } = request.params;
+		const { pageDate = Date.now(), page = 1, size = 10 } = request.query;
+		const entityData = await entityService.getEntitiesBySingleUser(userId, type, request.user.id, pageDate, page, size);
+		response.status(200).json(entityData);
+	} catch (error) {
+		if (error instanceof HTTPError) {
+			return response.status(error.statusCode).json({ message: error.message });
+		} else {
+			return response.status(500).json({ message: error.message });
+		}
+	}
+};
+
+const getFeed = async (request, response) => {
+	try {
+		const { type } = request.params;
+		const { locations, startDate, endDate, pageDate = Date.now(), page = 1, size = 10 } = request.query;
+		const feed = type === entityTypes.POST 
+			? await entityService.getPostFeed(request.user.id, pageDate, page, size) 
+			: await entityService.getAnnouncementFeed(request.user.id, locations, startDate, endDate, pageDate, page, size);
+		response.status(200).json(feed);
 	} catch (error) {
 		if (error instanceof HTTPError) {
 			return response.status(error.statusCode).json({ message: error.message });
@@ -78,7 +98,7 @@ const deleteSingleEntity = async (request, response) => {
 const updateEntity = async (request, response) => {
 	try {
 		const updateResponse = await entityService.updateEntityService(request.body, request.params.entityId, request.user.id);
-		response.status(201).json({ message: 'Entity data updated successfully', updateResponse });
+		response.status(201).json(updateResponse);
 
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -89,4 +109,4 @@ const updateEntity = async (request, response) => {
 	}
 };
 
-module.exports = { createEntity, getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, deleteSingleEntity, updateEntity };
+module.exports = { createEntity, getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, getFeed, deleteSingleEntity, updateEntity };
