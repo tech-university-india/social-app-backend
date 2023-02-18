@@ -2,8 +2,6 @@ const { Entity, Tag, Action } = require('../../src/models');
 const entityService = require('../../src/services/entity.service');
 
 describe('Entity Service', () => {
-
-
 	describe('Create Entity', () => {
 		it('should return 201 CREATED', async () => {
 			const mockBody = {
@@ -18,7 +16,6 @@ describe('Entity Service', () => {
 				createdBy: 'John Doe',
 				tags: []
 			};
-
 			jest.spyOn(Entity, 'create').mockResolvedValue(mockBody);
 			jest.spyOn(Tag, 'bulkCreate').mockResolvedValue([]);
 			expect(await entityService.createEntity(mockBody, 1)).toEqual({ entity: mockBody, tags: [] });

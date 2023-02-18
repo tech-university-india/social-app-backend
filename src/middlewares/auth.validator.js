@@ -45,7 +45,6 @@ const JWTVaidator = (req, res, next) => {
 		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
 		res.status(400).json({ message: err.message });
 	}
-
 };
 
 

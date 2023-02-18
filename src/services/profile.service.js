@@ -1,11 +1,40 @@
-const { User, Interest, Follow } = require('../models');
+const { User, Interest, Follow, UserInterest } = require('../models');
 const HTTPError = require('../errors/httperror');
+const paginateUtil = require('../utils/paginate.util');
 
 const sequelize = require('sequelize');
 
+const searchProfiles = async (userId, userName, interestName, pageDate = Date.now(), page = 1, size = 10) => {
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
+	const userWhereQuery = { updatedAt: { [sequelize.Op.lt]: pageTimeStamp }};
+	const interestWhereQuery = {};
+	if (userName) userWhereQuery.userName = { [sequelize.Op.iLike]: `%${userName}%` };
+	if (interestName) interestWhereQuery.interestName = { [sequelize.Op.iLike]: `%${interestName}%` };
+	const profiles = await User.findAll({
+		attributes: ['FMNO', 'userName', 'bio', 'designation', 'profilePictureURL', 'updatedAt'],
+		include: [{
+			model: Interest,
+			attributes: ['id', 'interestName'],
+			through: { attributes: [] },
+			where: interestWhereQuery,
+			// required: false,
+		}, {
+			association: 'Following',
+			attributes: ['FMNO'],
+			through: { attributes: [] },
+			where: { FMNO: userId },
+			required: false,
+		}],
+		where: userWhereQuery,
+		order: [['userName', 'ASC'], ['FMNO', 'ASC'], [Interest, 'interestName', 'ASC']],
+		limit: limit, offset: offset
+	});
+	return profiles;
+};
+
 const getUserById = async (id, userId) => {
 	const user = await User.findByPk(id, {
-		attributes: ['FMNO', 'userName', 'bio', 'designation', 'profilePictureURL', [sequelize.literal('(SELECT COUNT("Following"."FMNO"))'), 'isFollowed']],
+		attributes: ['FMNO', 'userName', 'bio', 'designation', 'profilePictureURL', 'updatedAt'],
 		include: [{
 			model: Interest,
 			attributes: ['id', 'interestName'],
@@ -13,16 +42,35 @@ const getUserById = async (id, userId) => {
 			required: false,
 		}, {
 			association: 'Following',
-			attributes: [],
+			attributes: ['FMNO'],
 			through: { attributes: [] },
 			where: { FMNO: userId },
 			required: false,
 		}],
-		group: ['"User"."FMNO"', '"Interests"."id"', '"Following"."FMNO"'],
 		order: [[Interest, 'interestName', 'ASC']],
 	});
 	if (!user) throw new HTTPError(404, 'User not found');
 	return user;
+};
+
+const updateProfile = async (id, data) => {
+	const userDataUpdateBio = await User.update({
+		userName: data.userName,
+		bio: data.bio,
+		designation: data.designation,
+		profilePictureURL: data.profilePictureURL
+	}, {
+		where: { FMNO: id }
+	});
+	if (userDataUpdateBio[0] === 0) throw new HTTPError(400, 'User not updated');
+	await UserInterest.destroy({
+		where: {
+			userId: id
+		}
+	});
+	console.log(data.interests);
+	const updatedInterests = await UserInterest.bulkCreate(data.interests.map((interest) => ({ userId: id, interestId: interest.interestId }) ));
+	return { updateProfile: userDataUpdateBio[0], updatedInterests: updatedInterests };
 };
 
 const getFollowersById = async (id, userId) => {
@@ -97,10 +145,16 @@ const getFollowingById = async (id, userId) => {
 	return followingData;
 };
 
+const followUser = async (followerId, followingId) => {
+	return await Follow.create({
+		followerId: followerId,
+		followingId: followingId
+	});
+
+};
+
 const unfollowById = async (id, userId) => {
-	// const isFollowing = await Follow.findOne({ where: { followerId: userId, followingId: id } });
-	// if (!isFollowing) throw new HTTPError(404, 'Not following user');
 	return await Follow.destroy({ where: { followerId: userId, followingId: id } });
 };
 
-module.exports = { getUserById, getFollowersById, getFollowingById, unfollowById };
+module.exports = { searchProfiles, getUserById, getFollowersById, getFollowingById, unfollowById, followUser, updateProfile };
