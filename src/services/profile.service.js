@@ -1,11 +1,12 @@
 const { User, Interest, Follow, UserInterest } = require('../models');
 const HTTPError = require('../errors/httperror');
-//const { response } = require('express');
+const paginateUtil = require('../utils/paginate.util');
 
 const sequelize = require('sequelize');
 
 const searchProfiles = async (userId, userName, interestName, pageDate = Date.now(), page = 1, size = 10) => {
-	const userWhereQuery = { updatedAt: { [sequelize.Op.lt]: pageDate }};
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
+	const userWhereQuery = { updatedAt: { [sequelize.Op.lt]: pageTimeStamp }};
 	const interestWhereQuery = {};
 	if (userName) userWhereQuery.userName = { [sequelize.Op.iLike]: `%${userName}%` };
 	if (interestName) interestWhereQuery.interestName = { [sequelize.Op.iLike]: `%${interestName}%` };
@@ -15,7 +16,7 @@ const searchProfiles = async (userId, userName, interestName, pageDate = Date.no
 			model: Interest,
 			attributes: ['id', 'interestName'],
 			through: { attributes: [] },
-            where: interestWhereQuery,
+			where: interestWhereQuery,
 			// required: false,
 		}, {
 			association: 'Following',
@@ -25,8 +26,8 @@ const searchProfiles = async (userId, userName, interestName, pageDate = Date.no
 			required: false,
 		}],
 		where: userWhereQuery,
-        order: [['userName', 'ASC'], ['FMNO', 'ASC'], [Interest, 'interestName', 'ASC']],
-        limit: size, offset: (page - 1) * size,
+		order: [['userName', 'ASC'], ['FMNO', 'ASC'], [Interest, 'interestName', 'ASC']],
+		limit: limit, offset: offset
 	});
 	return profiles;
 };
@@ -68,10 +69,6 @@ const updateProfile = async (id, data) => {
 		}
 	});
 	console.log(data.interests);
-	const temp = data.interests.map((interest) => ({
-		userId: id,
-		interestId: interest.interestId
-	}));
 	const updatedInterests = await UserInterest.bulkCreate(data.interests.map((interest) => ({ userId: id, interestId: interest.interestId }) ));
 	return { updateProfile: userDataUpdateBio[0], updatedInterests: updatedInterests };
 };
