@@ -13,6 +13,11 @@ module.exports = {
         unique: true,
         type: Sequelize.STRING
       },
+      // Foreign key constrait not added as to not delete the interest when the user is deleted
+      createdBy: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
