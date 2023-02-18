@@ -1,4 +1,5 @@
 const profileService = require('../../src/services/profile.service');
+const paginationUtil = require('../../src/utils/pagination.util');
 const { User, Follow, UserInterest } = require('../../src/models');
 const HTTPError = require('../../src/errors/httperror');
 
@@ -22,7 +23,8 @@ describe('Profile Service', () => {
 				}
 			]
 			jest.spyOn(User, 'findAll').mockResolvedValue(users);
-			expect(await profileService.searchProfiles(1)).toEqual(users);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 10, offset: 0, nextURL: "next" })
+			expect(await profileService.searchProfiles(1)).toEqual({ items: users, meta: { next: null } });
 		});
 		it('should return 200 with profiles with userName', async () => {
 			const users = [
@@ -41,8 +43,9 @@ describe('Profile Service', () => {
 					]
 				}
 			]
-			jest.spyOn(User, 'findAll').mockResolvedValue(users, "Jim Smith");
-			expect(await profileService.searchProfiles(1)).toEqual(users);
+			jest.spyOn(User, 'findAll').mockResolvedValue(users);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 1, offset: 0, nextURL: "next" })
+			expect(await profileService.searchProfiles(1)).toEqual({ items: users, meta: { next: "next" } });
 		});
 		it('should return 200 with profiles with interestName', async () => {
 			const users = [
@@ -61,8 +64,9 @@ describe('Profile Service', () => {
 					]
 				}
 			]
-			jest.spyOn(User, 'findAll').mockResolvedValue(users, null, "trekking");
-			expect(await profileService.searchProfiles(1)).toEqual(users);
+			jest.spyOn(User, 'findAll').mockResolvedValue(users);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 10, offset: 0, nextURL: "next" })
+			expect(await profileService.searchProfiles(1)).toEqual({ items: users, meta: { next: null }});
 		});
 		it('should return 200 with profiles with both userName and interestName', async () => {
 			const users = [
@@ -81,11 +85,13 @@ describe('Profile Service', () => {
 					]
 				}
 			]
-			jest.spyOn(User, 'findAll').mockResolvedValue(users, "Jim Smith", "trekking");
-			expect(await profileService.searchProfiles(1)).toEqual(users);
+			jest.spyOn(User, 'findAll').mockResolvedValue(users);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 1, offset: 0, nextURL: "next" })
+			expect(await profileService.searchProfiles(1)).toEqual({ items: users, meta: { next: "next" }});
 		});
 		it('should 500 id DB error', async () => {
 			jest.spyOn(User, 'findAll').mockRejectedValue(new Error('DB Error'));
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 1, offset: 0, nextURL: "next" })
 			await expect(profileService.searchProfiles(1, 'Jim', 'trekking')).rejects.toThrow('DB Error');
 		});
 	});

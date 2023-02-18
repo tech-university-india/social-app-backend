@@ -1,11 +1,11 @@
 const { User, Interest, Follow, UserInterest } = require('../models');
 const HTTPError = require('../errors/httperror');
-const paginateUtil = require('../utils/paginate.util');
+const paginationUtil = require('../utils/pagination.util');
 
 const sequelize = require('sequelize');
 
-const searchProfiles = async (userId, userName, interestName, pageDate = Date.now(), page = 1, size = 10) => {
-	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
+const searchProfiles = async (userId, userName, interestName, options) => {
+	const { pageTimeStamp, limit, offset, nextURL } = paginationUtil.paginate(options); 
 	const userWhereQuery = { updatedAt: { [sequelize.Op.lt]: pageTimeStamp }};
 	const interestWhereQuery = {};
 	if (userName) userWhereQuery.userName = { [sequelize.Op.iLike]: `%${userName}%` };
@@ -29,7 +29,7 @@ const searchProfiles = async (userId, userName, interestName, pageDate = Date.no
 		order: [['userName', 'ASC'], ['FMNO', 'ASC'], [Interest, 'interestName', 'ASC']],
 		limit: limit, offset: offset
 	});
-	return profiles;
+	return { items: profiles, meta: { next: profiles.length < limit ? null : nextURL }};
 };
 
 const getUserById = async (id, userId) => {
@@ -68,7 +68,6 @@ const updateProfile = async (id, data) => {
 			userId: id
 		}
 	});
-	console.log(data.interests);
 	const updatedInterests = await UserInterest.bulkCreate(data.interests.map((interest) => ({ userId: id, interestId: interest.interestId }) ));
 	return { updateProfile: userDataUpdateBio[0], updatedInterests: updatedInterests };
 };

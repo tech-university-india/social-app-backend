@@ -1,5 +1,6 @@
 const { Entity, Tag, Action } = require('../../src/models');
 const entityService = require('../../src/services/entity.service');
+const paginationUtil = require('../../src/utils/pagination.util');
 
 describe('Entity Service', () => {
 	describe('Create Entity', () => {
@@ -104,8 +105,8 @@ describe('Entity Service', () => {
 		});
 	});
 	describe('getCommentsByEntityId', () => {
-		it('should return an array of comments for a post', async () => {
-			const mockEntity = [
+		it('should return an array of comments for a post without next pagination', async () => {
+			const comments = [
 				{
 					"meta": {
 						"commentText": "comment4"
@@ -141,17 +142,59 @@ describe('Entity Service', () => {
 				}
 			]
 			const mockFindOne = 1;
-			jest.spyOn(Action, 'findAll').mockResolvedValue(mockEntity);
-			const entity = await entityService.getCommentsByEntityId(mockFindOne);
-			expect(entity).toEqual(mockEntity);
+			jest.spyOn(Action, 'findAll').mockResolvedValue(comments);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 5, offset: 0, nextURL: "next" })
+			expect(await entityService.getCommentsByEntityId(mockFindOne)).toEqual({ items: comments, meta: { next: null } });
 		});
-		it('should throw error if entity not found', async () => {
-			jest.spyOn(Action, 'findAll').mockRejectedValue(new Error());
-			await expect(entityService.getCommentsByEntityId(1)).rejects.toThrow(new Error());
+		it('should return an array of comments for a post with next pagination', async () => {
+			const comments = [
+				{
+					"meta": {
+						"commentText": "comment4"
+					},
+					"User": {
+						"FMNO": 3,
+						"userName": "Jim Smith",
+						"designation": "Team Lead",
+						"profilePictureURL": "https://example.com/image3.jpg"
+					}
+				},
+				{
+					"meta": {
+						"commentText": "comment4"
+					},
+					"User": {
+						"FMNO": 3,
+						"userName": "Jim Smith",
+						"designation": "Team Lead",
+						"profilePictureURL": "https://example.com/image3.jpg"
+					}
+				},
+				{
+					"meta": {
+						"commentText": "comment4"
+					},
+					"User": {
+						"FMNO": 4,
+						"userName": "Sarah Johnson",
+						"designation": "Analyst",
+						"profilePictureURL": "https://example.com/image4.jpg"
+					}
+				}
+			]
+			const mockFindOne = 1;
+			jest.spyOn(Action, 'findAll').mockResolvedValue(comments);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 3, offset: 0, nextURL: "next" })
+			expect(await entityService.getCommentsByEntityId(mockFindOne)).toEqual({ items: comments, meta: { next: 'next' } });
+		});
+		it('should throw DB Error', async () => {
+			jest.spyOn(Action, 'findAll').mockRejectedValue(new Error('DB Error'));
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 3, offset: 0, nextURL: "next" })
+			expect(async () => await entityService.getCommentsByEntityId(1)).rejects.toThrow(new Error('DB Error'));
 		});
 	});
 	describe('getEntitiesBySingleUser', () => {
-		it('should return an array of entities data for a user', async () => {
+		it('should return an array of entities data for a user without next pagination', async () => {
 			const mockEntity = [{
 				id: 1,
 				createdBy: 1,
@@ -185,10 +228,52 @@ describe('Entity Service', () => {
 					}
 				]
 			}];
-
-			jest.spyOn(Entity, 'findAll').mockResolvedValue([mockEntity]);
-			const entity = await entityService.getEntitiesBySingleUser(1, 'POST', 1);
-			expect(entity).toEqual([mockEntity]);
+			jest.spyOn(Entity, 'findAll').mockResolvedValue(mockEntity);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 3, offset: 0, nextURL: "next" })
+			expect(await entityService.getEntitiesBySingleUser(1, 'POST', {})).toEqual({ items: mockEntity, meta: { next: null } });
+		});
+		it('should return an array of entities data for a user with next pagination', async () => {
+			const mockEntity = [{
+				id: 1,
+				createdBy: 1,
+				type: 'POST',
+				caption: 'This is a test caption',
+				imageURL: ['https://www.google.com',],
+				location: ['Bangalore',],
+				Actions: [
+					{
+						LikesCount: 1,
+						CommentsCount: 1,
+						meta: {
+							commentText: 'This is a test comment'
+						}
+					}
+				]
+			}, {
+				id: 1,
+				createdBy: 1,
+				type: 'POST',
+				caption: 'This is a test caption',
+				imageURL: ['https://www.google.com',],
+				location: ['Bangalore',],
+				Actions: [
+					{
+						LikesCount: 1,
+						CommentsCount: 1,
+						meta: {
+							commentText: 'This is a test comment'
+						}
+					}
+				]
+			}];
+			jest.spyOn(Entity, 'findAll').mockResolvedValue(mockEntity);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 2, offset: 0, nextURL: "next" })
+			expect(await entityService.getEntitiesBySingleUser(1, 'POST', {})).toEqual({ items: mockEntity, meta: { next: "next" } });
+		});
+		it('should throw DB Error', async () => {
+			jest.spyOn(Entity, 'findAll').mockRejectedValue(new Error('DB Error'));
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 2, offset: 0, nextURL: "next" })
+			expect(async () => await entityService.getEntitiesBySingleUser(1, 'POST', {})).rejects.toThrow(new Error('DB Error'));
 		});
 	});
 	describe('getPostFeed', () => {
@@ -217,9 +302,9 @@ describe('Entity Service', () => {
 					}
 				}
 			]
-			jest.spyOn(Entity, 'findAll').mockResolvedValue([postFeed]);
-			const entity = await entityService.getPostFeed(1);
-			expect(entity).toEqual([postFeed]);
+			jest.spyOn(Entity, 'findAll').mockResolvedValue(postFeed);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 30, offset: 0, nextURL: "next" })
+			expect(await entityService.getPostFeed(1)).toEqual({ items: postFeed, meta: { next: null }});
 		});
 		it('should return an array of posts for a user with pageDate', async () => {
 			const postFeed = [
@@ -246,12 +331,13 @@ describe('Entity Service', () => {
 					}
 				}
 			]
-			jest.spyOn(Entity, 'findAll').mockResolvedValue([postFeed]);
-			const entity = await entityService.getPostFeed(1, 1);
-			expect(entity).toEqual([postFeed]);
+			jest.spyOn(Entity, 'findAll').mockResolvedValue(postFeed);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 1, offset: 0, nextURL: "next" })
+			expect(await entityService.getPostFeed(1, 1)).toEqual({ items: postFeed, meta: { next: 'next' }});
 		});
 		it('should throw error if db Fails', async () => {
 			jest.spyOn(Entity, 'findAll').mockRejectedValue(new Error());
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 1, offset: 0, nextURL: "next" })
 			await expect(entityService.getPostFeed(1, 1)).rejects.toThrow(new Error());
 		});
 	});
@@ -284,9 +370,9 @@ describe('Entity Service', () => {
 					}
 				}			
 			]
-			jest.spyOn(Entity, 'findAll').mockResolvedValue([announcementFeed]);
-			const entity = await entityService.getAnnouncementFeed(1);
-			expect(entity).toEqual([announcementFeed]);
+			jest.spyOn(Entity, 'findAll').mockResolvedValue(announcementFeed);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 1, offset: 0, nextURL: "next" })
+			expect(await entityService.getAnnouncementFeed(1)).toEqual({ items: announcementFeed, meta: { next: 'next' }});
 		});
 		it('should return an array of announcements for a user with locations', async () => {
 			const announcementFeed = [
@@ -316,9 +402,9 @@ describe('Entity Service', () => {
 					}
 				}			
 			]
-			jest.spyOn(Entity, 'findAll').mockResolvedValue([announcementFeed]);
-			const entity = await entityService.getAnnouncementFeed(1, ['Gurgoan']);
-			expect(entity).toEqual([announcementFeed]);
+			jest.spyOn(Entity, 'findAll').mockResolvedValue(announcementFeed);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 10, offset: 0, nextURL: "next" })
+			expect(await entityService.getAnnouncementFeed(1, ['Gurgoan'])).toEqual({ items: announcementFeed, meta: { next: null }});
 		});
 		it('should return an array of announcements for a user with location and startDate', async () => {
 			const announcementFeed = [
@@ -348,9 +434,9 @@ describe('Entity Service', () => {
 					}
 				}			
 			]
-			jest.spyOn(Entity, 'findAll').mockResolvedValue([announcementFeed]);
-			const entity = await entityService.getAnnouncementFeed(1, ["bangalore"], 545, null, 4567);
-			expect(entity).toEqual([announcementFeed]);
+			jest.spyOn(Entity, 'findAll').mockResolvedValue(announcementFeed);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 1, offset: 0, nextURL: "next" })
+			expect(await entityService.getAnnouncementFeed(1, ["bangalore"], 545, null, 4567)).toEqual({ items: announcementFeed, meta: { next: 'next' }});
 		});
 		it('should return an array of announcements for a user with endDate', async () => {
 			const announcementFeed = [
@@ -380,12 +466,13 @@ describe('Entity Service', () => {
 					}
 				}			
 			]
-			jest.spyOn(Entity, 'findAll').mockResolvedValue([announcementFeed]);
-			const entity = await entityService.getAnnouncementFeed(1, null, null, 123456, 4567);
-			expect(entity).toEqual([announcementFeed]);
+			jest.spyOn(Entity, 'findAll').mockResolvedValue(announcementFeed);
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 10, offset: 0, nextURL: "next" })
+			expect(await entityService.getAnnouncementFeed(1, null, null, 123456, 4567)).toEqual({ items: announcementFeed, meta: { next: null }});
 		});
 		it('should throw error if db Fails', async () => {
 			jest.spyOn(Entity, 'findAll').mockRejectedValue(new Error());
+			jest.spyOn(paginationUtil, 'paginate').mockReturnValue({ pageTimeStamp: 1, limit: 1, offset: 0, nextURL: "next" })
 			await expect(entityService.getAnnouncementFeed(1, 1)).rejects.toThrow(new Error());
 		});
 	});
