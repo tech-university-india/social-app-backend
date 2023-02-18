@@ -82,39 +82,39 @@ describe('Entity Controller', () => {
 			};
 			const comments = [
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 3,
-						"userName": "Jim Smith",
-						"designation": "Team Lead",
-						"profilePictureURL": "https://example.com/image3.jpg"
+					'User': {
+						'FMNO': 3,
+						'userName': 'Jim Smith',
+						'designation': 'Team Lead',
+						'profilePictureURL': 'https://example.com/image3.jpg'
 					}
 				},
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 3,
-						"userName": "Jim Smith",
-						"designation": "Team Lead",
-						"profilePictureURL": "https://example.com/image3.jpg"
+					'User': {
+						'FMNO': 3,
+						'userName': 'Jim Smith',
+						'designation': 'Team Lead',
+						'profilePictureURL': 'https://example.com/image3.jpg'
 					}
 				},
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 4,
-						"userName": "Sarah Johnson",
-						"designation": "Analyst",
-						"profilePictureURL": "https://example.com/image4.jpg"
+					'User': {
+						'FMNO': 4,
+						'userName': 'Sarah Johnson',
+						'designation': 'Analyst',
+						'profilePictureURL': 'https://example.com/image4.jpg'
 					}
 				}
-			]
+			];
 			jest.spyOn(entityService, 'getCommentsByEntityId').mockResolvedValue(comments);
 			await entityControllers.getCommentsByEntityId(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -145,7 +145,7 @@ describe('Entity Controller', () => {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
 			};
-			jest.spyOn(entityService, 'getCommentsByEntityId').mockRejectedValue(new Error("Internal Server Error"));
+			jest.spyOn(entityService, 'getCommentsByEntityId').mockRejectedValue(new Error('Internal Server Error'));
 			await entityControllers.getCommentsByEntityId(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(500);
 			expect(mockRes.json).toHaveBeenCalledWith({ message: 'Internal Server Error' });
@@ -219,28 +219,28 @@ describe('Entity Controller', () => {
 			};
 			const postFeed = [
 				{
-					"id": 20,
-					"type": "POST",
-					"caption": "20th Entity",
-					"imageURL": [
-						"https://example.com/image26.jpg",
-						"https://example.com/image27.jpg"
+					'id': 20,
+					'type': 'POST',
+					'caption': '20th Entity',
+					'imageURL': [
+						'https://example.com/image26.jpg',
+						'https://example.com/image27.jpg'
 					],
-					"meta": null,
-					"location": [
-						"Bangalore"
+					'meta': null,
+					'location': [
+						'Bangalore'
 					],
-					"likeCount": 1,
-					"commentCount": 0,
-					"isLiked": null,
-					"User": {
-						"FMNO": 2,
-						"userName": "Jane Doe",
-						"designation": "Manager",
-						"profilePictureURL": "https://example.com/image2.jpg"
+					'likeCount': 1,
+					'commentCount': 0,
+					'isLiked': null,
+					'User': {
+						'FMNO': 2,
+						'userName': 'Jane Doe',
+						'designation': 'Manager',
+						'profilePictureURL': 'https://example.com/image2.jpg'
 					}
 				}
-			]
+			];
 			jest.spyOn(entityService, 'getPostFeed').mockResolvedValue(postFeed);
 			await entityControllers.getFeed(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -258,31 +258,31 @@ describe('Entity Controller', () => {
 			};
 			const announcementFeed = [
 				{
-					"id": 19,
-					"type": "ANNOUNCEMENT",
-					"caption": "19th Entity",
-					"imageURL": [
-						"https://example.com/image24.jpg",
-						"https://example.com/image25.jpg"
+					'id': 19,
+					'type': 'ANNOUNCEMENT',
+					'caption': '19th Entity',
+					'imageURL': [
+						'https://example.com/image24.jpg',
+						'https://example.com/image25.jpg'
 					],
-					"meta": {
-						"date": "2023-02-07T16:10:26.603Z",
-						"venue": "Gurgoan"
+					'meta': {
+						'date': '2023-02-07T16:10:26.603Z',
+						'venue': 'Gurgoan'
 					},
-					"location": [
-						"Gurgoan"
+					'location': [
+						'Gurgoan'
 					],
-					"likeCount": 0,
-					"commentCount": 1,
-					"isLiked": null,
-					"User": {
-						"FMNO": 5,
-						"userName": "Tom Brown",
-						"designation": "Consultant",
-						"profilePictureURL": "https://example.com/image5.jpg"
+					'likeCount': 0,
+					'commentCount': 1,
+					'isLiked': null,
+					'User': {
+						'FMNO': 5,
+						'userName': 'Tom Brown',
+						'designation': 'Consultant',
+						'profilePictureURL': 'https://example.com/image5.jpg'
 					}
 				}			
-			]
+			];
 			jest.spyOn(entityService, 'getAnnouncementFeed').mockResolvedValue(announcementFeed);
 			await entityControllers.getFeed(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -477,7 +477,7 @@ describe('Entity Controller', () => {
 				},
 				location: ['Mumbai', 'Bangalore'],
 				createdBy: 1
-			}
+			};
 			jest.spyOn(entityService, 'createEntity').mockResolvedValue(serviceResponse);
 			const mockReq = {
 				body: {
