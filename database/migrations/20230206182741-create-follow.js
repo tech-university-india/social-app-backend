@@ -38,6 +38,12 @@ module.exports = {
         }
       }
     });
+    await queryInterface.addConstraint('Follows', {
+      fields: ['followerId', 'followingId'],
+      type: 'check',
+      name: 'self_following_constraint',
+      where: { followerId: { [Sequelize.Op.ne]: Sequelize.col('followingId') } }
+    });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Follows');

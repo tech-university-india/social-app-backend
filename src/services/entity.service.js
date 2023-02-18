@@ -1,6 +1,7 @@
 const { Entity, Action, User, Tag } = require('../models');
 const HTTPError = require('../errors/httpError');
-const { actionTypes } = require('../utils/constants');
+const { actionTypes, entityTypes } = require('../utils/constants');
+const paginateUtil = require('../utils/paginate.util');
 
 const sequelize = require('sequelize');
 
@@ -28,14 +29,14 @@ entity  JSON Object  return it.
 const getSingleEntityData = async (entityId, userId) => {
 	const entity = await Entity.findOne({
 		where: { id: entityId },
-		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', 'updatedAt'],
 		include: [{
 			model: User,
 			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
 		}, {
 			model: Action,
 			where: { type: actionTypes.LIKE, createdBy: userId },
-			attributes: [],
+			attributes: ['id'],
 			required: false
 		}, {
 			model: Tag,
@@ -50,18 +51,23 @@ const getSingleEntityData = async (entityId, userId) => {
 	return entity;
 };
 
-const getCommentsByEntityId = async (entityId) => {
+const getCommentsByEntityId = async (entityId, pageDate = Date.now(), page = 1, size = 10) => {
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
+	// console.log(pageTimeStamp, limit, offset);
 	return await Action.findAll({
 		where: {
 			type: actionTypes.COMMENT,
-			entityId: entityId
+			entityId: entityId,
+			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
 		},
-		attributes: ['meta'],
+		attributes: ['meta', 'updatedAt'],
 		include: {
 			model: User,
 			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL'],
 			required: false,
-		}
+		},
+		order: [['updatedAt', 'DESC']],
+		limit: limit, offset: offset
 	});
 };
 
@@ -71,18 +77,24 @@ entity  JSON Object  return it.
  @param { integer } userId
  @param { string } type
 */
-const getEntitiesBySingleUser = async (id, type, userId) => {
+const getEntitiesBySingleUser = async (id, type, userId, pageDate = Date.now(), page = 1, size = 10) => {
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
+	console.log(pageTimeStamp, limit, offset);
 	const entities = await Entity.findAll({
-		where: { createdBy: id, type: type.toUpperCase() },
-		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', [sequelize.literal('(SELECT "Actions"."id")'), 'isLiked']],
+		where: { 
+			createdBy: id, 
+			type: type.toUpperCase(),
+			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
+		},
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', 'updatedAt'],
 		include: [{
 			model: User,
 			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
-		}, 
+		},
 		{
 			model: Action,
 			where: { type: actionTypes.LIKE, createdBy: userId },
-			attributes: [],
+			attributes: ['id'],
 			required: false
 		}, {
 			model: Tag,
@@ -93,9 +105,70 @@ const getEntitiesBySingleUser = async (id, type, userId) => {
 			},
 			required: false
 		}],
-		order: [['updatedAt', 'DESC'], ['id', 'DESC']]
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
+		limit: limit, offset: offset
 	});
 	return entities;
+};
+
+const getPostFeed = async (userId, pageDate = Date.now(), page = 1, size = 10) => {
+	//TODO: Better Logic on sequelize.literal 
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
+	const entites = await Entity.findAll({
+		where: {
+			type: entityTypes.POST,
+			[sequelize.Op.or]: [{
+				id: { [sequelize.Op.in]: sequelize.literal(`(SELECT "Tags"."entityId" FROM "Tags" WHERE "Tags"."taggedId" = ${userId})`) }
+			}, {
+				createdBy: { [sequelize.Op.in]: sequelize.literal(`(SELECT "Follows"."followingId" FROM "Follows" WHERE "Follows"."followerId" = ${userId})`) }
+			}],
+			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
+		},
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', 'updatedAt'],
+		include: [{
+			model: User,
+			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
+		}, {
+			model: Action,
+			where: { type: actionTypes.LIKE, createdBy: userId },
+			attributes: ['id'],
+			required: false
+		}],
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
+		limit: limit, offset: offset
+	});
+	return entites;
+};
+
+const getAnnouncementFeed = async (userId, locations, startDate, endDate, pageDate = Date.now(), page = 1, size = 10) => {
+	// console.log(locations, startDate, endDate, )
+	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size);
+	const whereQuery = {
+		type: entityTypes.ANNOUNCEMENT,
+		updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
+	};
+	if(locations) whereQuery['location'] = { [sequelize.Op.overlap]: locations };
+	if(startDate || endDate){
+		whereQuery['meta'] = { date: {} };
+		if(startDate) whereQuery['meta']['date'][sequelize.Op.gte] = new Date(Number(startDate));
+		if(endDate) whereQuery['meta']['date'][sequelize.Op.lte] = new Date(Number(endDate));
+	}
+	const entites = await Entity.findAll({
+		where: whereQuery,
+		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', 'updatedAt'],
+		include: [{
+			model: User,
+			attributes: ['FMNO', 'userName', 'designation', 'profilePictureURL']
+		}, {
+			model: Action,
+			where: { type: actionTypes.LIKE, createdBy: userId },
+			attributes: ['id'],
+			required: false
+		}],
+		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
+		limit: limit, offset: offset
+	});
+	return entites;
 };
 
 /*
@@ -135,6 +208,6 @@ const deleteSingleEntity = async (entityId, userId) => {
 	return true;
 };
 
-  
 
-module.exports = { getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, updateEntityService, deleteSingleEntity, createEntity };
+
+module.exports = { createEntity, getSingleEntityData, getCommentsByEntityId, getEntitiesBySingleUser, getPostFeed, getAnnouncementFeed, updateEntityService, deleteSingleEntity };
