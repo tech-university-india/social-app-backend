@@ -6,7 +6,7 @@ const interestObject = Joi.object({
 
 const postInterestValidator = (req,res, next) => {
 	const { error } = interestObject.validate(req.body);
-	if(error) return res.status(401).json({ message: error.message });
+	if(error) return res.status(400).json({ message: error.message });
 	next();
 };
 
