@@ -21,7 +21,7 @@ app.use('/auth', authRouter);
 app.use('/profile', authValidator.JWTVaidator, profileRouter);
 app.use('/entity', authValidator.JWTVaidator, entityRouter);
 app.use('/action', authValidator.JWTVaidator, actionRouter);
-app.use('/interests',interestRouter);
+app.use('/interests', authValidator.JWTVaidator, interestRouter);
 
 app.listen(PORT, () => {
 	console.log(`The Application has started on PORT: ${PORT}`);
