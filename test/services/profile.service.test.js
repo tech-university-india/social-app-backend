@@ -31,30 +31,30 @@ describe('Profile Service', () => {
 		it('should return 200 with followers list', async () => {
 			const mockFindAll = [
 				{
-					"User": {
-						"FMNO": 3,
-						"designation": "Team Lead",
-						"userName": "Jim Smith",
-						"profilePictureURL": "https://example.com/image3.jpg",
-						"following": "1"
+					'User': {
+						'FMNO': 3,
+						'designation': 'Team Lead',
+						'userName': 'Jim Smith',
+						'profilePictureURL': 'https://example.com/image3.jpg',
+						'following': '1'
 					}
 				},
 				{
-					"User": {
-						"FMNO": 5,
-						"designation": "Consultant",
-						"userName": "Tom Brown",
-						"profilePictureURL": "https://example.com/image5.jpg",
-						"following": "1"
+					'User': {
+						'FMNO': 5,
+						'designation': 'Consultant',
+						'userName': 'Tom Brown',
+						'profilePictureURL': 'https://example.com/image5.jpg',
+						'following': '1'
 					}
 				},
 				{
-					"User": {
-						"FMNO": 1,
-						"designation": "Partner",
-						"userName": "John Doe",
-						"profilePictureURL": "https://example.com/image1.jpg",
-						"following": "0"
+					'User': {
+						'FMNO': 1,
+						'designation': 'Partner',
+						'userName': 'John Doe',
+						'profilePictureURL': 'https://example.com/image1.jpg',
+						'following': '0'
 					}
 				}
 			];
@@ -140,7 +140,7 @@ describe('Profile Service', () => {
 		});
 		it('should throw 404 when user doesnt follow given id', async () => {
 			// jest.spyOn(Follow, 'findOne').mockResolvedValue(0);
-			jest.spyOn(Follow, 'destroy').mockRejectedValue(new Error());;
+			jest.spyOn(Follow, 'destroy').mockRejectedValue(new Error());
 			expect(async()=>await profileService.unfollowById(2,3)).rejects.toThrow(new Error());
 		});
 	});

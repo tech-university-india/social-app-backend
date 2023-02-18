@@ -3,6 +3,61 @@ const interestService = require('../../src/services/interest.service');
 const HTTPError = require('../../src/errors/httperror');
 
 describe('Interest Controller', () => {
+	describe('GET /interest', () => {
+		it('should return 200 with interests', async () => {
+			const interests = {
+				'items': [
+					{
+						'id': 2,
+						'interestName': 'trekking'
+					}
+				]
+			};
+			jest.spyOn(interestService, 'getInterestsByName').mockResolvedValue(interests);
+			const mockReq = {
+				query: { 'interestName': 'trekking' },
+				baseUrl: '/interest',
+				path: '/interest'
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			await interestController.getInterestsByName(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(200);
+			expect(mockRes.json).toBeCalledWith(interests);
+		});
+		it('should throw HTTPError', async () => {
+			jest.spyOn(interestService, 'getInterestsByName').mockRejectedValue(new HTTPError(400, 'Service Error'));
+			const mockReq = {
+				query: { 'interestName': 'trekking' },
+				baseUrl: '/interest',
+				path: '/interest'
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			await interestController.getInterestsByName(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(400);
+			expect(mockRes.json).toBeCalledWith({ message: 'Service Error' });
+		});
+		it('should throw 500', async () => {
+			jest.spyOn(interestService, 'getInterestsByName').mockRejectedValue(new Error('Service Error'));
+			const mockReq = {
+				query: { 'interestName': 'trekking' },
+				baseUrl: '/interest',
+				path: '/interest'
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnThis(),
+				json: jest.fn()
+			};
+			await interestController.getInterestsByName(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(500);
+			expect(mockRes.json).toBeCalledWith({ message: 'Service Error' });
+		});
+	});
 	describe('POST /interest', () => {
 		it('should return 201 with interest', async () => {
 			const interest = {
@@ -50,6 +105,5 @@ describe('Interest Controller', () => {
 			expect(mockRes.status).toBeCalledWith(500);
 			expect(mockRes.json).toBeCalledWith({ message: 'Service Error' });
 		});
-	}
-	);
+	});
 });

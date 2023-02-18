@@ -84,39 +84,39 @@ describe('Entity Controller', () => {
 			};
 			const comments = [
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 3,
-						"userName": "Jim Smith",
-						"designation": "Team Lead",
-						"profilePictureURL": "https://example.com/image3.jpg"
+					'User': {
+						'FMNO': 3,
+						'userName': 'Jim Smith',
+						'designation': 'Team Lead',
+						'profilePictureURL': 'https://example.com/image3.jpg'
 					}
 				},
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 3,
-						"userName": "Jim Smith",
-						"designation": "Team Lead",
-						"profilePictureURL": "https://example.com/image3.jpg"
+					'User': {
+						'FMNO': 3,
+						'userName': 'Jim Smith',
+						'designation': 'Team Lead',
+						'profilePictureURL': 'https://example.com/image3.jpg'
 					}
 				},
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 4,
-						"userName": "Sarah Johnson",
-						"designation": "Analyst",
-						"profilePictureURL": "https://example.com/image4.jpg"
+					'User': {
+						'FMNO': 4,
+						'userName': 'Sarah Johnson',
+						'designation': 'Analyst',
+						'profilePictureURL': 'https://example.com/image4.jpg'
 					}
 				}
-			]
+			];
 			jest.spyOn(entityService, 'getCommentsByEntityId').mockResolvedValue(comments);
 			await entityControllers.getCommentsByEntityId(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -153,7 +153,7 @@ describe('Entity Controller', () => {
 				status: jest.fn().mockReturnThis(),
 				json: jest.fn()
 			};
-			jest.spyOn(entityService, 'getCommentsByEntityId').mockRejectedValue(new Error("Internal Server Error"));
+			jest.spyOn(entityService, 'getCommentsByEntityId').mockRejectedValue(new Error('Internal Server Error'));
 			await entityControllers.getCommentsByEntityId(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(500);
 			expect(mockRes.json).toHaveBeenCalledWith({ message: 'Internal Server Error' });
@@ -396,7 +396,7 @@ describe('Entity Controller', () => {
 				},
 				location: ['Mumbai', 'Bangalore'],
 				createdBy: 1
-			}
+			};
 			jest.spyOn(entityService, 'createEntity').mockResolvedValue(serviceResponse);
 			const mockReq = {
 				body: {

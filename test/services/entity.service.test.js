@@ -25,15 +25,15 @@ describe('Entity Service', () => {
 		});
 		it('should throw error', async () => {
 			const mockBody = {
-				"type": "POST",
-				"caption": "New Post 3",
-				"imageURL": ["http://example.ima/image"],
-				"tags": [
-					{ "id": 1 },
-					{ "id": 3 },
-					{ "id": 2 }
+				'type': 'POST',
+				'caption': 'New Post 3',
+				'imageURL': ['http://example.ima/image'],
+				'tags': [
+					{ 'id': 1 },
+					{ 'id': 3 },
+					{ 'id': 2 }
 				]
-			}
+			};
 			jest.spyOn(Entity, 'create').mockRejectedValue(new Error());
 			await expect(entityService.createEntity(mockBody, 1)).rejects.toThrow(new Error());
 		});
@@ -110,39 +110,39 @@ describe('Entity Service', () => {
 		it('should return an array of comments for a post', async () => {
 			const mockEntity = [
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 3,
-						"userName": "Jim Smith",
-						"designation": "Team Lead",
-						"profilePictureURL": "https://example.com/image3.jpg"
+					'User': {
+						'FMNO': 3,
+						'userName': 'Jim Smith',
+						'designation': 'Team Lead',
+						'profilePictureURL': 'https://example.com/image3.jpg'
 					}
 				},
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 3,
-						"userName": "Jim Smith",
-						"designation": "Team Lead",
-						"profilePictureURL": "https://example.com/image3.jpg"
+					'User': {
+						'FMNO': 3,
+						'userName': 'Jim Smith',
+						'designation': 'Team Lead',
+						'profilePictureURL': 'https://example.com/image3.jpg'
 					}
 				},
 				{
-					"meta": {
-						"commentText": "comment4"
+					'meta': {
+						'commentText': 'comment4'
 					},
-					"User": {
-						"FMNO": 4,
-						"userName": "Sarah Johnson",
-						"designation": "Analyst",
-						"profilePictureURL": "https://example.com/image4.jpg"
+					'User': {
+						'FMNO': 4,
+						'userName': 'Sarah Johnson',
+						'designation': 'Analyst',
+						'profilePictureURL': 'https://example.com/image4.jpg'
 					}
 				}
-			]
+			];
 			const mockFindOne = 1;
 			jest.spyOn(Action, 'findAll').mockResolvedValue(mockEntity);
 			const entity = await entityService.getCommentsByEntityId(mockFindOne);
@@ -213,7 +213,7 @@ describe('Entity Service', () => {
 			const updateResponseFromDB = [1, {}];
 			jest.spyOn(Entity, 'update').mockResolvedValue(updateResponseFromDB);
 			jest.spyOn(Tag, 'bulkCreate').mockResolvedValue([{ id: 1 }, { id: 2 }]);
-			jest.spyOn(Tag, 'destroy').mockResolvedValue(1)
+			jest.spyOn(Tag, 'destroy').mockResolvedValue(1);
 			const update = await entityService.updateEntityService(body, entityID);
 			expect(update).toEqual({ entity: updateResponseFromDB[1], tags: [{ id: 1 }, { id: 2 }] });
 		});
