@@ -39,7 +39,14 @@ const getSingleEntityData = async (request, response) => {
 const getCommentsByEntityId = async (request, response) => {
 	try {
 		const { pageDate = Date.now(), page = 1, size = 10 } = request.query;
-		const comments = await entityService.getCommentsByEntityId(request.params.entityId, pageDate, page, size);
+		const options = {
+			pageDate,
+			page,
+			size,
+			path: `${request.baseUrl}${request.path}`,
+			queryParams: request.query
+		};
+		const comments = await entityService.getCommentsByEntityId(request.params.entityId, options);
 		response.status(200).json(comments);
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -54,7 +61,14 @@ const getEntitiesBySingleUser = async (request, response) => {
 	try {
 		const { userId, type } = request.params;
 		const { pageDate = Date.now(), page = 1, size = 10 } = request.query;
-		const entityData = await entityService.getEntitiesBySingleUser(userId, type, request.user.id, pageDate, page, size);
+		const options = {
+			pageDate,
+			page,
+			size,
+			path: `${request.baseUrl}${request.path}`,
+			queryParams: request.query
+		};
+		const entityData = await entityService.getEntitiesBySingleUser(userId, type, request.user.id, options);
 		response.status(200).json(entityData);
 	} catch (error) {
 		if (error instanceof HTTPError) {
@@ -69,9 +83,16 @@ const getFeed = async (request, response) => {
 	try {
 		const { type } = request.params;
 		const { locations, startDate, endDate, pageDate = Date.now(), page = 1, size = 10 } = request.query;
+		const options = {
+			pageDate,
+			page,
+			size,
+			path: `${request.baseUrl}${request.path}`,
+			queryParams: request.query
+		};
 		const feed = type === entityTypes.POST 
-			? await entityService.getPostFeed(request.user.id, pageDate, page, size) 
-			: await entityService.getAnnouncementFeed(request.user.id, locations, startDate, endDate, pageDate, page, size);
+			? await entityService.getPostFeed(request.user.id, options) 
+			: await entityService.getAnnouncementFeed(request.user.id, locations, startDate, endDate, options);
 		response.status(200).json(feed);
 	} catch (error) {
 		if (error instanceof HTTPError) {

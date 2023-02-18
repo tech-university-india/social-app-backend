@@ -219,28 +219,28 @@ describe('Entity Controller', () => {
 			};
 			const postFeed = [
 				{
-					"id": 20,
-					"type": "POST",
-					"caption": "20th Entity",
-					"imageURL": [
-						"https://example.com/image26.jpg",
-						"https://example.com/image27.jpg"
+					'id': 20,
+					'type': 'POST',
+					'caption': '20th Entity',
+					'imageURL': [
+						'https://example.com/image26.jpg',
+						'https://example.com/image27.jpg'
 					],
-					"meta": null,
-					"location": [
-						"Bangalore"
+					'meta': null,
+					'location': [
+						'Bangalore'
 					],
-					"likeCount": 1,
-					"commentCount": 0,
-					"isLiked": null,
-					"User": {
-						"FMNO": 2,
-						"userName": "Jane Doe",
-						"designation": "Manager",
-						"profilePictureURL": "https://example.com/image2.jpg"
+					'likeCount': 1,
+					'commentCount': 0,
+					'isLiked': null,
+					'User': {
+						'FMNO': 2,
+						'userName': 'Jane Doe',
+						'designation': 'Manager',
+						'profilePictureURL': 'https://example.com/image2.jpg'
 					}
 				}
-			]
+			];
 			jest.spyOn(entityService, 'getPostFeed').mockResolvedValue(postFeed);
 			await entityControllers.getFeed(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -258,31 +258,31 @@ describe('Entity Controller', () => {
 			};
 			const announcementFeed = [
 				{
-					"id": 19,
-					"type": "ANNOUNCEMENT",
-					"caption": "19th Entity",
-					"imageURL": [
-						"https://example.com/image24.jpg",
-						"https://example.com/image25.jpg"
+					'id': 19,
+					'type': 'ANNOUNCEMENT',
+					'caption': '19th Entity',
+					'imageURL': [
+						'https://example.com/image24.jpg',
+						'https://example.com/image25.jpg'
 					],
-					"meta": {
-						"date": "2023-02-07T16:10:26.603Z",
-						"venue": "Gurgoan"
+					'meta': {
+						'date': '2023-02-07T16:10:26.603Z',
+						'venue': 'Gurgoan'
 					},
-					"location": [
-						"Gurgoan"
+					'location': [
+						'Gurgoan'
 					],
-					"likeCount": 0,
-					"commentCount": 1,
-					"isLiked": null,
-					"User": {
-						"FMNO": 5,
-						"userName": "Tom Brown",
-						"designation": "Consultant",
-						"profilePictureURL": "https://example.com/image5.jpg"
+					'likeCount': 0,
+					'commentCount': 1,
+					'isLiked': null,
+					'User': {
+						'FMNO': 5,
+						'userName': 'Tom Brown',
+						'designation': 'Consultant',
+						'profilePictureURL': 'https://example.com/image5.jpg'
 					}
 				}			
-			]
+			];
 			jest.spyOn(entityService, 'getAnnouncementFeed').mockResolvedValue(announcementFeed);
 			await entityControllers.getFeed(mockReq, mockRes);
 			expect(mockRes.status).toHaveBeenCalledWith(200);

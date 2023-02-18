@@ -31,6 +31,8 @@ const deleteAction = async (actionId, userId) => {
 			Entity.decrement('commentCount', { where: { id: action.id } }),
 			Action.destroy({ where: { id: actionId } })
 		]);
+	} else {
+		throw new HTTPError(400, 'Invalid Action Type');
 	}
 	// const deletedActionCount = await Action.destroy({
 	//     where: {

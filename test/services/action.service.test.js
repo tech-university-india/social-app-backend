@@ -1,6 +1,7 @@
 const actionService = require('../../src/services/action.service');
 const { Action, Entity } = require('../../src/models');
 const { actionTypes } = require('../../src/utils/constants');
+const HTTPError = require('../../src/errors/httperror');
 
 describe('Action Service', () => {
 	describe('postAction', () => {
@@ -54,13 +55,17 @@ describe('Action Service', () => {
 			const action = await actionService.deleteAction(1, 1);
 			expect(action).toEqual(true);
 		});
+		it('should throw 400 HTTPError when action type is invalid', async () => {
+			jest.spyOn(Action, 'findOne').mockResolvedValue({ id: 1, type: 'INVALID', createdBy: 1 });
+			expect(async () => await actionService.deleteAction(1, 1)).rejects.toThrow(new HTTPError(400, 'Invalid Action Type'));
+		});
 		it('should throw 404 HTTPError when action is not found', async () => {
 			jest.spyOn(Action, 'findOne').mockResolvedValue(null);
-			await expect(actionService.deleteAction(1, 1)).rejects.toThrow('Action not found');
+			expect(async () => await actionService.deleteAction(1, 1)).rejects.toThrow(new HTTPError(404, 'Action not found'));
 		});
 		it('should throw 403 HTTPError when user is not authorized to delete action', async () => {
 			jest.spyOn(Action, 'findOne').mockResolvedValue({ id: 1, type: actionTypes.LIKE, createdBy: 1 });
-			await expect(actionService.deleteAction(1, 2)).rejects.toThrow('Unauthorized to delete this action');
+			expect(async () => await actionService.deleteAction(1, 2)).rejects.toThrow(new HTTPError(403, 'Unauthorized to delete this action'));
 		});
 	});
 });

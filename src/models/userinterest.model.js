@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
 		interestId: DataTypes.INTEGER,
 		userId: DataTypes.INTEGER
 	}, {
+		updatedAt: false,
 		sequelize,
 		modelName: 'UserInterest',
 	});

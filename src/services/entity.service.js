@@ -1,7 +1,7 @@
 const { Entity, Action, User, Tag } = require('../models');
 const HTTPError = require('../errors/httpError');
 const { actionTypes, entityTypes } = require('../utils/constants');
-const paginateUtil = require('../utils/paginate.util');
+const paginationUtil = require('../utils/pagination.util');
 
 const sequelize = require('sequelize');
 
@@ -51,14 +51,14 @@ const getSingleEntityData = async (entityId, userId) => {
 	return entity;
 };
 
-const getCommentsByEntityId = async (entityId, pageDate = Date.now(), page = 1, size = 10) => {
-	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
+const getCommentsByEntityId = async (entityId, options) => {
+	const { pageTimeStamp, limit, offset, nextURL } = paginationUtil.paginate(options); 
 	// console.log(pageTimeStamp, limit, offset);
-	return await Action.findAll({
+	const comments = await Action.findAll({
 		where: {
 			type: actionTypes.COMMENT,
 			entityId: entityId,
-			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
+			updatedAt: { [sequelize.Op.lt]: pageTimeStamp }
 		},
 		attributes: ['meta', 'updatedAt'],
 		include: {
@@ -69,6 +69,7 @@ const getCommentsByEntityId = async (entityId, pageDate = Date.now(), page = 1, 
 		order: [['updatedAt', 'DESC']],
 		limit: limit, offset: offset
 	});
+	return { items: comments, meta: { next: comments.length < limit ? null : nextURL } };
 };
 
 /* This function is used to get all the entities of a single user from Entities table
@@ -77,14 +78,13 @@ entity  JSON Object  return it.
  @param { integer } userId
  @param { string } type
 */
-const getEntitiesBySingleUser = async (id, type, userId, pageDate = Date.now(), page = 1, size = 10) => {
-	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
-	console.log(pageTimeStamp, limit, offset);
+const getEntitiesBySingleUser = async (id, type, userId, options) => {
+	const { pageTimeStamp, limit, offset, nextURL } = paginationUtil.paginate(options); 
 	const entities = await Entity.findAll({
 		where: { 
 			createdBy: id, 
 			type: type.toUpperCase(),
-			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
+			updatedAt: { [sequelize.Op.lt]: pageTimeStamp }
 		},
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', 'updatedAt'],
 		include: [{
@@ -108,13 +108,13 @@ const getEntitiesBySingleUser = async (id, type, userId, pageDate = Date.now(), 
 		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
 		limit: limit, offset: offset
 	});
-	return entities;
+	return { items: entities, meta: { next: entities.length < limit ? null : nextURL } };
 };
 
-const getPostFeed = async (userId, pageDate = Date.now(), page = 1, size = 10) => {
+const getPostFeed = async (userId, options) => {
 	//TODO: Better Logic on sequelize.literal 
-	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size); 
-	const entites = await Entity.findAll({
+	const { pageTimeStamp, limit, offset, nextURL } = paginationUtil.paginate(options); 
+	const entities = await Entity.findAll({
 		where: {
 			type: entityTypes.POST,
 			[sequelize.Op.or]: [{
@@ -122,7 +122,7 @@ const getPostFeed = async (userId, pageDate = Date.now(), page = 1, size = 10) =
 			}, {
 				createdBy: { [sequelize.Op.in]: sequelize.literal(`(SELECT "Follows"."followingId" FROM "Follows" WHERE "Follows"."followerId" = ${userId})`) }
 			}],
-			updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
+			updatedAt: { [sequelize.Op.lt]: pageTimeStamp }
 		},
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', 'updatedAt'],
 		include: [{
@@ -137,15 +137,15 @@ const getPostFeed = async (userId, pageDate = Date.now(), page = 1, size = 10) =
 		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
 		limit: limit, offset: offset
 	});
-	return entites;
+	return { items: entities, meta: { next: entities.length < limit ? null : nextURL } };
 };
 
-const getAnnouncementFeed = async (userId, locations, startDate, endDate, pageDate = Date.now(), page = 1, size = 10) => {
+const getAnnouncementFeed = async (userId, locations, startDate, endDate, options) => {
 	// console.log(locations, startDate, endDate, )
-	const { pageTimeStamp, limit, offset } = paginateUtil.paginate(pageDate, page, size);
+	const { pageTimeStamp, limit, offset, nextURL } = paginationUtil.paginate(options);
 	const whereQuery = {
 		type: entityTypes.ANNOUNCEMENT,
-		updatedAt: { [sequelize.Op.lte]: pageTimeStamp }
+		updatedAt: { [sequelize.Op.lt]: pageTimeStamp }
 	};
 	if(locations) whereQuery['location'] = { [sequelize.Op.overlap]: locations };
 	if(startDate || endDate){
@@ -153,7 +153,7 @@ const getAnnouncementFeed = async (userId, locations, startDate, endDate, pageDa
 		if(startDate) whereQuery['meta']['date'][sequelize.Op.gte] = new Date(Number(startDate));
 		if(endDate) whereQuery['meta']['date'][sequelize.Op.lte] = new Date(Number(endDate));
 	}
-	const entites = await Entity.findAll({
+	const entities = await Entity.findAll({
 		where: whereQuery,
 		attributes: ['id', 'type', 'caption', 'imageURL', 'meta', 'location', 'likeCount', 'commentCount', 'updatedAt'],
 		include: [{
@@ -168,7 +168,7 @@ const getAnnouncementFeed = async (userId, locations, startDate, endDate, pageDa
 		order: [['updatedAt', 'DESC'], ['id', 'DESC']],
 		limit: limit, offset: offset
 	});
-	return entites;
+	return { items: entities, meta: { next: entities.length < limit ? null : nextURL } };
 };
 
 /*
