@@ -3,6 +3,92 @@ const { User, Follow, UserInterest } = require('../../src/models');
 const HTTPError = require('../../src/errors/httperror');
 
 describe('Profile Service', () => {
+	describe('Search Profiles', () => {
+		it('should return 200 with profiles without userName and interestName', async () => {
+			const users = [
+				{
+					"FMNO": 3,
+					"userName": "Jim Smith",
+					"bio": "full-stack developer and music lover",
+					"designation": "Team Lead",
+					"profilePictureURL": "https://example.com/image3.jpg",
+					"updatedAt": "2023-02-17T18:11:48.136Z",
+					"Interests": [
+						{ "id": 2, "interestName": "trekking" }
+					],
+					"Following": [
+						{"FMNO": 1 }
+					]
+				}
+			]
+			jest.spyOn(User, 'findAll').mockResolvedValue(users);
+			expect(await profileService.searchProfiles(1)).toEqual(users);
+		});
+		it('should return 200 with profiles with userName', async () => {
+			const users = [
+				{
+					"FMNO": 3,
+					"userName": "Jim Smith",
+					"bio": "full-stack developer and music lover",
+					"designation": "Team Lead",
+					"profilePictureURL": "https://example.com/image3.jpg",
+					"updatedAt": "2023-02-17T18:11:48.136Z",
+					"Interests": [
+						{ "id": 2, "interestName": "trekking" }
+					],
+					"Following": [
+						{"FMNO": 1 }
+					]
+				}
+			]
+			jest.spyOn(User, 'findAll').mockResolvedValue(users, "Jim Smith");
+			expect(await profileService.searchProfiles(1)).toEqual(users);
+		});
+		it('should return 200 with profiles with interestName', async () => {
+			const users = [
+				{
+					"FMNO": 3,
+					"userName": "Jim Smith",
+					"bio": "full-stack developer and music lover",
+					"designation": "Team Lead",
+					"profilePictureURL": "https://example.com/image3.jpg",
+					"updatedAt": "2023-02-17T18:11:48.136Z",
+					"Interests": [
+						{ "id": 2, "interestName": "trekking" }
+					],
+					"Following": [
+						{"FMNO": 1 }
+					]
+				}
+			]
+			jest.spyOn(User, 'findAll').mockResolvedValue(users, null, "trekking");
+			expect(await profileService.searchProfiles(1)).toEqual(users);
+		});
+		it('should return 200 with profiles with both userName and interestName', async () => {
+			const users = [
+				{
+					"FMNO": 3,
+					"userName": "Jim Smith",
+					"bio": "full-stack developer and music lover",
+					"designation": "Team Lead",
+					"profilePictureURL": "https://example.com/image3.jpg",
+					"updatedAt": "2023-02-17T18:11:48.136Z",
+					"Interests": [
+						{ "id": 2, "interestName": "trekking" }
+					],
+					"Following": [
+						{"FMNO": 1 }
+					]
+				}
+			]
+			jest.spyOn(User, 'findAll').mockResolvedValue(users, "Jim Smith", "trekking");
+			expect(await profileService.searchProfiles(1)).toEqual(users);
+		});
+		it('should 500 id DB error', async () => {
+			jest.spyOn(User, 'findAll').mockRejectedValue(new Error('DB Error'));
+			await expect(profileService.searchProfiles(1, 'Jim', 'trekking')).rejects.toThrow('DB Error');
+		});
+	});
 	describe('Follow User', () => {
 		it('should return 201 with follow', async () => {
 			const user = {}

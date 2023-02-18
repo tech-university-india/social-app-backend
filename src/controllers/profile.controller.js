@@ -1,9 +1,20 @@
 const profileService = require('../services/profile.service');
 const HTTPError = require('../errors/httperror');
 
+const searchProfiles = async (req, res) => {
+	try {
+		const { userName, interestName, pageDate = Date.now(), page = 1, size = 10 } = req.query;
+		const users = await profileService.searchProfiles(req.user.id, userName, interestName, pageDate, page, size);
+		res.status(200).json(users);
+	} catch (err) {
+		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
+		res.status(500).json({ message: err.message });
+	}
+};
+
 const getUserById = async (req, res) => {
 	try {
-		const user = await profileService.getUserById(req.params.userId);
+		const user = await profileService.getUserById(req.params.userId, req.user.id);
 		// console.log(req.user);
 		res.status(200).json(user);
 	} catch (err) {
@@ -67,4 +78,4 @@ const unfollowById = async (req, res) => {
 	}
 };
 
-module.exports = { getUserById, getFollowersById, getFollowingById, unfollowById, followUser, updateProfile };
+module.exports = { searchProfiles, getUserById, getFollowersById, getFollowingById, unfollowById, followUser, updateProfile };

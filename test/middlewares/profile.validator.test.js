@@ -2,6 +2,32 @@ const { describe } = require('node:test');
 const profileValidator = require('../../src/middlewares/profile.validator');
 
 describe('Profile Validator', () => {
+    describe('Search Profiles Validator', () => {
+        it('should return nothing if all fields are valid', async () => {
+            const mockReq = {
+                query: { userName: 'test', interestName: 'test', pageDate: 1, page: 1, size: 1 }
+            }
+            const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+            const mockNext = jest.fn();
+            await profileValidator.searchProfilesValidator(mockReq, mockRes, mockNext);
+            expect(mockNext).toBeCalled();
+        });
+        it('should return 400 "query.interestName" is not allowed to be empty', async () => {
+            const mockReq = {
+                query: { interestName: '', pageDate: 1, page: 1, size: 1 }
+            }
+            const mockRes = {
+                status: jest.fn().mockReturnValue({ json: jest.fn() })
+            };
+            const mockNext = jest.fn();
+            await profileValidator.searchProfilesValidator(mockReq, mockRes, mockNext);
+            expect(mockRes.status).toBeCalledWith(400);
+            expect(mockRes.status().json).toBeCalledWith({ message: "\"query.interestName\" is not allowed to be empty" });
+            expect(mockNext).not.toBeCalled();
+        });
+    });
     describe('Get Profile By Id Validator', () => {
         it('should return nothing if all fields are valid', async () => {
             const mockReq = {

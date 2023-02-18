@@ -3,6 +3,54 @@ const profileController = require('../../src/controllers/profile.controller');
 const profileService = require('../../src/services/profile.service');
 
 describe('Profile Controller', () => {
+	describe('GET /profile', () => {
+		it('should return 200 OK', async () => {
+			const users = [
+				{
+					"FMNO": 3,
+					"userName": "Jim Smith",
+					"bio": "full-stack developer and music lover",
+					"designation": "Team Lead",
+					"profilePictureURL": "https://example.com/image3.jpg",
+					"updatedAt": "2023-02-17T18:11:48.136Z",
+					"Interests": [
+						{ "id": 2, "interestName": "trekking" }
+					],
+					"Following": [
+						{"FMNO": 1 }
+					]
+				}
+			]
+			jest.spyOn(profileService, 'searchProfiles').mockResolvedValue(users);
+			const mockReq = { query: { userName: 'q' }, user: { id: 1 } };
+			const mockRes = {
+				status: jest.fn().mockReturnValue({ json: jest.fn() })
+			};
+			await profileController.searchProfiles(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(200);
+			expect(mockRes.status().json).toBeCalledWith(users);
+		});
+		it('should throw HTTPError', async () => {
+			jest.spyOn(profileService, 'searchProfiles').mockRejectedValue(new HTTPError(400, 'Service Error'));
+			const mockReq = { query: { userName: 'q' }, user: { id: 1 } };
+			const mockRes = {
+				status: jest.fn().mockReturnValue({ json: jest.fn() })
+			};
+			await profileController.searchProfiles(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(400);
+			expect(mockRes.status().json).toBeCalledWith({ message: 'Service Error' });
+		});
+		it('should throw 500 Error', async () => {
+			jest.spyOn(profileService, 'searchProfiles').mockRejectedValue(new Error('Service Error'));
+			const mockReq = { query: { userName: 'q' }, user: { id: 1 } };
+			const mockRes = {
+				status: jest.fn().mockReturnValue({ json: jest.fn() })
+			};
+			await profileController.searchProfiles(mockReq, mockRes);
+			expect(mockRes.status).toBeCalledWith(500);
+			expect(mockRes.status().json).toBeCalledWith({ message: 'Service Error' });
+		});
+	});
 	describe('GET /profile/{userId}', () => {
 		it('should return 200 OK', async () => {
 			const user = {

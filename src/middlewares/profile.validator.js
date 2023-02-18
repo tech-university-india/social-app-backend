@@ -1,16 +1,20 @@
 const Joi = require('joi');
 
-// const postUserSchema = Joi.object({
-// 	FMNO: Joi.number().required(),
-// 	username: Joi.string().min(3).max(30).required(),
-// 	password: Joi.string().min(8).max(30).required(),
-// 	email: Joi.string().email().required(),
-// 	bio: Joi.string().max(100),
-// 	designation: Joi.string().max(30),
-// 	profilePictureURL: Joi.string().uri()
-// });
+const searchProfilesSchema = Joi.object({
+	query: Joi.object({
+		userName: Joi.string().min(1).max(30),
+		interestName: Joi.string().min(1).max(30),
+		pageDate: Joi.number().integer(),
+		page: Joi.number().integer(),
+		size: Joi.number().integer()
+	})
+});
 
-
+const searchProfilesValidator = (req, res, next) => {
+	const { error } = searchProfilesSchema.validate({ query: req.query });
+	if (error) return res.status(400).json({ message: error.message });
+	next();
+};
 
 const getByUserIdValidator = (req, res, next) => {
 	const { error } = Joi.object({
@@ -50,4 +54,4 @@ const updateProfileValidator = (req, res, next) => {
 };
 
 
-module.exports = { getByUserIdValidator, postFollowUserValidator, deleteByUserIdValidator, updateProfileValidator };
+module.exports = { searchProfilesValidator, getByUserIdValidator, postFollowUserValidator, deleteByUserIdValidator, updateProfileValidator };
