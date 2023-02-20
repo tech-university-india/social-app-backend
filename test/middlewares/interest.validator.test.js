@@ -1,6 +1,33 @@
 const interestValidator = require('../../src/middlewares/interest.validator');
 
 describe('Interest Validator', () => {
+	describe('Get Interest By Name Validator', () => {
+		it('should return nothing if all fields are valid', async () => {
+			const mockReq = {
+				query: { interestName: 'test', }
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnValue({ json: jest.fn() })
+			};
+			const mockNext = jest.fn();
+			await interestValidator.getInterestByNameValidator(mockReq, mockRes, mockNext);
+			expect(mockNext).toBeCalled();
+		}
+		);
+		it('should throw HTTPError when extrafields provided', async () => {
+			const mockReq = {
+				query: { interestNam: 'test' }
+
+			};
+			const mockRes = {
+				status: jest.fn().mockReturnValue({ json: jest.fn() })
+			};
+			const mockNext = jest.fn();
+			await interestValidator.getInterestByNameValidator(mockReq, mockRes, mockNext);
+			expect(mockRes.status).toBeCalledWith(400);
+			expect(mockRes.status().json).toBeCalledWith({ message: '"interestNam" is not allowed' });
+		});
+	});
 	describe('Post Interest Validator', () => {
 		it('should return nothing if all fields are valid', async () => {
 			const mockReq = {

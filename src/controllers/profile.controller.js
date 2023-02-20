@@ -4,7 +4,14 @@ const HTTPError = require('../errors/httperror');
 const searchProfiles = async (req, res) => {
 	try {
 		const { userName, interestName, pageDate = Date.now(), page = 1, size = 10 } = req.query;
-		const users = await profileService.searchProfiles(req.user.id, userName, interestName, pageDate, page, size);
+		const options = {
+			pageDate,
+			page,
+			size,
+			path: `${req.baseUrl}${req.path}`,
+			queryParams: req.query
+		};
+		const users = await profileService.searchProfiles(req.user.id, userName, interestName, options);
 		res.status(200).json(users);
 	} catch (err) {
 		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });
@@ -26,7 +33,6 @@ const getUserById = async (req, res) => {
 const updateProfile = async (req, res) => {
 	try {
 		const user = await profileService.updateProfile(req.user.id, req.body);
-		console.log(user);
 		res.status(200).json(user);
 	} catch (err) {
 		if (err instanceof HTTPError) return res.status(err.statusCode).json({ message: err.message });

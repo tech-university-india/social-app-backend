@@ -27,7 +27,7 @@ describe('Entity Validator', () => {
 			};
 			entityValidator.singleEntityValidator(request, response);
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.status().json).toHaveBeenCalledWith({ message: '\"params.entityId\" must be a number' });
+			expect(response.status().json).toHaveBeenCalledWith({ message: '"params.entityId" must be a number' });
 		});
 	});
 	describe('entitiesBySingleUserValidator', () => {
@@ -45,7 +45,7 @@ describe('Entity Validator', () => {
 			};
 			entityValidator.entitiesBySingleUserValidator(request, response);
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.status().json).toHaveBeenCalledWith({ message: "\"params.userId\" must be a string" });
+			expect(response.status().json).toHaveBeenCalledWith({ message: '"params.userId" must be a string' });
 		});
 		it('should return 400 status code when type is not a string', async () => {
 			const request = {
@@ -61,7 +61,7 @@ describe('Entity Validator', () => {
 			};
 			entityValidator.entitiesBySingleUserValidator(request, response);
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.status().json).toHaveBeenCalledWith({ message: "\"params.type\" must be one of [ANNOUNCEMENT, POST]" });
+			expect(response.status().json).toHaveBeenCalledWith({ message: '"params.type" must be one of [ANNOUNCEMENT, POST]' });
 		});
 		it('should call next function when userId and type are valid', async () => {
 			const request = {
@@ -117,7 +117,7 @@ describe('Entity Validator', () => {
 			};
 			entityValidator.entityFeedValidator(request, response);
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.status().json).toHaveBeenCalledWith({ message: "\"params.type\" must be one of [ANNOUNCEMENT, POST]" });
+			expect(response.status().json).toHaveBeenCalledWith({ message: '"params.type" must be one of [ANNOUNCEMENT, POST]' });
 		});
 		it('should return 400 status code when JSON.stringify throws error', async () => {
 			const request = {
@@ -132,7 +132,7 @@ describe('Entity Validator', () => {
 			};
 			entityValidator.entityFeedValidator(request, response);
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.status().json).toHaveBeenCalledWith({ message: "Bad Request" });
+			expect(response.status().json).toHaveBeenCalledWith({ message: 'Bad Request' });
 		});
 		it('should return 400 status code when invalid locations array', async () => {
 			const request = {
@@ -147,7 +147,7 @@ describe('Entity Validator', () => {
 			};
 			entityValidator.entityFeedValidator(request, response);
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.status().json).toHaveBeenCalledWith({ message: "\"[1]\" must be a string" });
+			expect(response.status().json).toHaveBeenCalledWith({ message: '"[1]" must be a string' });
 		});
 	});
 	describe('updateValidatior', () => {
@@ -173,7 +173,7 @@ describe('Entity Validator', () => {
 			const next = jest.fn();
 			entityValidator.updateValidatior(request, response,next);
 			expect(response.status).toBeCalledWith(400);
-			expect(response.json).toHaveBeenCalledWith({ message: "\"params.entityId\" must be a number" });
+			expect(response.json).toHaveBeenCalledWith({ message: '"params.entityId" must be a number' });
 	
 		});
 		it('should return 400 status code when name is not a string',  () => {
@@ -202,7 +202,7 @@ describe('Entity Validator', () => {
 			entityValidator.updateValidatior(request, response,next);
 	
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.json).toHaveBeenCalledWith({ message: "\"body.imageURL\" must be an array" });
+			expect(response.json).toHaveBeenCalledWith({ message: '"body.imageURL" must be an array' });
 	
 		});
 		it('should return 400 status code when name is not a string',  () => {
@@ -231,7 +231,7 @@ describe('Entity Validator', () => {
 			entityValidator.updateValidatior(request, response,next);
 	
 			expect(response.status).toHaveBeenCalledWith(400);
-			expect(response.json).toHaveBeenCalledWith({ message: "\"body.caption\" must be a string" });
+			expect(response.json).toHaveBeenCalledWith({ message: '"body.caption" must be a string' });
 	
 		});
 		it('should return to router when all data is given correctly',  () => {
